@@ -1,13 +1,13 @@
 package server
 
 import (
-	"com.xpwk/go-gin/internal/init"
+	"com.xpwk/go-gin/internal/initial"
 	"log"
 )
 
 func ListenAndServe(port string) {
 
-	e := init.Routers()
+	e := initial.Routers()
 
 	err := e.Run(":" + port)
 	if err != nil {

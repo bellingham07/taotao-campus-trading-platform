@@ -1,4 +1,4 @@
-package init
+package initial
 
 import "github.com/gin-gonic/gin"
 import myRtr "com.xpwk/go-gin/internal/router"
