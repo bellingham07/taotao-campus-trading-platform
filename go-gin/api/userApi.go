@@ -25,7 +25,7 @@ func (*UserApi) GetInfo(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		ctx.JSON(http.StatusOK, &response.Result{Code: -1, Msg: "没有用户信息"})
+		ctx.JSON(http.StatusUnauthorized, &response.Result{Code: -1, Msg: "请求错误"})
 	}
 	ctx.JSON(http.StatusOK, logic.User.GetUserById(id))
 }

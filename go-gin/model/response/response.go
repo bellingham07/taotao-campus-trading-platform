@@ -9,4 +9,6 @@ type Result struct {
 const (
 	SUCCESS = "success"
 	ERROR   = "error"
+	OK      = 1
+	FAIL    = -1
 )

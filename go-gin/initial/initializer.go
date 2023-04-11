@@ -6,20 +6,12 @@ import (
 	"com.xpwk/go-gin/repository"
 	"github.com/yitter/idgenerator-go/idgen"
 	"gopkg.in/yaml.v3"
-	"io"
-	"log"
 	"os"
 )
 
 func Initializer() {
-	file, err := os.ReadFile("a.txt")
-	if err != nil || err != io.EOF {
-		log.Printf("atxt %v", file)
-		panic("配置文件读取错误2222：" + err.Error())
-	}
-	yamlFile, err := os.ReadFile("../config/config.yaml")
-	if err != nil || err != io.EOF {
-		log.Printf("sajkhdfsdkjfhsdkafjhsdk%v", yamlFile)
+	yamlFile, err := os.ReadFile("./config/config.yaml")
+	if err != nil {
 		panic("配置文件读取错误：" + err.Error())
 	}
 	var _config config.Config

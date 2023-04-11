@@ -10,7 +10,8 @@ import (
 func main() {
 
 	go initial.Initializer()
-	server.ListenAndServe("12345")
 	var newId = idgen.NextId()
-	log.Printf("%v", newId)
+	log.Printf("acsdfdsgadfgfdg%v", newId)
+	server.ListenAndServe("12345")
+
 }

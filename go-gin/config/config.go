@@ -15,4 +15,5 @@ type MysqlConfig struct {
 type RedisConfig struct {
 	Url      string `yaml:"url"`
 	Password string `yaml:"password"`
+	Db       int    `yaml:"db"`
 }

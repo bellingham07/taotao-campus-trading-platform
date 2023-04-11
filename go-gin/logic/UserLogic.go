@@ -1,22 +1,25 @@
 package logic
 
 import (
-	"com.xpwk/go-gin/model"
+	"com.xpwk/go-gin/cache"
 	"com.xpwk/go-gin/model/request"
 	"com.xpwk/go-gin/model/response"
 	"com.xpwk/go-gin/repository"
+	"encoding/json"
+	"strconv"
 )
 
-var User = new(UserLogic)
+var (
+	User = new(UserLogic)
+)
 
 type UserLogic struct {
 }
 
 func (*UserLogic) Login(loginUser request.LoginUser) *response.Result {
-	user := &model.User{
-		Username: loginUser.Username,
-	}
-	userDB := repository.User.QueryByUsername(user)
+	username := loginUser.Username
+
+	userDB := repository.User.QueryByUsername(username)
 	if loginUser.Password != userDB.Password {
 		return &response.Result{
 			Code: -1,
@@ -32,10 +35,25 @@ func (*UserLogic) Login(loginUser request.LoginUser) *response.Result {
 }
 
 func (*UserLogic) GetUserById(id int64) *response.Result {
+	key := cache.USERID + strconv.FormatInt(id, 10)
+	userStr, _ := cache.RedisClient.Get(key)
+	// 内容为“nil”，代表数据库中没有
+	if userStr == "nil" {
+		return &response.Result{
+			Code: response.FAIL,
+			Msg:  "内容不存在",
+		}
+	}
 	user := repository.User.QueryById(id)
+	if user == nil {
+		_ = cache.RedisClient.Set(key, "nil", 30)
+	}
+	_ = cache.RedisClient.Set(key, user, 30)
+	_ = json.Unmarshal([]byte(userStr), user)
 	return &response.Result{
-		Code: 1,
+		Code: response.OK,
 		Msg:  response.SUCCESS,
 		Data: user,
 	}
+
 }
