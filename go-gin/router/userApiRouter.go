@@ -1,7 +1,7 @@
 package router
 
 import (
-	"com.xpwk/go-gin/internal/api"
+	"com.xpwk/go-gin/api"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +13,7 @@ func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 	ug := g.Group("/user")
 	{
 		ug.POST("/login", userApi.UserLogin)
-		ug.GET("/info", userApi.GetInfo)
+		ug.GET("/info/:id", userApi.GetInfo)
 		ug.POST("/info", userApi.UpdateInfo)
 	}
 }

@@ -1,7 +1,7 @@
 package server
 
 import (
-	"com.xpwk/go-gin/internal/initial"
+	"com.xpwk/go-gin/initial"
 	"log"
 )
 

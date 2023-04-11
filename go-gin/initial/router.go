@@ -1,7 +1,9 @@
 package initial
 
-import "github.com/gin-gonic/gin"
-import myRtr "com.xpwk/go-gin/internal/router"
+import (
+	myRtr "com.xpwk/go-gin/router"
+	"github.com/gin-gonic/gin"
+)
 
 func Routers() *gin.Engine {
 	router := gin.New()
