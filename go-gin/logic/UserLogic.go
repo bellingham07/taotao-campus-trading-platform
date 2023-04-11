@@ -32,5 +32,10 @@ func (*UserLogic) Login(loginUser request.LoginUser) *response.Result {
 }
 
 func (*UserLogic) GetUserById(id int64) *response.Result {
-	userDB := repository.User.QueryById(user)
+	user := repository.User.QueryById(id)
+	return &response.Result{
+		Code: 1,
+		Msg:  response.SUCCESS,
+		Data: user,
+	}
 }
