@@ -1,16 +1,16 @@
-package initial
+package router
 
 import (
-	myRtr "com.xpwk/go-gin/router"
+	"com.xpwk/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func Routers() *gin.Engine {
 	router := gin.New()
 
-	myRouter := new(myRtr.SystemGroup)
+	myRouter := new(SystemRouterGroup)
 
-	groupRegistry := router.Group("/")
+	groupRegistry := router.Group("/", middleware.Cors())
 	{
 		myRouter.UserRouter.InitUserApiRouter(groupRegistry)
 		myRouter.CommodityRouter.InitCommodityApiRouter(groupRegistry)

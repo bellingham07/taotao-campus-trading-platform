@@ -25,6 +25,6 @@ func InitMysql(config config.MysqlConfig) {
 	db = _db
 }
 
-func getDB() *gorm.DB {
+func GetDB() *gorm.DB {
 	return db
 }

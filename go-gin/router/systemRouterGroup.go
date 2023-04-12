@@ -1,6 +1,6 @@
 package router
 
-type SystemGroup struct {
+type SystemRouterGroup struct {
 	UserRouter
 	CommodityRouter
 	OrderRouter

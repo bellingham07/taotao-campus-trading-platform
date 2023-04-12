@@ -6,6 +6,7 @@ type User struct {
 	Id        int64
 	Username  string
 	Password  string
+	Name      string
 	Gender    string
 	Phone     string
 	Avatar    string
@@ -35,4 +36,13 @@ type UserCollect struct {
 	UserId        int64
 	CollectUserId int64
 	CreateAt      time.Time
+}
+
+type User_location struct {
+	Id       int
+	Name     string
+	createBy int64
+	createAt time.Time
+	updateBy int64
+	updateAt time.Time
 }

@@ -25,11 +25,19 @@ func (*UserApi) GetInfo(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, &response.Result{Code: -1, Msg: "请求错误"})
+		ctx.JSON(http.StatusUnauthorized, &response.Result{
+			Code: response.FAIL,
+			Msg:  "请求错误",
+		})
 	}
 	ctx.JSON(http.StatusOK, logic.User.GetUserById(id))
 }
 
 func (*UserApi) UpdateInfo(ctx *gin.Context) {
 
+}
+
+func (*UserApi) Register(ctx *gin.Context) {
+
+	ctx.JSON(http.StatusOK, logic.User.Register())
 }

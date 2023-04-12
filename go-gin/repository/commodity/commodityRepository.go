@@ -1,4 +1,4 @@
-package repository
+package commodityRepository
 
 import (
 	"com.xpwk/go-gin/model"
