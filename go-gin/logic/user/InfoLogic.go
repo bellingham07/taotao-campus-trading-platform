@@ -1,4 +1,4 @@
-package logic
+package userLogic
 
 import (
 	"com.xpwk/go-gin/cache"
@@ -15,17 +15,17 @@ import (
 )
 
 var (
-	User = new(UserLogic)
+	UserInfo = new(UserInfoLogic)
 )
 
-type UserLogic struct {
+type UserInfoLogic struct {
 }
 
-func (ul UserLogic) isEmpty() bool {
-	return reflect.DeepEqual(ul, UserLogic{})
+func (ul UserInfoLogic) isEmpty() bool {
+	return reflect.DeepEqual(ul, UserInfoLogic{})
 }
 
-func (*UserLogic) Login(loginUser request.LoginUser) gin.H {
+func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
 	username := loginUser.Username
 	password, err := bcrypt.GenerateFromPassword([]byte(loginUser.Password), bcrypt.DefaultCost)
 	log.Printf("加密的密码是%v", string(password))
@@ -52,7 +52,7 @@ func (*UserLogic) Login(loginUser request.LoginUser) gin.H {
 	}
 }
 
-func (*UserLogic) GetUserById(id int64) gin.H {
+func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	key := cache.USERID + strconv.FormatInt(id, 10)
 	userStr, _ := cache.RedisClient.Get(key)
 	// 内容为“nil”，代表数据库中没有
@@ -85,7 +85,7 @@ func (*UserLogic) GetUserById(id int64) gin.H {
 
 }
 
-func (*UserLogic) Register() gin.H {
+func (*UserInfoLogic) Register() gin.H {
 
 	return gin.H{
 		"code": response.OK,

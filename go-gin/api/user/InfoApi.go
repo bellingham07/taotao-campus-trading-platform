@@ -1,7 +1,7 @@
-package api
+package userApi
 
 import (
-	"com.xpwk/go-gin/logic"
+	"com.xpwk/go-gin/logic/user"
 	"com.xpwk/go-gin/model/request"
 	"com.xpwk/go-gin/model/response"
 	"github.com/gin-gonic/gin"
@@ -9,19 +9,19 @@ import (
 	"strconv"
 )
 
-type UserApi struct {
+type UserInfoApi struct {
 }
 
-func (*UserApi) UserLogin(ctx *gin.Context) {
+func (*UserInfoApi) UserLogin(ctx *gin.Context) {
 	var loginUser request.LoginUser
 	err := ctx.ShouldBind(&loginUser)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, &response.Result{Msg: "验证码错误"})
 	}
-	ctx.JSON(http.StatusOK, logic.User.Login(loginUser))
+	ctx.JSON(http.StatusOK, userLogic.UserInfo.Login(loginUser))
 }
 
-func (*UserApi) GetInfo(ctx *gin.Context) {
+func (*UserInfoApi) GetUserInfo(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
@@ -30,14 +30,14 @@ func (*UserApi) GetInfo(ctx *gin.Context) {
 			Msg:  "请求错误",
 		})
 	}
-	ctx.JSON(http.StatusOK, logic.User.GetUserById(id))
+	ctx.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
 }
 
-func (*UserApi) UpdateInfo(ctx *gin.Context) {
+func (*UserInfoApi) UpdateUserInfo(ctx *gin.Context) {
 
 }
 
-func (*UserApi) Register(ctx *gin.Context) {
+func (*UserInfoApi) Register(ctx *gin.Context) {
 
-	ctx.JSON(http.StatusOK, logic.User.Register())
+	ctx.JSON(http.StatusOK, userLogic.UserInfo.Register())
 }

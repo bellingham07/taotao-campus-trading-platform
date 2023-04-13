@@ -30,11 +30,11 @@ func InitRedis(config config.RedisConfig) {
 		}),
 	}
 	//通过 *redis.Client.Ping() 来检查是否成功连接到了redis服务器
-	//ctx.Value(config.Password)
-	//_, err := RedisClient.Ping(ctx).Result()
-	//if err != nil {
-	//	panic("连接redis失败：" + err.Error())
-	//}
+	ctx.Value(config.Password)
+	_, err := RedisClient.Ping(ctx).Result()
+	if err != nil {
+		panic("连接redis失败：" + err.Error())
+	}
 }
 
 func (rc *_RedisClient) Get(key string) (result string, err error) {

@@ -6,7 +6,7 @@ import (
 )
 
 func Routers() *gin.Engine {
-	router := gin.New()
+	router := gin.Default()
 
 	myRouter := new(SystemRouterGroup)
 

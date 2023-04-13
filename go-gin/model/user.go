@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type User struct {
+type UserInfo struct {
 	Id        int64
 	Username  string
 	Password  string
@@ -38,7 +38,7 @@ type UserCollect struct {
 	CreateAt      time.Time
 }
 
-type User_location struct {
+type UserLocation struct {
 	Id       int
 	Name     string
 	createBy int64

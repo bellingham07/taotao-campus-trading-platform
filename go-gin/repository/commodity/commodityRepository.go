@@ -9,7 +9,7 @@ var Commodity = new(CommodityRepository)
 type CommodityRepository struct {
 }
 
-func (*CommodityRepository) ListOrderByTimeViewLike() []model.Commodity {
+func (*CommodityRepository) ListOrderByTimeViewLike() []model.CommodityInfo {
 
 	return nil
 }
