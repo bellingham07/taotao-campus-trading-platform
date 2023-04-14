@@ -10,12 +10,15 @@ type CommodityRouter struct {
 
 func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 	commodityApi := api.SystemApis.CommodityApi
-	g.Group("/cmdty")
-	{
 
-		hg := g.Group("/history")
-		{
-			hg.GET("/:userid", commodityApi.CommodityHistoryApi.List)
-		}
+	ig := g.Group("/info")
+	{
+		ig.GET("/:id", commodityApi.CommodityInfoApi.GetInfoById)
 	}
+
+	hg := g.Group("/history")
+	{
+		hg.GET("/:userid", commodityApi.CommodityHistoryApi.List)
+	}
+
 }

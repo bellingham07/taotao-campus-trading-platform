@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	USERID = "user:id:"
+	USERLOGIN = "user:login:"
+	USERINFO  = "user:info:"
 )
 
 var (
@@ -48,5 +49,10 @@ func (rc *_RedisClient) Set(key string, value any, expiration time.Duration) (er
 		return err
 	}
 	err = rc.Client.Set(ctx, key, jsonStr, expiration).Err()
+	return
+}
+
+func (rc *_RedisClient) Expire(key string, expiration time.Duration) (err error) {
+	err = rc.Client.Expire(ctx, key, expiration).Err()
 	return
 }

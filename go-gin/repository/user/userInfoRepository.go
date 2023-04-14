@@ -11,25 +11,25 @@ var UserInfo = new(UserInfoRepository)
 type UserInfoRepository struct {
 }
 
-func userInfo() string {
+func (*UserInfoRepository) tableName() string {
 	return "user_info"
 }
 
-func (*UserInfoRepository) QueryByUsername(username string) (user model.UserInfo, err error) {
-	user.Username = username
-	if err := repository.GetDB().Table(userInfo()).Find(&user).Error; err != nil {
-		log.Println("QueryById NOT FOUND: " + err.Error())
-		return user, err
+func (*UserInfoRepository) QueryByUsername(username string) (userInfo model.UserInfo, err error) {
+	userInfo.Username = username
+	if err := repository.GetDB().Table(UserInfo.tableName()).Find(&userInfo).Error; err != nil {
+		log.Println("[GORM-WRONG] QueryById NOT FOUND: " + err.Error())
+		return userInfo, err
 	}
-	return user, nil
+	return userInfo, nil
 }
 
 func (*UserInfoRepository) QueryById(id int64) (user model.UserInfo, err error) {
 	user = model.UserInfo{
 		Id: id,
 	}
-	if err := repository.GetDB().Table(userInfo()).First(&user).Error; err != nil {
-		log.Println("QueryById NOT FOUND: " + err.Error())
+	if err := repository.GetDB().Table(UserInfo.tableName()).First(&user).Error; err != nil {
+		log.Println("[GORM-WRONG] QueryById NOT FOUND: " + err.Error())
 		return user, err
 	}
 	return user, nil

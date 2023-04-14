@@ -7,6 +7,6 @@ var HistoryLogic = new(CommodityHistoryLogic)
 type CommodityHistoryLogic struct {
 }
 
-func (*CommodityHistoryLogic) ListByUserId() gin.H {
-
+func (*CommodityHistoryLogic) ListByUserId(userId int64) gin.H {
+	return nil
 }

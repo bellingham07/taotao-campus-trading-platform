@@ -12,12 +12,12 @@ func Routers() *gin.Engine {
 
 	groupRegistry := router.Group("/", middleware.Cors())
 	{
-		myRouter.UserRouter.InitUserApiRouter(groupRegistry)
-		myRouter.CommodityRouter.InitCommodityApiRouter(groupRegistry)
-		myRouter.FileRouter.InitFileApiRouter(groupRegistry)
-		myRouter.OrderRouter.InitOrderApiRouter(groupRegistry)
-		myRouter.MessageRouter.InitMessageApiRouter(groupRegistry)
-		myRouter.ArticleRouter.InitArticleApiRouter(groupRegistry)
+		myRouter.UserRouter.InitUserApiRouter(groupRegistry.Group("/user"))
+		myRouter.CommodityRouter.InitCommodityApiRouter(groupRegistry.Group("/cmdty"))
+		myRouter.FileRouter.InitFileApiRouter(groupRegistry.Group("/file"))
+		myRouter.OrderRouter.InitOrderApiRouter(groupRegistry.Group("/order"))
+		myRouter.MessageRouter.InitMessageApiRouter(groupRegistry.Group("/msg"))
+		myRouter.ArticleRouter.InitArticleApiRouter(groupRegistry.Group("/atcl"))
 	}
 
 	return router
