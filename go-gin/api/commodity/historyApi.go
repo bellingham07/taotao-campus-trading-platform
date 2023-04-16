@@ -6,10 +6,10 @@ import (
 	"strconv"
 )
 
-type CommodityHistoryApi struct {
+type HistoryApi struct {
 }
 
-func (*CommodityHistoryApi) List(ctx *gin.Context) {
+func (*HistoryApi) List(ctx *gin.Context) {
 	userIdStr := ctx.Param("userId")
 	userId, _ := strconv.ParseInt(userIdStr, 10, 10)
 	commodityLogic.HistoryLogic.ListByUserId(userId)

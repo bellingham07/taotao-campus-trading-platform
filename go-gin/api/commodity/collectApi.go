@@ -1,4 +1,4 @@
 package commodityApi
 
-type CommodityCollectApi struct {
+type CollectApi struct {
 }

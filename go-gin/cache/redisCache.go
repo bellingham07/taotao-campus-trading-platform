@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-const (
-	USERLOGIN = "user:login:"
-	USERINFO  = "user:info:"
-)
-
 var (
 	RedisClient _RedisClient
 	ctx         = context.Background()

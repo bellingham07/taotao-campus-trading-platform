@@ -21,33 +21,33 @@ type SystemApi struct {
 var SystemApis = new(SystemApi)
 
 type UserApi struct {
-	userApi.UserInfoApi
-	userApi.UserLocationApi
-	userApi.UserCollectApi
+	userApi.InfoApi
+	userApi.LocationApi
+	userApi.CollectApi
 }
 
 type CommodityApi struct {
-	commodityApi.CommodityInfoApi
-	commodityApi.CommodityHistoryApi
-	commodityApi.CommodityCategoryApi
-	commodityApi.CommodityCollectApi
+	commodityApi.InfoApi
+	commodityApi.HistoryApi
+	commodityApi.CategoryApi
+	commodityApi.CollectApi
 }
 
 type OrderApi struct {
-	orderApi.OrderCommentApi
-	orderApi.OrderInfoApi
+	orderApi.CommentApi
+	orderApi.InfoApi
 }
 
 type FileApi struct {
-	fileApi.FileInfoApi
+	fileApi.InfoApi
 }
 
 type ArticleApi struct {
-	articleApi.ArticleCommentApi
-	articleApi.ArticleBulletinApi
-	articleApi.ArticleContentApi
+	articleApi.CommentApi
+	articleApi.BulletinApi
+	articleApi.ContentApi
 }
 
 type MessageApi struct {
-	messageApi.MessageCommentApi
+	messageApi.CommentApi
 }

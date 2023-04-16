@@ -1,4 +1,4 @@
 package articleApi
 
-type ArticleBulletinApi struct {
+type BulletinApi struct {
 }

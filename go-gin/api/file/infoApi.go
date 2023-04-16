@@ -1,4 +1,4 @@
 package fileApi
 
-type FileInfoApi struct {
+type InfoApi struct {
 }

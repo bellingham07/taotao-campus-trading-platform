@@ -1,10 +1,14 @@
 package userApi
 
-import "github.com/gin-gonic/gin"
+import (
+	userLogic "com.xpwk/go-gin/logic/user"
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
-type UserLocationApi struct {
+type LocationApi struct {
 }
 
-func (*UserLocationApi) List(ctx *gin.Context) {
-
+func (*LocationApi) List(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, userLogic.UserLocation.List())
 }

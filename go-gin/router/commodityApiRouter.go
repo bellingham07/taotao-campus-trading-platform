@@ -13,12 +13,12 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 
 	ig := g.Group("/info")
 	{
-		ig.GET("/:id", commodityApi.CommodityInfoApi.GetInfoById)
+		ig.GET("/:id", commodityApi.InfoApi.GetInfoById)
 	}
 
 	hg := g.Group("/history")
 	{
-		hg.GET("/:userid", commodityApi.CommodityHistoryApi.List)
+		hg.GET("/:userid", commodityApi.HistoryApi.List)
 	}
 
 }

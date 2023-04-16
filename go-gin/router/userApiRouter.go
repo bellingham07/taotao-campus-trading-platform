@@ -12,18 +12,18 @@ type UserRouter struct {
 func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 	userApi := api.SystemApis.UserApi
 
-	g.POST("/login", userApi.UserInfoApi.UserLogin)
-	g.GET("/logout", middleware.JWTAuthenticate(), userApi.UserInfoApi.Logout)
+	g.POST("/login", userApi.InfoApi.UserLogin)
+	g.GET("/logout", middleware.JWTAuthenticate(), userApi.InfoApi.Logout)
 
 	ig := g.Group("/info")
 	{
-		ig.GET("/:id", middleware.JWTAuthenticate(), userApi.UserInfoApi.GetInfoById)
-		ig.POST("/", userApi.UserInfoApi.UpdateInfo)
+		ig.GET("/:id", middleware.JWTAuthenticate(), userApi.InfoApi.GetInfoById)
+		ig.POST("/", userApi.InfoApi.UpdateInfo)
 	}
 
 	lg := g.Group("/location")
 	{
-		lg.GET("/list", userApi.UserLocationApi.List)
+		lg.GET("/list", userApi.LocationApi.List)
 	}
 
 }

@@ -1,4 +1,4 @@
 package orderApi
 
-type OrderCommentApi struct {
+type CommentApi struct {
 }

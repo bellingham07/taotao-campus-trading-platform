@@ -2,13 +2,13 @@ package commodityApi
 
 import "github.com/gin-gonic/gin"
 
-type CommodityInfoApi struct {
+type InfoApi struct {
 }
 
-func (*CommodityInfoApi) GetById(id int64) {
+func (*InfoApi) GetById(id int64) {
 
 }
 
-func (a *CommodityInfoApi) GetInfoById(ctx *gin.Context) {
+func (a *InfoApi) GetInfoById(ctx *gin.Context) {
 
 }

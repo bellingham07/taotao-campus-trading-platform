@@ -1,4 +1,4 @@
 package articleApi
 
-type ArticleCommentApi struct {
+type CommentApi struct {
 }

@@ -20,5 +20,5 @@ func (*UserLocationRepository) QueryAll() (locations []model.UserLocation) {
 		log.Println("QueryAll User Location Fail：" + err.Error())
 		return nil
 	}
-	return
+	return locations
 }

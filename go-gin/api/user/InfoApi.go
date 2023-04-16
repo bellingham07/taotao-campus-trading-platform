@@ -9,10 +9,10 @@ import (
 	"strconv"
 )
 
-type UserInfoApi struct {
+type InfoApi struct {
 }
 
-func (*UserInfoApi) UserLogin(ctx *gin.Context) {
+func (*InfoApi) UserLogin(ctx *gin.Context) {
 	var loginUser request.LoginUser
 	_ = ctx.ShouldBind(&loginUser)
 
@@ -28,11 +28,11 @@ func (*UserInfoApi) UserLogin(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userLogic.UserInfo.Login(loginUser))
 }
 
-func (*UserInfoApi) Logout(ctx *gin.Context) {
+func (*InfoApi) Logout(ctx *gin.Context) {
 	// TODO
 }
 
-func (*UserInfoApi) GetInfoById(ctx *gin.Context) {
+func (*InfoApi) GetInfoById(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
@@ -44,11 +44,11 @@ func (*UserInfoApi) GetInfoById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
 }
 
-func (*UserInfoApi) UpdateInfo(ctx *gin.Context) {
+func (*InfoApi) UpdateInfo(ctx *gin.Context) {
 	//TODO
 }
 
-func (*UserInfoApi) Register(ctx *gin.Context) {
+func (*InfoApi) Register(ctx *gin.Context) {
 	// TODO
 	ctx.JSON(http.StatusOK, userLogic.UserInfo.Register())
 }

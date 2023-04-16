@@ -1,4 +1,4 @@
 package userApi
 
-type UserCollectApi struct {
+type CollectApi struct {
 }
