@@ -15,7 +15,10 @@ func (*CommodityHistoryRepository) tableName() string {
 }
 
 func (*CommodityHistoryRepository) ListByUserId(userId int64) (commodityHistories []model.CommodityHistory) {
-	if err := repository.GetDB().Table(CommodityHistory.tableName()).Find(&commodityHistories).Error; err != nil {
+	var commodityHistory = model.CommodityHistory{
+		UserId: userId,
+	}
+	if err := repository.GetDB().Table(CommodityHistory.tableName()).Find(&commodityHistory).Error; err != nil {
 		return nil
 	}
 	return commodityHistories

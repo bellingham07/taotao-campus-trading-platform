@@ -11,6 +11,6 @@ type HistoryApi struct {
 
 func (*HistoryApi) List(ctx *gin.Context) {
 	userIdStr := ctx.Param("userId")
-	userId, _ := strconv.ParseInt(userIdStr, 10, 10)
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	commodityLogic.HistoryLogic.ListByUserId(userId)
 }

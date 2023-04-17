@@ -40,6 +40,7 @@ func (*InfoApi) GetInfoById(ctx *gin.Context) {
 			"code": response.FAIL,
 			"msg":  "请求错误",
 		})
+		return
 	}
 	ctx.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
 }
