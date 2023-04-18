@@ -14,6 +14,7 @@ func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 
 	g.POST("/login", userApi.InfoApi.UserLogin)
 	g.GET("/logout", middleware.JWTAuthenticate(), userApi.InfoApi.Logout)
+	g.POST("/register", userApi.InfoApi.Register)
 
 	ig := g.Group("/info")
 	{

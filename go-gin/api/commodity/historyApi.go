@@ -9,8 +9,8 @@ import (
 type HistoryApi struct {
 }
 
-func (*HistoryApi) List(ctx *gin.Context) {
-	userIdStr := ctx.Param("userId")
+func (*HistoryApi) List(c *gin.Context) {
+	userIdStr := c.Param("userId")
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	commodityLogic.HistoryLogic.ListByUserId(userId)
 }

@@ -5,6 +5,7 @@ import (
 	"com.xpwk/go-gin/model/request"
 	"com.xpwk/go-gin/model/response"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -32,24 +33,31 @@ func (*InfoApi) Logout(ctx *gin.Context) {
 	// TODO
 }
 
-func (*InfoApi) GetInfoById(ctx *gin.Context) {
-	idStr := ctx.Param("id")
+func (*InfoApi) GetInfoById(c *gin.Context) {
+	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code": response.FAIL,
 			"msg":  "请求错误",
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
+	c.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
 }
 
-func (*InfoApi) UpdateInfo(ctx *gin.Context) {
+func (*InfoApi) UpdateInfo(c *gin.Context) {
 	//TODO
 }
 
-func (*InfoApi) Register(ctx *gin.Context) {
+func (*InfoApi) Register(c *gin.Context) {
 	// TODO
-	ctx.JSON(http.StatusOK, userLogic.UserInfo.Register())
+	var registerUser = new(request.RegisterUser)
+	err := c.ShouldBind(registerUser)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "请求错误！"})
+		return
+	}
+	c.JSON(http.StatusOK, userLogic.UserInfo.Register(registerUser))
 }

@@ -2,14 +2,17 @@ package userLogic
 
 import (
 	"com.xpwk/go-gin/cache"
+	"com.xpwk/go-gin/model"
 	"com.xpwk/go-gin/model/request"
 	"com.xpwk/go-gin/model/response"
 	"com.xpwk/go-gin/repository/user"
 	"com.xpwk/go-gin/utils"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/yitter/idgenerator-go/idgen"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math/rand"
 	"reflect"
 	"strconv"
 	"time"
@@ -87,11 +90,29 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 
 }
 
-func (*UserInfoLogic) Register() gin.H {
-
-	return gin.H{
-		"code": response.OK,
-		"msg":  response.SUCCESS,
-		"data": "",
+func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
+	password1 := userRegister.Password1
+	password2 := userRegister.Password2
+	if password1 != password2 {
+		return gin.H{"code": response.FAIL, "msg": "两次输入的密码不一致！"}
 	}
+	password, err := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
+	if err != nil {
+		return gin.H{"code": response.FAIL, "msg": "请求错误！"}
+	}
+	id := idgen.NextId()
+	randNum := rand.Int31()
+	randNumStr := "user" + strconv.Itoa(int(randNum))
+	var userInfo = model.UserInfo{
+		Id:        id,
+		Username:  userRegister.Username,
+		Password:  string(password),
+		Name:      randNumStr,
+		LastLogin: time.Now(),
+	}
+	err = userRepository.UserInfo.InsertInfoRegister(userInfo)
+	if err != nil {
+		return gin.H{"code": response.FAIL, "msg": "帐号已存在！"}
+	}
+	return gin.H{"code": response.OK, "msg": "恭喜你，注册成功。😊"}
 }
