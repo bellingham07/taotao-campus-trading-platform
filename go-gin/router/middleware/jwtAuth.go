@@ -50,3 +50,9 @@ func JWTAuthenticate() func(c *gin.Context) {
 		c.Next() // 后续的处理函数可以用过c.GET("username")来获取当前请求的用户信息
 	}
 }
+
+func GetUserIdStr(c *gin.Context) string {
+	userIdAny, _ := c.Get("userid")
+	userIdStr := userIdAny.(string)
+	return userIdStr
+}

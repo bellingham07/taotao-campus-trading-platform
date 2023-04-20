@@ -61,6 +61,13 @@ func (rc *_RedisClient) HGETALL(key string) (resultMap map[string]string, err er
 	return resultMap, nil
 }
 
+func (rc *_RedisClient) HSET(key string, value any) (err error) {
+	if err = rc.Client.HSet(ctx, key, struct2map(value)).Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (rc *_RedisClient) ZADDNX(key string, members ...*redis.Z) (err error) {
 	if err = rc.Client.ZAddNX(ctx, key, members...).Err(); err != nil {
 		return nil

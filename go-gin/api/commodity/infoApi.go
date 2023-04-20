@@ -21,5 +21,5 @@ func (*InfoApi) GetInfoById(c *gin.Context) {
 	userIdAny, exist := c.Get("userid")
 	userIdStr := userIdAny.(string)
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
-	c.JSON(http.StatusOK, commodityLogic.InfoLogic.GetById(id, userId, exist))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, exist))
 }
