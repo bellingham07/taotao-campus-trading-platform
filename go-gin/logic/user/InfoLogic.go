@@ -41,7 +41,7 @@ func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
 	}
 	userStr, _ := json.Marshal(userDB)
 	key := cache.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
-	err = cache.RedisClient.Set(key, userStr, 7*24*time.Hour)
+	err = cache.RedisClient.SET(key, userStr, 7*24*time.Hour)
 	if err != nil {
 		return gin.H{
 			"code": response.FAIL,
@@ -59,7 +59,7 @@ func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	key := cache.USERINFO + strconv.FormatInt(id, 10)
-	userStr, _ := cache.RedisClient.Get(key)
+	userStr, _ := cache.RedisClient.GET(key)
 	// 内容为“nil”，代表数据库中没有
 	if userStr == "nil" {
 		return gin.H{
@@ -70,7 +70,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
 	if err != nil {
-		err := cache.RedisClient.Set(key, "nil", 5*time.Minute)
+		err := cache.RedisClient.SET(key, "nil", 5*time.Minute)
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
@@ -80,7 +80,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 			"msg":  response.ERROR,
 		}
 	}
-	_ = cache.RedisClient.Set(key, user, 5*time.Minute)
+	_ = cache.RedisClient.SET(key, user, 5*time.Minute)
 	_ = json.Unmarshal([]byte(userStr), &user)
 	return gin.H{
 		"code": response.OK,

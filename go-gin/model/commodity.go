@@ -36,3 +36,12 @@ type CommodityHistory struct {
 	CommodityId int64
 	Time        time.Time
 }
+
+type CommodityCategory struct {
+	Id       int
+	Name     string
+	CreateBy int64
+	CreateAt time.Time
+	UpdateBy int64
+	UpdateAt time.Time
+}

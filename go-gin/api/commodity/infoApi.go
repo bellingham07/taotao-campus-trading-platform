@@ -5,7 +5,6 @@ import (
 	"com.xpwk/go-gin/model/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reflect"
 	"strconv"
 )
 
@@ -15,15 +14,12 @@ type InfoApi struct {
 func (*InfoApi) GetInfoById(c *gin.Context) {
 	idStr := c.Param("id")
 	if idStr == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"code": response.FAIL, "msg": response.ERROR})
+		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": response.ERROR})
 		return
 	}
 	id, _ := strconv.ParseInt(idStr, 10, 64)
-	userIdStr, exist := c.Get("userid")
-	if !exist {
-		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, 0, exist))
-		return
-	}
-	userId := reflect.ValueOf(userIdStr).Int()
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, exist))
+	userIdAny, exist := c.Get("userid")
+	userIdStr := userIdAny.(string)
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+	c.JSON(http.StatusOK, commodityLogic.InfoLogic.GetById(id, userId, exist))
 }

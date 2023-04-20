@@ -34,7 +34,7 @@ func JWTAuthenticate() func(c *gin.Context) {
 		}
 		id := claim.Id
 		key := cache.USERLOGIN + id
-		err = cache.RedisClient.Expire(key, 7*24*time.Hour)
+		err = cache.RedisClient.EXPIRE(key, 7*24*time.Hour)
 		if err != nil {
 			log.Println(err.Error())
 			c.JSON(http.StatusOK, gin.H{
@@ -47,6 +47,6 @@ func JWTAuthenticate() func(c *gin.Context) {
 
 		// 将当前请求的userID信息保存到请求的上下文c上
 		c.Set("userid", id)
-		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
+		c.Next() // 后续的处理函数可以用过c.GET("username")来获取当前请求的用户信息
 	}
 }
