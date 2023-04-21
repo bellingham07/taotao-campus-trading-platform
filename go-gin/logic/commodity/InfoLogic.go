@@ -26,13 +26,14 @@ func (*CommodityInfoLogic) SaveCommodity() gin.H {
 func (*CommodityInfoLogic) GetById(id int64, userId int64, exist bool) gin.H {
 	var commodityInfo model.CommodityInfo
 	key := cache.COMMODITYINFO + strconv.FormatInt(id, 10)
-	commodityInfoStr, err := cache.RedisClient.HGETALL(key)
-	if commodityInfoStr["id"] == "" {
+	commodityInfoMap, err := cache.RedisClient.HGETALL(key)
+	// 数据库也没有数据，防止缓存穿透
+	if commodityInfoMap["id"] == "" {
 		_ = cache.RedisClient.HSET(key, commodityInfo)
 		_ = cache.RedisClient.EXPIRE(key, 30*time.Second)
 		return gin.H{"code": response.FAIL, "msg": "没有此商品信息"}
 	}
-	// redis没有数据
+	// redis没有数据，就从数据库里查
 	if err != nil {
 		commodityInfo, err = commodityRepository.CommodityInfo.QueryById(id)
 		// 数据无，设置空
@@ -45,15 +46,17 @@ func (*CommodityInfoLogic) GetById(id int64, userId int64, exist bool) gin.H {
 		if exist {
 			// redis取出的值不为空则说明，redis中有
 			if commodityInfo.UserId != userId {
-				HistoryLogic.UpdateHistory(id, userId)
+				go HistoryLogic.UpdateHistory(id, userId)
 			}
 		}
 		return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": commodityInfo}
 	}
 	// redis有数据
-	return nil
-}
-
-func L() {
-
+	if exist {
+		// redis取出的值不为空则说明，redis中有
+		if commodityInfo.UserId != userId {
+			go HistoryLogic.UpdateHistory(id, userId)
+		}
+	}
+	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": commodityInfoMap}
 }

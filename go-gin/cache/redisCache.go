@@ -68,6 +68,13 @@ func (rc *_RedisClient) HSET(key string, value any) (err error) {
 	return nil
 }
 
+func (rc *_RedisClient) ZADD(key string, members ...*redis.Z) (err error) {
+	if err = rc.Client.ZAdd(ctx, key, members...).Err(); err != nil {
+		return nil
+	}
+	return nil
+}
+
 func (rc *_RedisClient) ZADDNX(key string, members ...*redis.Z) (err error) {
 	if err = rc.Client.ZAddNX(ctx, key, members...).Err(); err != nil {
 		return nil
