@@ -27,4 +27,11 @@ func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 		lg.GET("/list", userApi.LocationApi.List)
 	}
 
+	cog := g.Group("/collect")
+	{
+		cog.GET("/:id")
+		cog.DELETE("/:id")
+		cog.GET("/list/:id")
+
+	}
 }

@@ -15,6 +15,7 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 	ig := g.Group("/info")
 	{
 		ig.GET("/:id", commodityApi.InfoApi.GetInfoById)
+		ig.GET("/list/:option", commodityApi.InfoApi.ListByOption)
 	}
 
 	hg := g.Group("/history")
@@ -24,14 +25,14 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 
 	cog := g.Group("/collect", middleware.JWTAuthenticate())
 	{
-		cog.PUT("/:id", commodityApi.CollectApi.Collect)
-		cog.GET("/collect", commodityApi.CollectApi.List)
+		cog.GET("/:id", commodityApi.CollectApi.Collect)
+		cog.GET("/list", commodityApi.CollectApi.List)
 		cog.DELETE("/:id", commodityApi.CollectApi.Uncollect)
 	}
 
 	cag := g.Group("/category")
 	{
-		cag.GET("/", commodityApi.CategoryApi.List)
+		cag.GET("", commodityApi.CategoryApi.List)
 	}
 
 }

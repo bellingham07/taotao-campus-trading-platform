@@ -23,3 +23,7 @@ func (*InfoApi) GetInfoById(c *gin.Context) {
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, exist))
 }
+
+func (a *InfoApi) ListByOption(c *gin.Context) {
+	option := c.Param("option")
+}
