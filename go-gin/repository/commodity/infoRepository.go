@@ -19,10 +19,20 @@ func (*CommodityInfoRepository) ListOrderByTimeViewLike() []model.CommodityInfo 
 	return nil
 }
 
-func (*CommodityInfoRepository) QueryById(id int64) (commodityInfo model.CommodityInfo, err error) {
-	commodityInfo.Id = id
-	if err := repository.GetDB().First(&commodityInfo).Error; err != nil {
-		return commodityInfo, err
+func (*CommodityInfoRepository) QueryById(id int64) (info model.CommodityInfo, err error) {
+	info.Id = id
+	if err := repository.GetDB().First(&info).Error; err != nil {
+		return info, err
 	}
-	return commodityInfo, nil
+	return info, nil
+}
+
+func (*CommodityInfoRepository) RandomListByType(option int) (infos []model.CommodityInfo) {
+	if err := repository.GetDB().Where("type", option).Find(&infos).Limit(15).Error; err != nil {
+		return nil
+	}
+	if err := repository.GetDB().Raw("select * from commodity_info where type = ? ORDER BY RAND() LIMIT 15", option); err != nil {
+		return nil
+	}
+	return infos
 }

@@ -15,10 +15,6 @@ var CommodityInfo = new(CommodityInfoLogic)
 type CommodityInfoLogic struct {
 }
 
-func (*CommodityInfoLogic) ListCategory() gin.H {
-	return nil
-}
-
 func (*CommodityInfoLogic) SaveCommodity() gin.H {
 	return nil
 }
@@ -59,4 +55,9 @@ func (*CommodityInfoLogic) GetById(id int64, userId int64, exist bool) gin.H {
 		}
 	}
 	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": commodityInfoMap}
+}
+
+func (*CommodityInfoLogic) RandomListByType(option int) gin.H {
+	infos := commodityRepository.CommodityInfo.RandomListByType(option)
+	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": infos}
 }

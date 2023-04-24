@@ -25,5 +25,7 @@ func (*InfoApi) GetInfoById(c *gin.Context) {
 }
 
 func (a *InfoApi) ListByOption(c *gin.Context) {
-	option := c.Param("option")
+	optionStr := c.Param("option")
+	option, _ := strconv.Atoi(optionStr)
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.RandomListByType(option))
 }

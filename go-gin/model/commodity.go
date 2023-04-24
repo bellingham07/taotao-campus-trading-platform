@@ -19,6 +19,7 @@ type CommodityInfo struct {
 	UpdateAt      time.Time
 	Views         int
 	Collect       int
+	Type          int
 }
 
 type CommodityCollect struct {

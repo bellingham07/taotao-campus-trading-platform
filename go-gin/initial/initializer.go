@@ -3,6 +3,7 @@ package initial
 import (
 	"com.xpwk/go-gin/cache"
 	"com.xpwk/go-gin/config"
+	ossLogic "com.xpwk/go-gin/logic/oss"
 	"com.xpwk/go-gin/repository"
 	"github.com/yitter/idgenerator-go/idgen"
 	"gopkg.in/yaml.v3"
@@ -19,8 +20,11 @@ func Initializer() {
 	if err != nil {
 		panic("配置文件解析错误：" + err.Error())
 	}
-	repository.InitMysql(_config.MysqlConfig)
-	cache.InitRedis(_config.RedisConfig)
 	var options = idgen.NewIdGeneratorOptions(20)
-	idgen.SetIdGenerator(options)
+	{
+		go repository.InitMysql(_config.MysqlConfig)
+		go cache.InitRedis(_config.RedisConfig)
+		go ossLogic.InitOSS(_config.OSSConfig)
+		go idgen.SetIdGenerator(options)
+	}
 }
