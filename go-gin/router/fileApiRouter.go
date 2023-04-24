@@ -1,7 +1,7 @@
 package router
 
 import (
-	fileApi "com.xpwk/go-gin/api/file"
+	"com.xpwk/go-gin/api"
 	"com.xpwk/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -10,5 +10,6 @@ type FileRouter struct {
 }
 
 func (*FileRouter) InitFileApiRouter(g *gin.RouterGroup) {
-	g.GET("/avatar", middleware.JWTAuthenticate(), fileApi.InfoApi.Upload)
+	fileApi := api.SystemApis.FileApi
+	g.GET("/avatar", middleware.JWTAuthenticate, middleware.FileCheck, fileApi.InfoApi.Upload)
 }

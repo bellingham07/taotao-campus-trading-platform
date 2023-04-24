@@ -11,7 +11,7 @@ type OrderRouter struct {
 
 func (*OrderRouter) InitOrderApiRouter(g *gin.RouterGroup) {
 	orderApi := new(api.OrderApi)
-	og := g.Group("/order", middleware.JWTAuthenticate())
+	og := g.Group("/order", middleware.JWTAuthenticate)
 	{
 		og.GET("/list/:id", orderApi.InfoApi.List)
 	}

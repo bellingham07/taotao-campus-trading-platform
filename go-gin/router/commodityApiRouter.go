@@ -23,7 +23,7 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 		hg.GET("/:userid", commodityApi.HistoryApi.List)
 	}
 
-	cog := g.Group("/collect", middleware.JWTAuthenticate())
+	cog := g.Group("/collect", middleware.JWTAuthenticate)
 	{
 		cog.GET("/:id", commodityApi.CollectApi.Collect)
 		cog.GET("/list", commodityApi.CollectApi.List)

@@ -5,35 +5,51 @@ import (
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"mime/multipart"
+	"path"
+	"strings"
+	"time"
 )
 
-var OSSClient OssClient
-var bucketName string
+var (
+	OSSClient       = new(OssClient)
+	bucketName      string
+	endPoint        string
+	accessKeyId     string
+	accessKeySecret string
+)
 
 type OssClient struct {
-	oss.Client
+	*oss.Client
 }
 
 func InitOSS(config config.OSSConfig) {
-	OSSClient, err := oss.New(config.EndPoint, config.AccessKeyId, config.AccessKeySecret)
+	endPoint = config.EndPoint
+	accessKeyId = config.AccessKeyId
+	accessKeySecret = config.AccessKeySecret
+	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	if err != nil {
 		panic(fmt.Sprintf("连接OSS服务失败：%s\n", err.Error()))
 	}
-	bucketName = config.BucketName
+	OSSClient.Client = client
 }
 
-func (oc *OssClient) Upload(file multipart.File, objectName string) error {
-	// 获取存储空间。
+// TODO
+func (oc *OssClient) Upload(fileHeader *multipart.FileHeader, userId string) (string, error) {
+
+	// 获取bucket
 	bucket, err := oc.Bucket(bucketName)
 	if err != nil {
-		return err
+		return "", err
 	}
+	// 分离文件名和后缀
+	filename, suffix := resolveFilename(fileHeader.Filename)
+	url := "/images/" + userId + "/" + filename + time.Now().String() + suffix
 	// 上传文件。
-	err = bucket.PutObjectFromFile(objectName, localFileName)
+	err = bucket.PutObject(bucketName, fileHeader.o)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return "https://" + bucketName + "." + endPoint + url, nil
 }
 
 func (oc *OssClient) Delete(objectName string) error {
@@ -48,4 +64,9 @@ func (oc *OssClient) Delete(objectName string) error {
 		return err
 	}
 	return nil
+}
+func resolveFilename(file string) (string, string) {
+	suffix := path.Ext(file)
+	file = strings.TrimSuffix(file, suffix)
+	return file, suffix
 }
