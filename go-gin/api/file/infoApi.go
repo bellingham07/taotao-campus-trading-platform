@@ -48,3 +48,8 @@ func (*InfoApi) UploadPics(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, fileLogic.AssetLogic.SavePics(files, userId, articleId))
 }
+
+// TODO
+func (*InfoApi) Delete(c *gin.Context) {
+
+}

@@ -16,6 +16,7 @@ func (*FileRouter) InitFileApiRouter(g *gin.RouterGroup) {
 	{
 		fg.POST("/avatar", fileApi.InfoApi.UploadAvatar)
 		fg.POST("/pics", fileApi.InfoApi.UploadPics)
+		fg.DELETE("", fileApi.InfoApi.Delete)
 	}
 
 }

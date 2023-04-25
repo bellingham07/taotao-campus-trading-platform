@@ -4,6 +4,7 @@ import (
 	"com.xpwk/go-gin/config"
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"log"
 	"math/rand"
 	"mime/multipart"
 	"path"
@@ -18,6 +19,7 @@ var (
 	endPoint        string
 	accessKeyId     string
 	accessKeySecret string
+	baseUrl         string
 )
 
 type OssClient struct {
@@ -33,6 +35,7 @@ func InitOSS(config config.OSSConfig) {
 		panic(fmt.Sprintf("连接OSS服务失败：%s\n", err.Error()))
 	}
 	OSSClient.Client = client
+	baseUrl = "https://" + bucketName + "." + endPoint + "/"
 }
 
 func (oc *OssClient) Upload(fileHeader *multipart.FileHeader, userId string) (string, string, error) {
@@ -53,20 +56,20 @@ func (oc *OssClient) Upload(fileHeader *multipart.FileHeader, userId string) (st
 	if err != nil {
 		return "", "", err
 	}
-	return "https://" + bucketName + "." + endPoint + url, filename, nil
+	return baseUrl + url, url, nil
 }
 
 func (oc *OssClient) MultiUpload(fileHeaders []*multipart.FileHeader, userId string) ([]string, []string, error) {
-	var urls, filenames []string
+	var urls, objectNames []string
 	for _, fileHeader := range fileHeaders {
-		url, filename, err := oc.Upload(fileHeader, userId)
+		url, objectName, err := oc.Upload(fileHeader, userId)
 		if err != nil {
 			return nil, nil, err
 		}
 		urls = append(urls, url)
-		filenames = append(filenames, filename)
+		objectNames = append(objectNames, objectName)
 	}
-	return urls, filenames, nil
+	return urls, objectNames, nil
 }
 
 func (oc *OssClient) Delete(objectName string) error {
@@ -80,13 +83,27 @@ func (oc *OssClient) Delete(objectName string) error {
 	if err != nil {
 		return err
 	}
+	//return nil
 	return nil
 }
 
-func generateURL(file string, belong string) string {
-	suffix := path.Ext(file)
-	filename := strings.TrimSuffix(file, suffix)
+func (oc *OssClient) MultiDelete(objectNames []string) error {
+	bucket, err := oc.Bucket(bucketName)
+	if err != nil {
+		return err
+	}
+	// 删除单个文件。
+	_, err = bucket.DeleteObjects(objectNames, oss.DeleteObjectsQuiet(true))
+	if err != nil {
+		log.Println("OSS批量删除错误：" + err.Error())
+		return err
+	}
+	return nil
+}
+
+func generateURL(filename string, belong string) string {
+	suffix := path.Ext(filename)
+	filename = strings.TrimSuffix(filename, suffix)
 	randomInt := rand.Int()
-	url := "/images/" + belong + "/" + time.Now().String() + "/" + filename + strconv.Itoa(randomInt) + suffix
-	return url
+	return "images/" + belong + "/" + filename + strconv.Itoa(randomInt) + time.Now().String() + suffix
 }

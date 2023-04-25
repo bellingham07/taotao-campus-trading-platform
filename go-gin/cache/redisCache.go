@@ -82,18 +82,19 @@ func (rc *_RedisClient) ZADDNX(key string, members ...*redis.Z) (err error) {
 	return nil
 }
 
-func (rc *_RedisClient) ZREM(key string, id string) (err error) {
-	if err = rc.Client.ZRem(ctx, key, id).Err(); err != nil {
+func (rc *_RedisClient) ZREM(key string, members ...interface{}) (err error) {
+	if err = rc.Client.ZRem(ctx, key, members).Err(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (rc *_RedisClient) ZREVRANGE(key string, start, stop int64) (result []string, err error) {
-	if result, err = rc.Client.ZRevRange(ctx, key, start, stop).Result(); err != nil {
-		return nil, err
+func (rc *_RedisClient) ZREVRANGEWITHSCORES(key string, start, stop int64) (result []redis.Z) {
+	result, err := rc.Client.ZRevRangeWithScores(ctx, key, start, stop).Result()
+	if err != nil {
+		return nil
 	}
-	return result, nil
+	return result
 }
 
 func (rc *_RedisClient) HSET1(key string, field string, value any) (err error) {
@@ -109,6 +110,14 @@ func (rc *_RedisClient) HMSET(key string, value any, expiration time.Duration) (
 		return err
 	}
 	return nil
+}
+
+func (rc *_RedisClient) ZREVRANGE(key string, start, stop int64) (result []string) {
+	result, err := rc.Client.ZRevRange(ctx, key, start, stop).Result()
+	if err != nil {
+		return nil
+	}
+	return result
 }
 
 func struct2map(value any) map[string]interface{} {

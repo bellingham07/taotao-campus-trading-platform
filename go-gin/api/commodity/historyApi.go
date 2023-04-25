@@ -9,6 +9,11 @@ type HistoryApi struct {
 }
 
 func (*HistoryApi) List(c *gin.Context) {
-	userIdStr := c.Param("userId")
+	userIdAny, _ := c.Get("userid")
+	userIdStr := userIdAny.(string)
 	commodityLogic.HistoryLogic.ListByUserId(userIdStr)
+}
+
+func (*HistoryApi) Delete(c *gin.Context) {
+
 }

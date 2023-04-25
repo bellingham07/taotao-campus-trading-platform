@@ -37,8 +37,8 @@ func (*CommodityCollectLogic) Uncollect(id, userId string) gin.H {
 
 func (*CommodityCollectLogic) List(userId string) gin.H {
 	key := cache.COMMODITYCOLLECT + userId
-	ids, err := cache.RedisClient.ZREVRANGE(key, 0, -1)
-	if err != nil {
+	ids := cache.RedisClient.ZREVRANGE(key, 0, -1)
+	if ids == nil {
 		return gin.H{"code": response.FAIL, "msg": response.ERROR}
 	}
 	var commodityInfosMap []map[string]string

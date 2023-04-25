@@ -20,10 +20,8 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 
 	hg := g.Group("/history", middleware.JWTAuthenticate)
 	{
-		hg.GET("/:userid", commodityApi.HistoryApi.List)
-		hg.GET("/:id", commodityApi.CollectApi.Collect)
-		hg.GET("/list", commodityApi.CollectApi.List)
-		hg.DELETE("/:id", commodityApi.CollectApi.Uncollect)
+		hg.GET("", commodityApi.HistoryApi.List)
+		hg.DELETE("", commodityApi.HistoryApi.Delete)
 	}
 
 	cog := g.Group("/collect", middleware.JWTAuthenticate)

@@ -59,5 +59,8 @@ func (*CommodityInfoLogic) GetById(id int64, userId int64, exist bool) gin.H {
 
 func (*CommodityInfoLogic) RandomListByType(option int) gin.H {
 	infos := commodityRepository.CommodityInfo.RandomListByType(option)
+	if infos == nil {
+		return gin.H{"code": response.FAIL, "msg": "系统繁忙，请稍后再试。"}
+	}
 	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": infos}
 }
