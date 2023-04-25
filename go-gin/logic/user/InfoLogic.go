@@ -110,7 +110,7 @@ func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
 		Name:      randNumStr,
 		LastLogin: time.Now(),
 	}
-	err = userRepository.UserInfo.InsertInfoRegister(userInfo)
+	err = userRepository.UserInfo.InsertInfoRegister(&userInfo)
 	if err != nil {
 		return gin.H{"code": response.FAIL, "msg": "帐号已存在！"}
 	}

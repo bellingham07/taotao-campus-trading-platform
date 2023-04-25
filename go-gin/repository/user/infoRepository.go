@@ -35,7 +35,7 @@ func (*UserInfoRepository) QueryById(id int64) (user model.UserInfo, err error) 
 	return user, nil
 }
 
-func (*UserInfoRepository) InsertInfoRegister(userInfo model.UserInfo) error {
+func (*UserInfoRepository) InsertInfoRegister(userInfo *model.UserInfo) error {
 	if err := repository.GetDB().Table(UserInfo.tableName()).Create(&userInfo).Error; err != nil {
 		log.Println("[GORM-WRONG] InsertInfoRegister Duplicate Key: " + err.Error())
 		return err

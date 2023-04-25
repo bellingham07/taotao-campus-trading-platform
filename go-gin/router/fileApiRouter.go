@@ -11,5 +11,11 @@ type FileRouter struct {
 
 func (*FileRouter) InitFileApiRouter(g *gin.RouterGroup) {
 	fileApi := api.SystemApis.FileApi
-	g.GET("/avatar", middleware.JWTAuthenticate, middleware.FileCheck, fileApi.InfoApi.Upload)
+
+	fg := g.Group("", middleware.JWTAuthenticate, middleware.FileCheck)
+	{
+		fg.POST("/avatar", fileApi.InfoApi.UploadAvatar)
+		fg.POST("/pics", fileApi.InfoApi.UploadPics)
+	}
+
 }

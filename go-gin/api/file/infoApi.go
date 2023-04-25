@@ -1,9 +1,8 @@
 package fileApi
 
 import (
-	ossLogic "com.xpwk/go-gin/logic/oss"
+	fileLogic "com.xpwk/go-gin/logic/file"
 	"com.xpwk/go-gin/model/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"net/http"
@@ -12,21 +11,40 @@ import (
 type InfoApi struct {
 }
 
-func (*InfoApi) Upload(c *gin.Context) {
+func (*InfoApi) UploadAvatar(c *gin.Context) {
 
 	fileHeaders, exist := c.Get("files")
 	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "文件错误！"})
+		return
 	}
 	files, ok := fileHeaders.([]*multipart.FileHeader)
 	if !ok {
 		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "文件错误！"})
+		return
 	}
 	value, _ := c.Get("userid")
 	userId := value.(string)
-	for _, file := range files {
-		url, err := ossLogic.OSSClient.Upload(file, userId)
-		fmt.Println(url, err)
+	c.JSON(http.StatusOK, fileLogic.AssetLogic.SaveAvatar(files[0], userId))
+}
 
+func (*InfoApi) UploadPics(c *gin.Context) {
+	fileHeaders, exist := c.Get("files")
+	if !exist {
+		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "文件错误！"})
+		return
 	}
+	files, ok := fileHeaders.([]*multipart.FileHeader)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "文件错误！"})
+		return
+	}
+	value, _ := c.Get("userid")
+	userId := value.(string)
+	articleId := c.PostForm("articleid")
+	if articleId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "没有指定文章！"})
+		return
+	}
+	c.JSON(http.StatusOK, fileLogic.AssetLogic.SavePics(files, userId, articleId))
 }
