@@ -1,10 +1,10 @@
 package fileLogic
 
 import (
-	ossLogic "com.xpwk/go-gin/logic/oss"
-	"com.xpwk/go-gin/model"
-	"com.xpwk/go-gin/model/response"
-	fileRepository "com.xpwk/go-gin/repository/file"
+	ossLogic "com.xpdj/go-gin/logic/oss"
+	"com.xpdj/go-gin/model"
+	"com.xpdj/go-gin/model/response"
+	fileRepository "com.xpdj/go-gin/repository/file"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"strconv"

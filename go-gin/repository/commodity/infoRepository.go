@@ -1,8 +1,8 @@
 package commodityRepository
 
 import (
-	"com.xpwk/go-gin/model"
-	"com.xpwk/go-gin/repository"
+	"com.xpdj/go-gin/model"
+	"com.xpdj/go-gin/repository"
 )
 
 var CommodityInfo = new(CommodityInfoRepository)

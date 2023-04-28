@@ -1,9 +1,8 @@
 package middleware
 
 import (
-	"com.xpwk/go-gin/cache"
-	"com.xpwk/go-gin/model/response"
-	"com.xpwk/go-gin/utils"
+	"com.xpdj/go-gin/model/response"
+	"com.xpdj/go-gin/utils"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -32,8 +31,8 @@ func JWTAuthenticate(c *gin.Context) {
 		return
 	}
 	id := claim.Id
-	key := cache.USERLOGIN + id
-	err = cache.RedisClient.EXPIRE(key, 7*24*time.Hour)
+	key := utils.USERLOGIN + id
+	err = utils.RedisUtil.EXPIRE(key, 7*24*time.Hour)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, gin.H{

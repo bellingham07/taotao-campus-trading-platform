@@ -1,7 +1,7 @@
 package userApi
 
 import (
-	userLogic "com.xpwk/go-gin/logic/user"
+	userLogic "com.xpdj/go-gin/logic/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

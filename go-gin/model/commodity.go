@@ -38,7 +38,7 @@ type CommodityHistory struct {
 	Time        time.Time
 }
 
-type CommodityCategory struct {
+type CommodityTag struct {
 	Id       int
 	Name     string
 	CreateBy int64

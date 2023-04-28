@@ -1,7 +1,7 @@
 package orderApi
 
 import (
-	orderLogic "com.xpwk/go-gin/logic/order"
+	orderLogic "com.xpdj/go-gin/logic/order"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

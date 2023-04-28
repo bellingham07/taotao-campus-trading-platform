@@ -1,12 +1,11 @@
 package userLogic
 
 import (
-	"com.xpwk/go-gin/cache"
-	"com.xpwk/go-gin/model"
-	"com.xpwk/go-gin/model/request"
-	"com.xpwk/go-gin/model/response"
-	"com.xpwk/go-gin/repository/user"
-	"com.xpwk/go-gin/utils"
+	"com.xpdj/go-gin/model"
+	"com.xpdj/go-gin/model/request"
+	"com.xpdj/go-gin/model/response"
+	userRepository "com.xpdj/go-gin/repository/user"
+	"com.xpdj/go-gin/utils"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/yitter/idgenerator-go/idgen"
@@ -40,8 +39,8 @@ func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
 		}
 	}
 	userStr, _ := json.Marshal(userDB)
-	key := cache.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
-	err = cache.RedisClient.SET(key, userStr, 7*24*time.Hour)
+	key := utils.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
+	err = utils.RedisUtil.SET(key, userStr, 7*24*time.Hour)
 	if err != nil {
 		return gin.H{
 			"code": response.FAIL,
@@ -58,8 +57,8 @@ func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
 }
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
-	key := cache.USERINFO + strconv.FormatInt(id, 10)
-	userStr, _ := cache.RedisClient.GET(key)
+	key := utils.USERINFO + strconv.FormatInt(id, 10)
+	userStr, _ := utils.RedisUtil.GET(key)
 	// 内容为“nil”，代表数据库中没有
 	if userStr == "nil" {
 		return gin.H{
@@ -70,7 +69,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
 	if err != nil {
-		err := cache.RedisClient.SET(key, "nil", 5*time.Minute)
+		err := utils.RedisUtil.SET(key, "nil", 5*time.Minute)
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
@@ -80,7 +79,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 			"msg":  response.ERROR,
 		}
 	}
-	_ = cache.RedisClient.SET(key, user, 5*time.Minute)
+	_ = utils.RedisUtil.SET(key, user, 5*time.Minute)
 	_ = json.Unmarshal([]byte(userStr), &user)
 	return gin.H{
 		"code": response.OK,

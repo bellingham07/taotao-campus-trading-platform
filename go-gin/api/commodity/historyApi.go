@@ -1,7 +1,7 @@
 package commodityApi
 
 import (
-	commodityLogic "com.xpwk/go-gin/logic/commodity"
+	commodityLogic "com.xpdj/go-gin/logic/commodity"
 	"github.com/gin-gonic/gin"
 )
 

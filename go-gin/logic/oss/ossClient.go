@@ -1,7 +1,7 @@
 package ossLogic
 
 import (
-	"com.xpwk/go-gin/config"
+	"com.xpdj/go-gin/config"
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"log"

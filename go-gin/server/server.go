@@ -1,7 +1,7 @@
 package server
 
 import (
-	"com.xpwk/go-gin/router"
+	"com.xpdj/go-gin/router"
 	"log"
 )
 

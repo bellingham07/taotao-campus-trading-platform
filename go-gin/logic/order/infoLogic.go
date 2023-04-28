@@ -1,8 +1,8 @@
 package orderLogic
 
 import (
-	"com.xpwk/go-gin/model/response"
-	orderRepository "com.xpwk/go-gin/repository/order"
+	"com.xpdj/go-gin/model/response"
+	orderRepository "com.xpdj/go-gin/repository/order"
 	"github.com/gin-gonic/gin"
 )
 

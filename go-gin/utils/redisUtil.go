@@ -1,7 +1,7 @@
-package cache
+package utils
 
 import (
-	"com.xpwk/go-gin/config"
+	"com.xpdj/go-gin/config"
 	"context"
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
@@ -10,8 +10,18 @@ import (
 )
 
 var (
-	RedisClient _RedisClient
-	ctx         = context.Background()
+	RedisUtil _RedisClient
+	ctx       = context.Background()
+)
+
+const (
+	USERLOGIN         = "user:login:"
+	USERINFO          = "user:info:"
+	USERLOCATION      = "user:location"
+	COMMODITYINFO     = "cmdty:info:"
+	COMMODITYHISOTRY  = "cmdty:history:"
+	COMMODITYCATEGORY = "cmdty:category"
+	COMMODITYCOLLECT  = "cmdty:collect:"
 )
 
 type _RedisClient struct {
@@ -19,7 +29,7 @@ type _RedisClient struct {
 }
 
 func InitRedis(config config.RedisConfig) {
-	RedisClient = _RedisClient{
+	RedisUtil = _RedisClient{
 		redis.NewClient(&redis.Options{
 			Addr:     config.Url,
 			Password: config.Password,
@@ -28,7 +38,7 @@ func InitRedis(config config.RedisConfig) {
 	}
 	//通过 *redis.Client.Ping() 来检查是否成功连接到了redis服务器
 	ctx.Value(config.Password)
-	_, err := RedisClient.Ping(ctx).Result()
+	_, err := RedisUtil.Ping(ctx).Result()
 	if err != nil {
 		panic("连接redis失败：" + err.Error())
 	}
@@ -63,6 +73,13 @@ func (rc *_RedisClient) HGETALL(key string) (resultMap map[string]string, err er
 
 func (rc *_RedisClient) HSET(key string, value any) (err error) {
 	if err = rc.Client.HSet(ctx, key, struct2map(value)).Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rc *_RedisClient) HSETBYMAP(key string, value any) (err error) {
+	if err = rc.Client.HSet(ctx, key, value).Err(); err != nil {
 		return err
 	}
 	return nil

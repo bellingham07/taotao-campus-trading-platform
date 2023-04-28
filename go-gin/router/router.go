@@ -1,7 +1,7 @@
 package router
 
 import (
-	"com.xpwk/go-gin/router/middleware"
+	"com.xpdj/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 

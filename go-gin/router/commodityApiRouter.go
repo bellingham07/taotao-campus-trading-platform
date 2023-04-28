@@ -1,8 +1,8 @@
 package router
 
 import (
-	"com.xpwk/go-gin/api"
-	"com.xpwk/go-gin/router/middleware"
+	"com.xpdj/go-gin/api"
+	"com.xpdj/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,9 +31,11 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 		cog.DELETE("/:id", commodityApi.CollectApi.Uncollect)
 	}
 
-	cag := g.Group("/category")
+	cag := g.Group("/tag")
 	{
-		cag.GET("", commodityApi.CategoryApi.List)
+		cag.GET("", commodityApi.TagApi.List)
+		cag.POST("", commodityApi.TagApi.Add)
+		cag.DELETE("/:id", commodityApi.TagApi.Remove)
 	}
 
 }

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"com.xpwk/go-gin/model/response"
+	"com.xpdj/go-gin/model/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path"

@@ -1,9 +1,9 @@
 package userApi
 
 import (
-	"com.xpwk/go-gin/logic/user"
-	"com.xpwk/go-gin/model/request"
-	"com.xpwk/go-gin/model/response"
+	userLogic "com.xpdj/go-gin/logic/user"
+	"com.xpdj/go-gin/model/request"
+	"com.xpdj/go-gin/model/response"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

@@ -1,8 +1,8 @@
 package commodityApi
 
 import (
-	commodityLogic "com.xpwk/go-gin/logic/commodity"
-	"com.xpwk/go-gin/model/response"
+	commodityLogic "com.xpdj/go-gin/logic/commodity"
+	"com.xpdj/go-gin/model/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

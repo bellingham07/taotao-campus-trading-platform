@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"com.xpwk/go-gin/config"
+	"com.xpdj/go-gin/config"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

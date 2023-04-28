@@ -1,8 +1,8 @@
 package fileApi
 
 import (
-	fileLogic "com.xpwk/go-gin/logic/file"
-	"com.xpwk/go-gin/model/response"
+	fileLogic "com.xpdj/go-gin/logic/file"
+	"com.xpdj/go-gin/model/response"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"net/http"

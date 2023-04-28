@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"com.xpwk/go-gin/model"
+	"com.xpdj/go-gin/model"
 	"github.com/golang-jwt/jwt/v4"
 	"strconv"
 	"time"

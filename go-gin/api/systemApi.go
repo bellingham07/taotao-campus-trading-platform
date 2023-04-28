@@ -1,12 +1,12 @@
 package api
 
 import (
-	articleApi "com.xpwk/go-gin/api/article"
-	commodityApi "com.xpwk/go-gin/api/commodity"
-	fileApi "com.xpwk/go-gin/api/file"
-	messageApi "com.xpwk/go-gin/api/message"
-	orderApi "com.xpwk/go-gin/api/order"
-	"com.xpwk/go-gin/api/user"
+	articleApi "com.xpdj/go-gin/api/article"
+	commodityApi "com.xpdj/go-gin/api/commodity"
+	fileApi "com.xpdj/go-gin/api/file"
+	messageApi "com.xpdj/go-gin/api/message"
+	orderApi "com.xpdj/go-gin/api/order"
+	userApi "com.xpdj/go-gin/api/user"
 )
 
 type SystemApi struct {
@@ -29,7 +29,7 @@ type UserApi struct {
 type CommodityApi struct {
 	commodityApi.InfoApi
 	commodityApi.HistoryApi
-	commodityApi.CategoryApi
+	commodityApi.TagApi
 	commodityApi.CollectApi
 }
 
