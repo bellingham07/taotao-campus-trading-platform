@@ -1,12 +1,12 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header  class="header">Header</el-header>
       <el-container>
-        <el-aside width="200px">Aside</el-aside>
+        <el-aside width="15%" class="aside">Aside</el-aside>
         <el-container>
-          <el-main>Main</el-main>
-          <el-footer>Footer</el-footer>
+          <el-main class="main">Main</el-main>
+          <el-footer class="footer">Footer</el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -20,5 +20,16 @@ export default {
 </script>
 
 <style scoped>
-
+.header{
+  background-color: lightgreen
+}
+.aside{
+  background-color: lightcoral
+}
+.main{
+  background-color: lightslategray
+}
+.footer{
+  background-color: lightseagreen
+}
 </style>
