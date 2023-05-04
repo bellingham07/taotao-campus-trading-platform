@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const SECRETKEY = "xpwk"
+const SECRETKEY = "xpdj"
 
 type Claims struct {
 	Id   string `json:"id"`

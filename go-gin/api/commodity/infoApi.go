@@ -24,8 +24,24 @@ func (*InfoApi) GetInfoById(c *gin.Context) {
 	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, exist))
 }
 
-func (a *InfoApi) ListByOption(c *gin.Context) {
+func (*InfoApi) ListByOption(c *gin.Context) {
 	optionStr := c.Param("option")
 	option, _ := strconv.Atoi(optionStr)
 	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.RandomListByType(option))
+}
+
+func (*InfoApi) SellSave(c *gin.Context) {
+
+}
+
+func (*InfoApi) SellPublish(c *gin.Context) {
+
+}
+
+func (*InfoApi) WantSave(c *gin.Context) {
+
+}
+
+func (*InfoApi) WantPublish(c *gin.Context) {
+
 }

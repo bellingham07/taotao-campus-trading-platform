@@ -5,12 +5,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type SystemRouterGroup struct {
+	UserRouter
+	CommodityRouter
+	OrderRouter
+	ArticleRouter
+	FileRouter
+	MessageRouter
+}
+
 func Routers() *gin.Engine {
 	router := gin.Default()
 
 	myRouter := new(SystemRouterGroup)
 
-	groupRegistry := router.Group("/", middleware.Cors())
+	groupRegistry := router.Group("", middleware.Cors())
 	{
 		myRouter.UserRouter.InitUserApiRouter(groupRegistry.Group("/user"))
 		myRouter.CommodityRouter.InitCommodityApiRouter(groupRegistry.Group("/cmdty"))

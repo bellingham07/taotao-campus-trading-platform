@@ -19,7 +19,7 @@ func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 	ig := g.Group("/info")
 	{
 		ig.GET("/:id", middleware.JWTAuthenticate, userApi.InfoApi.GetInfoById)
-		ig.POST("/", userApi.InfoApi.UpdateInfo)
+		ig.POST("/", middleware.JWTAuthenticate, userApi.InfoApi.UpdateInfo)
 	}
 
 	lg := g.Group("/location")

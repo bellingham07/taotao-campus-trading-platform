@@ -12,11 +12,12 @@ type CommodityRouter struct {
 func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 	commodityApi := api.SystemApis.CommodityApi
 
-	ig := g.Group("/info")
-	{
-		ig.GET("/:id", commodityApi.InfoApi.GetInfoById)
-		ig.GET("/list/:option", commodityApi.InfoApi.ListByOption)
-	}
+	g.GET("/:id", commodityApi.InfoApi.GetInfoById)
+	g.GET("/list/:option", commodityApi.InfoApi.ListByOption)
+	g.POST("/sellsave", commodityApi.InfoApi.SellSave)
+	g.POST("/sellpublish", commodityApi.InfoApi.SellPublish)
+	g.POST("/wantsave", commodityApi.InfoApi.WantSave)
+	g.POST("/wantpublish", commodityApi.InfoApi.WantPublish)
 
 	hg := g.Group("/history", middleware.JWTAuthenticate)
 	{
