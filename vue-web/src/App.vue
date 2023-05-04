@@ -1,18 +1,18 @@
 <template>
-<!--  <LoginForm/>-->
-  <MainLayout/>
+  <LoginForm/>
+<!--  <MainLayout />-->
 </template>
 
 <script>
-// import LoginForm from './components/login/LoginForm'
+import LoginForm from './components/login/LoginForm'
 import {useStore} from 'vuex'
-import MainLayout from "@/layout/MainLayout";
+// import MainLayout from "@/layout/MainLayout";
 
 export default {
   name: 'App',
   components: {
-    // LoginForm,
-    MainLayout
+    LoginForm,
+    // MainLayout
 
   },
   mounted() {
