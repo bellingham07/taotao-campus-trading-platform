@@ -1,15 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<!--  <LoginForm/>-->
+  <MainLayout/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import LoginForm from './components/login/LoginForm'
+import {useStore} from 'vuex'
+import MainLayout from "@/layout/MainLayout";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    // LoginForm,
+    MainLayout
+
+  },
+  mounted() {
+    const store = useStore()
+    console.log(store)
+    // store.dispatch('hi','')
   }
 }
 </script>
