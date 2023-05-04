@@ -11,13 +11,13 @@ var UserInfo = new(UserInfoRepository)
 type UserInfoRepository struct {
 }
 
-func (*UserInfoRepository) tableName() string {
+func user_info() string {
 	return "user_info"
 }
 
 func (*UserInfoRepository) QueryByUsername(username string) (userInfo model.UserInfo, err error) {
 	userInfo.Username = username
-	if err := repository.GetDB().Table(UserInfo.tableName()).Find(&userInfo).Error; err != nil {
+	if err := repository.GetDB().Table(user_info()).Find(&userInfo).Error; err != nil {
 		log.Println("[GORM-WRONG] QueryById NOT FOUND: " + err.Error())
 		return userInfo, err
 	}
@@ -28,7 +28,7 @@ func (*UserInfoRepository) QueryById(id int64) (user model.UserInfo, err error) 
 	user = model.UserInfo{
 		Id: id,
 	}
-	if err := repository.GetDB().Table(UserInfo.tableName()).First(&user).Error; err != nil {
+	if err := repository.GetDB().Table(user_info()).First(&user).Error; err != nil {
 		log.Println("[GORM-WRONG] QueryById NOT FOUND: " + err.Error())
 		return user, err
 	}
@@ -36,7 +36,7 @@ func (*UserInfoRepository) QueryById(id int64) (user model.UserInfo, err error) 
 }
 
 func (*UserInfoRepository) InsertInfoRegister(userInfo *model.UserInfo) error {
-	if err := repository.GetDB().Table(UserInfo.tableName()).Create(&userInfo).Error; err != nil {
+	if err := repository.GetDB().Table(user_info()).Create(&userInfo).Error; err != nil {
 		log.Println("[GORM-WRONG] InsertInfoRegister Duplicate Key: " + err.Error())
 		return err
 	}
