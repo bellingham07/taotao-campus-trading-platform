@@ -62,6 +62,10 @@ func (rc *_RedisClient) EXPIRE(key string, expiration time.Duration) (err error)
 	err = rc.Client.Expire(ctx, key, expiration).Err()
 	return
 }
+func (rc *_RedisClient) DEL(key string) (err error) {
+	err = rc.Client.Del(ctx, key).Err()
+	return
+}
 
 func (rc *_RedisClient) HGETALL(key string) (resultMap map[string]string, err error) {
 	resultMap, err = rc.Client.HGetAll(ctx, key).Result()
