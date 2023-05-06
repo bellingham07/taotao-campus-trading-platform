@@ -2,8 +2,11 @@ package userApi
 
 import (
 	userLogic "com.xpdj/go-gin/logic/user"
+	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/model/request"
 	"com.xpdj/go-gin/model/response"
+	"com.xpdj/go-gin/router/middleware"
+	"com.xpdj/go-gin/utils"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -13,41 +16,51 @@ import (
 type InfoApi struct {
 }
 
-func (*InfoApi) UserLogin(ctx *gin.Context) {
-	var loginUser request.LoginUser
-	_ = ctx.ShouldBind(&loginUser)
+func (*InfoApi) UserLogin(c *gin.Context) {
+	var loginUser = new(request.LoginUser)
+	_ = c.ShouldBind(loginUser)
 
 	// TODO
 	//if err != nil || loginUser.ValidCode == "" {
-	//	ctx.JSON(http.StatusBadRequest, gin.H{
+	//	c.JSON(http.StatusBadRequest, gin.H{
 	//		"code": response.FAIL,
 	//		"msg":  "请输入正确验证码",
 	//	})
 	//	return
 	//}
-
-	ctx.JSON(http.StatusOK, userLogic.UserInfo.Login(loginUser))
+	c.JSON(http.StatusOK, userLogic.UserInfo.Login(loginUser))
 }
 
-func (*InfoApi) Logout(ctx *gin.Context) {
-	// TODO
+func (*InfoApi) Logout(c *gin.Context) {
+	userId := middleware.GetUserIdStr(c)
+	key := utils.USERLOGIN + userId
+	_ = utils.RedisUtil.DEL(key)
+	c.JSON(http.StatusOK, response.GenH(response.OK, "期待下一次遇见！😊"))
+
 }
 
 func (*InfoApi) GetInfoById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": response.FAIL,
-			"msg":  "请求错误",
-		})
+		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
 		return
 	}
 	c.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
 }
 
 func (*InfoApi) UpdateInfo(c *gin.Context) {
-	//TODO
+	info := new(model.UserInfo)
+	if err := c.ShouldBind(info); err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
+		return
+	}
+	userId := middleware.GetUserId(c)
+	info.Id = userId
+	log.Printf("%+v\n", info)
+
+	c.JSON(http.StatusOK, userLogic.UserInfo.UpdateInfo(info))
 }
 
 func (*InfoApi) Register(c *gin.Context) {
@@ -56,7 +69,7 @@ func (*InfoApi) Register(c *gin.Context) {
 	err := c.ShouldBind(registerUser)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": "请求错误！"})
+		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
 		return
 	}
 	c.JSON(http.StatusOK, userLogic.UserInfo.Register(registerUser))

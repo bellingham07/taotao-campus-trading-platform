@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -20,7 +21,7 @@ func JWTAuthenticate(c *gin.Context) {
 	}
 	claim, err := utils.ParseToken(authHeader)
 	if err != nil {
-		c.JSON(http.StatusOK, response.GenH(response.FAIL, "身份认证错误，请重新登录!"))
+		c.JSON(http.StatusOK, response.GenH(response.FAIL, "身份认证错误或过期，请重新登录!"))
 		c.Abort()
 		return
 	}
@@ -42,4 +43,11 @@ func GetUserIdStr(c *gin.Context) string {
 	userIdAny, _ := c.Get("userid")
 	userIdStr := userIdAny.(string)
 	return userIdStr
+}
+
+func GetUserId(c *gin.Context) int64 {
+	userIdAny, _ := c.Get("userid")
+	userIdStr := userIdAny.(string)
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+	return userId
 }

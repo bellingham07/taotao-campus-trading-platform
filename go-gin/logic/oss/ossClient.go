@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"log"
-	"math/rand"
 	"mime/multipart"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -30,6 +28,7 @@ func InitOSS(config config.OSSConfig) {
 	endPoint = config.EndPoint
 	accessKeyId = config.AccessKeyId
 	accessKeySecret = config.AccessKeySecret
+	bucketName = config.BucketName
 	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	if err != nil {
 		panic(fmt.Sprintf("连接OSS服务失败：%s\n", err.Error()))
@@ -52,7 +51,7 @@ func (oc *OssClient) Upload(fileHeader *multipart.FileHeader, userId string) (st
 	if err != nil {
 		return "", "", err
 	}
-	err = bucket.PutObject(bucketName, file)
+	err = bucket.PutObject(url, file)
 	if err != nil {
 		return "", "", err
 	}
@@ -72,38 +71,26 @@ func (oc *OssClient) MultiUpload(fileHeaders []*multipart.FileHeader, userId str
 	return urls, objectNames, nil
 }
 
-func (oc *OssClient) Delete(objectName string) error {
+func (oc *OssClient) Delete(objectName string) {
 	// 获取存储空间。
-	bucket, err := oc.Bucket(bucketName)
-	if err != nil {
-		return err
-	}
+	bucket, _ := oc.Bucket(bucketName)
 	// 删除文件。
-	err = bucket.DeleteObject(objectName)
-	if err != nil {
-		return err
+	// objectName表示删除OSS文件时需要指定包含文件后缀，不包含Bucket名称在内的完整路径，例如exampledir/exampleobject.txt。
+	// 如需删除文件夹，请将objectName设置为对应的文件夹名称。如果文件夹非空，则需要将文件夹下的所有object删除后才能删除该文件夹。
+	if err := bucket.DeleteObject(objectName); err != nil {
+		log.Println("Delete 文件删除失败（OSS）" + err.Error())
 	}
-	//return nil
-	return nil
 }
 
-func (oc *OssClient) MultiDelete(objectNames []string) error {
-	bucket, err := oc.Bucket(bucketName)
-	if err != nil {
-		return err
+func (oc *OssClient) MultiDelete(objectNames []string) {
+	bucket, _ := oc.Bucket(bucketName)
+	if _, err := bucket.DeleteObjects(objectNames, oss.DeleteObjectsQuiet(true)); err != nil {
+		log.Println("MultiDelete 文件批量删除失败（OSS）" + err.Error())
 	}
-	// 删除单个文件。
-	_, err = bucket.DeleteObjects(objectNames, oss.DeleteObjectsQuiet(true))
-	if err != nil {
-		log.Println("OSS批量删除错误：" + err.Error())
-		return err
-	}
-	return nil
 }
 
 func generateURL(filename string, belong string) string {
 	suffix := path.Ext(filename)
 	filename = strings.TrimSuffix(filename, suffix)
-	randomInt := rand.Int()
-	return "images/" + belong + "/" + filename + strconv.Itoa(randomInt) + time.Now().String() + suffix
+	return "images/" + belong + "/" + time.Now().String() + "/" + filename + time.Now().String() + suffix
 }

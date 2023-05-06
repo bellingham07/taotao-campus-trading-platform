@@ -23,7 +23,7 @@ var (
 type UserInfoLogic struct {
 }
 
-func (*UserInfoLogic) Login(loginUser request.LoginUser) gin.H {
+func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 	username := loginUser.Username
 	userDB, err := userRepository.UserInfo.QueryByUsername(username)
 	err2 := bcrypt.CompareHashAndPassword([]byte(userDB.Password), []byte(loginUser.Password))
@@ -58,7 +58,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 		return response.GenH(response.FAIL, response.ERROR)
 	}
 	_ = utils.RedisUtil.SET(key, user, 5*time.Minute)
-	_ = json.Unmarshal([]byte(userStr), &user)
+	_ = json.Unmarshal([]byte(userStr), user)
 	return response.GenH(response.FAIL, response.SUCCESS, user)
 }
 
@@ -87,4 +87,11 @@ func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
 		return response.GenH(response.FAIL, "帐号已存在！")
 	}
 	return response.GenH(response.OK, "恭喜你，注册成功。😊")
+}
+
+func (*UserInfoLogic) UpdateInfo(info *model.UserInfo) gin.H {
+	if err := userRepository.UserInfo.UpdateInfo(info); err != nil {
+		return response.GenH(response.FAIL, "更新失败！")
+	}
+	return response.GenH(response.OK, "更新成功！")
 }

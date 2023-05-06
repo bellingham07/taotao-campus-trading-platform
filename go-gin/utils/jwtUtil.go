@@ -16,13 +16,14 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(user model.UserInfo) (string, error) {
+func GenerateToken(user *model.UserInfo) (string, error) {
 	claim := &Claims{
 		Id:   strconv.FormatInt(user.Id, 10),
 		Name: user.Name,
 		//Avatar: user.Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt: jwt.NewNumericDate(time.Now()),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
 		},
 	}
 	// 使用指定的签名方法和声明创建一个新token
