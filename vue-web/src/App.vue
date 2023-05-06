@@ -1,19 +1,15 @@
 <template>
-  <LoginForm/>
-<!--  <MainLayout />-->
+  <keep-alive>
+    <router-view></router-view>
+  </keep-alive>
 </template>
 
 <script>
-import LoginForm from './components/login/LoginForm'
 import {useStore} from 'vuex'
-// import MainLayout from "@/layout/MainLayout";
 
 export default {
   name: 'App',
   components: {
-    LoginForm,
-    // MainLayout
-
   },
   mounted() {
     const store = useStore()
