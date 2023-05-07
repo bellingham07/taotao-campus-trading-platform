@@ -14,10 +14,14 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 
 	g.GET("/:id", commodityApi.InfoApi.GetInfoById)
 	g.GET("/list/:option", commodityApi.InfoApi.ListByOption)
-	g.POST("/sellsave", commodityApi.InfoApi.SellSave)
-	g.POST("/sellpublish", commodityApi.InfoApi.SellPublish)
-	g.POST("/wantsave", commodityApi.InfoApi.WantSave)
-	g.POST("/wantpublish", commodityApi.InfoApi.WantPublish)
+
+	ig := g.Group("", middleware.JWTAuthenticate)
+	{
+		ig.POST("/sellsave", commodityApi.InfoApi.SellSave)
+		ig.POST("/sellpublish", commodityApi.InfoApi.SellPublish)
+		ig.POST("/wantsave", commodityApi.InfoApi.WantSave)
+		ig.POST("/wantpublish", commodityApi.InfoApi.WantPublish)
+	}
 
 	hg := g.Group("/history", middleware.JWTAuthenticate)
 	{

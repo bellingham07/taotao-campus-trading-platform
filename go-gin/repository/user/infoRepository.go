@@ -47,7 +47,7 @@ func (*UserInfoRepository) InsertInfoRegister(userInfo *model.UserInfo) error {
 
 func (*UserInfoRepository) UpdateInfo(info *model.UserInfo) error {
 	if err := repository.GetDB().Table(user_info()).Updates(info).Error; err != nil {
-		log.Println("[GORM-WRONG] UserInfo UpdateInfo Update Fail: " + err.Error())
+		log.Println("[GORM-WRONG] UserInfo Update Update Fail: " + err.Error())
 		return err
 	}
 	return nil
