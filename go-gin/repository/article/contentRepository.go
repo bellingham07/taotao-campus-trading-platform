@@ -21,6 +21,13 @@ func (*ArticleContentRepository) Insert(content *model.ArticleContent) error {
 	return nil
 }
 
+func (*ArticleContentRepository) Update(content *model.ArticleContent) error {
+	if err := repository.GetDB().Table(article_content()).Updates(content).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (*ArticleContentRepository) QueryById(id int64) (info model.CommodityInfo, err error) {
 	info.Id = id
 	if err := repository.GetDB().Table(article_content()).First(&info).Error; err != nil {

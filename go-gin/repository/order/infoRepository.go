@@ -20,3 +20,13 @@ func (*OrderInfoRepository) ListByUserIdOrderByStatusDoneCreate(userId int64) (o
 	}
 	return orderInfos
 }
+
+func (*OrderInfoRepository) QueryById(id int64) *model.OrderInfo {
+	info := &model.OrderInfo{
+		Id: id,
+	}
+	if err := repository.GetDB().Table(order_info()).First(info); err != nil {
+		return nil
+	}
+	return info
+}

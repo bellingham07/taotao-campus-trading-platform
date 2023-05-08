@@ -14,7 +14,17 @@ type OrderInfoLogic struct {
 func (*OrderInfoLogic) ListByUserId(userId int64) gin.H {
 	orders := orderRepository.InfoRepository.ListByUserIdOrderByStatusDoneCreate(userId)
 	if orders == nil {
-		return gin.H{"code": response.FAIL, "msg": response.ERROR}
+		return response.GenH(response.FAIL, response.ERROR)
 	}
-	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": orders}
+	return response.GenH(response.OK, response.SUCCESS, orders)
+}
+
+func (*OrderInfoLogic) GetById(id int64) interface{} {
+	//key := utils.ORDERINFO + strconv.FormatInt(id, 10)
+	//utils.RedisUtil.HGETALL()
+	info := orderRepository.InfoRepository.QueryById(id)
+	if info == nil {
+		return response.GenH(response.FAIL, response.ERROR)
+	}
+	return response.GenH(response.OK, response.SUCCESS, info)
 }

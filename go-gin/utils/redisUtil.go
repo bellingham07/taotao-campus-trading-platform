@@ -22,6 +22,7 @@ const (
 	COMMODITYHISOTRY  = "cmdty:history:"
 	COMMODITYCATEGORY = "cmdty:category"
 	COMMODITYCOLLECT  = "cmdty:collect:"
+	ORDERINFO         = "order:info:"
 )
 
 type _RedisClient struct {

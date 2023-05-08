@@ -39,13 +39,13 @@ func (il *CommodityInfoLogic) UpdateInfoAndArticle(draftDto *request.CommodityAr
 func (il *CommodityInfoLogic) SaveOrPublishInfoAndArticle(draftDto *request.CommodityArticleDraft, userId int64, cmdtyType int64, isPublish bool) interface{} {
 	now := time.Now()
 	infoDraft, articleContent := il.copyDraftAttribute(draftDto)
+	infoDraft.CreateAt = now
+	infoDraft.UserId = userId
+	infoDraft.Type = cmdtyType
+	articleContent.UserId = userId
+	articleContent.CreateAt = now
 	// 保存草稿
 	if !isPublish {
-		infoDraft.UserId = userId
-		infoDraft.CreateAt = now
-		infoDraft.Type = cmdtyType
-		articleContent.UserId = userId
-		articleContent.CreateAt = now
 		if err := il.create2(infoDraft, articleContent); err != nil {
 			return response.GenH(response.FAIL, "操作失败，请重试！")
 		}
@@ -55,7 +55,7 @@ func (il *CommodityInfoLogic) SaveOrPublishInfoAndArticle(draftDto *request.Comm
 	infoDraft.Status = 2
 	infoDraft.PublishAt = now
 	if err := il.create2(infoDraft, articleContent); err != nil {
-		return response.GenH(response.FAIL, "操作失败，请重试！")
+		return response.GenH(response.FAIL, "操作失败，请重试！", gin.H{"id": draftDto.Id, "articleId": articleContent.Id})
 	}
 	return response.GenH(response.OK, response.SUCCESS)
 }

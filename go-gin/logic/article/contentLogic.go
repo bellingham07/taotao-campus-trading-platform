@@ -38,14 +38,14 @@ func (cl *ArticleContentLogic) SavaOrPublish(contentDraft *model.ArticleContent,
 func (cl *ArticleContentLogic) Update(content *model.ArticleContent, isPublish bool) gin.H {
 	articleContent := cl.copyDraftAttribute(content)
 	if !isPublish {
-		err := articleRepository.ContentRepository.Insert(articleContent)
+		err := articleRepository.ContentRepository.Update(articleContent)
 		if err != nil {
 			return response.GenH(response.FAIL, "操作失败，请重试！")
 		}
 		return response.GenH(response.OK, response.SUCCESS)
 	}
 	articleContent.Status = 2
-	err := articleRepository.ContentRepository.Insert(articleContent)
+	err := articleRepository.ContentRepository.Update(articleContent)
 	if err != nil {
 		return response.GenH(response.FAIL, "操作失败，请重试！")
 	}
