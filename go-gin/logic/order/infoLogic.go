@@ -1,6 +1,7 @@
 package orderLogic
 
 import (
+	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/model/response"
 	orderRepository "com.xpdj/go-gin/repository/order"
 	"github.com/gin-gonic/gin"
@@ -27,4 +28,12 @@ func (*OrderInfoLogic) GetById(id int64) interface{} {
 		return response.GenH(response.FAIL, response.ERROR)
 	}
 	return response.GenH(response.OK, response.SUCCESS, info)
+}
+
+func (*OrderInfoLogic) SaveOrder(orderDto *model.OrderInfo) interface{} {
+	err := orderRepository.InfoRepository.Insert(orderDto)
+	if err == nil {
+		return response.GenH(response.FAIL, "订单创建失败！😢请重试。")
+	}
+	return response.GenH(response.OK, response.SUCCESS)
 }

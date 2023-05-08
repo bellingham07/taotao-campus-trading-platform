@@ -34,5 +34,5 @@ func (*TagApi) Remove(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, response.ERROR))
 	}
-	c.JSON(http.StatusOK, commodityLogic.CategoryLogic.RemoveById(int(id)))
+	c.JSON(http.StatusOK, commodityLogic.CategoryLogic.RemoveById(int64(id)))
 }

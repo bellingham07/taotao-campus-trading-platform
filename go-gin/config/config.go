@@ -1,9 +1,10 @@
 package config
 
 type Config struct {
-	MysqlConfig `yaml:"mysql"`
-	RedisConfig `yaml:"redis"`
-	OSSConfig   `yaml:"oss"`
+	*MysqlConfig    `yaml:"mysql"`
+	*RedisConfig    `yaml:"redis"`
+	*OSSConfig      `yaml:"oss"`
+	*RabbitMQConfig `yaml:"rabbitmq"`
 }
 
 type MysqlConfig struct {
@@ -24,4 +25,10 @@ type OSSConfig struct {
 	AccessKeySecret string `yaml:"accessKeySecret"`
 	EndPoint        string `yaml:"endPoint"`
 	BucketName      string `yaml:"bucketName"`
+}
+
+type RabbitMQConfig struct {
+	Url      string `yaml:"url"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }

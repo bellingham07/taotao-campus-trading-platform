@@ -3,6 +3,7 @@ package middleware
 import (
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -26,8 +27,8 @@ func JWTAuthenticate(c *gin.Context) {
 		return
 	}
 	id := claim.Id
-	key := utils.USERLOGIN + id
-	err = utils.RedisUtil.EXPIRE(key, 7*24*time.Hour)
+	key := cache.USERLOGIN + id
+	err = cache.RedisUtil.EXPIRE(key, 7*24*time.Hour)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, response.GenH(response.FAIL, "身份信息过期,请重新登录!"))
@@ -36,6 +37,7 @@ func JWTAuthenticate(c *gin.Context) {
 	}
 	// 将当前请求的userID信息保存到请求的上下文c上
 	c.Set("userid", id)
+	c.Set("name", claim.Name)
 	c.Next() // 后续的处理函数可以用过c.GET("username")来获取当前请求的用户信息
 }
 
@@ -50,4 +52,13 @@ func GetUserId(c *gin.Context) int64 {
 	userIdStr := userIdAny.(string)
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	return userId
+}
+
+func GetUserIdAndName(c *gin.Context) (int64, string) {
+	userIdAny, _ := c.Get("userid")
+	userIdStr := userIdAny.(string)
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+	name, _ := c.Get("name")
+	nameStr := name.(string)
+	return userId, nameStr
 }

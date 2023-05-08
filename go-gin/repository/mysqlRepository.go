@@ -10,7 +10,7 @@ import (
 
 var db *gorm.DB
 
-func InitMysql(config config.MysqlConfig) {
+func InitMysql(config *config.MysqlConfig) {
 	username := config.Username //账号
 	password := config.Password //密码
 	url := config.Url           //数据库地址

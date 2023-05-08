@@ -1,7 +1,10 @@
 package request
 
 type OrderMake struct {
-	CommodityId int64   `json:"commodityId"`
-	Quantity    float64 `json:"quantity"`
-	Location    string  `json:"location"`
+	SellerId      int64   `json:"sellerId"`
+	SellerName    string  `json:"sellerName"`
+	CommodityId   int64   `json:"commodityId"`
+	CommodityName string  `json:"commodityName"`
+	Location      string  `json:"location"`
+	Payment       float64 `json:"payment"`
 }

@@ -6,7 +6,7 @@ import (
 	"com.xpdj/go-gin/model/request"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/router/middleware"
-	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -33,8 +33,8 @@ func (*InfoApi) UserLogin(c *gin.Context) {
 
 func (*InfoApi) Logout(c *gin.Context) {
 	userId := middleware.GetUserIdStr(c)
-	key := utils.USERLOGIN + userId
-	_ = utils.RedisUtil.DEL(key)
+	key := cache.USERLOGIN + userId
+	_ = cache.RedisUtil.DEL(key)
 	c.JSON(http.StatusOK, response.GenH(response.OK, "期待下一次遇见！😊"))
 
 }

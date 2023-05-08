@@ -24,7 +24,7 @@ type OssClient struct {
 	*oss.Client
 }
 
-func InitOSS(config config.OSSConfig) {
+func InitOSS(config *config.OSSConfig) {
 	endPoint = config.EndPoint
 	accessKeyId = config.AccessKeyId
 	accessKeySecret = config.AccessKeySecret

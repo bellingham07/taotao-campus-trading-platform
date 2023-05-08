@@ -31,7 +31,7 @@ func (*CommodityTagRepository) Insert(tag *model.CommodityTag) error {
 	return nil
 }
 
-func (*CommodityTagRepository) DeleteById(id int) error {
+func (*CommodityTagRepository) DeleteById(id int64) error {
 	var category = model.CommodityTag{Id: id}
 	if err := repository.GetDB().Table(commodity_tag()).Delete(&category).Error; err != nil {
 		return err

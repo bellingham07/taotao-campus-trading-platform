@@ -4,7 +4,8 @@ import (
 	"com.xpdj/go-gin/config"
 	ossLogic "com.xpdj/go-gin/logic/oss"
 	"com.xpdj/go-gin/repository"
-	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
+	"com.xpdj/go-gin/utils/mq"
 	"github.com/yitter/idgenerator-go/idgen"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -15,16 +16,17 @@ func Initializer() {
 	if err != nil {
 		panic("配置文件读取错误：" + err.Error())
 	}
-	var _config config.Config
-	err = yaml.Unmarshal(yamlFile, &_config)
+	_config := &config.Config{}
+	err = yaml.Unmarshal(yamlFile, _config)
 	if err != nil {
 		panic("配置文件解析错误：" + err.Error())
 	}
 	var options = idgen.NewIdGeneratorOptions(20)
 	{
 		go repository.InitMysql(_config.MysqlConfig)
-		go utils.InitRedis(_config.RedisConfig)
+		go cache.InitRedis(_config.RedisConfig)
 		go ossLogic.InitOSS(_config.OSSConfig)
+		go mq.InitRabbitMQ(_config.RabbitMQConfig)
 		go idgen.SetIdGenerator(options)
 	}
 }

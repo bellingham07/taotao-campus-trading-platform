@@ -14,7 +14,7 @@ func (*OrderRouter) InitOrderApiRouter(g *gin.RouterGroup) {
 	og := g.Group("/order", middleware.JWTAuthenticate)
 	{
 		og.GET("/:id", orderApi.InfoApi.GetById)
-		og.GET("/list", orderApi.InfoApi.List)
-		og.POST("", orderApi.InfoApi.Buy)
+		og.GET("/list/", orderApi.InfoApi.List)
+		og.POST("/make", orderApi.InfoApi.Buy)
 	}
 }

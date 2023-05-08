@@ -2,7 +2,7 @@ package commodityLogic
 
 import (
 	"com.xpdj/go-gin/model/response"
-	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"log"
@@ -16,8 +16,8 @@ type CommodityHistoryLogic struct {
 }
 
 func (*CommodityHistoryLogic) ListByUserId(userId string) gin.H {
-	key := utils.COMMODITYHISOTRY + userId
-	zs := utils.RedisUtil.ZREVRANGEWITHSCORES(key, 0, -1)
+	key := cache.COMMODITYHISOTRY + userId
+	zs := cache.RedisUtil.ZREVRANGEWITHSCORES(key, 0, -1)
 	if zs == nil {
 		return gin.H{"code": response.FAIL, "msg": "你还没有浏览过商品，快去看看有什么好物吧！😊"}
 	}
@@ -35,7 +35,7 @@ func (*CommodityHistoryLogic) ListByUserId(userId string) gin.H {
 				for _, z := range zs[index:] {
 					ids = append(ids, z.Member)
 				}
-				if err := utils.RedisUtil.ZREM(key, ids); err != nil {
+				if err := cache.RedisUtil.ZREM(key, ids); err != nil {
 					log.Printf("删除redis足迹出错，userId：%s\n", userId)
 				}
 			}()
@@ -45,20 +45,20 @@ func (*CommodityHistoryLogic) ListByUserId(userId string) gin.H {
 	var infos []map[string]string
 	for _, z := range zqualified {
 		id := z.Member.(string)
-		key := utils.COMMODITYINFO + id
-		info, _ := utils.RedisUtil.HGETALL(key)
+		key := cache.COMMODITYINFO + id
+		info, _ := cache.RedisUtil.HGETALL(key)
 		infos = append(infos, info)
 	}
 	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": infos}
 }
 
 func (*CommodityHistoryLogic) UpdateHistory(id int64, userId int64) {
-	key := utils.COMMODITYHISOTRY + strconv.FormatInt(userId, 10)
+	key := cache.COMMODITYHISOTRY + strconv.FormatInt(userId, 10)
 	member := redis.Z{
 		Score:  float64(time.Now().Unix()),
 		Member: id,
 	}
-	if err := utils.RedisUtil.ZADD(key, &member); err != nil {
+	if err := cache.RedisUtil.ZADD(key, &member); err != nil {
 		log.Printf("更新redis足迹失败，userId：%d\n", userId)
 	}
 }

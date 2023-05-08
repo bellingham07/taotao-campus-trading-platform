@@ -6,6 +6,7 @@ import (
 	"com.xpdj/go-gin/model/response"
 	userRepository "com.xpdj/go-gin/repository/user"
 	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/yitter/idgenerator-go/idgen"
@@ -31,8 +32,8 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 		return response.GenH(response.FAIL, "账号或密码错误！")
 	}
 	userStr, _ := json.Marshal(userDB)
-	key := utils.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
-	err = utils.RedisUtil.SET(key, userStr, 7*24*time.Hour)
+	key := cache.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
+	err = cache.RedisUtil.SET(key, userStr, 7*24*time.Hour)
 	if err != nil {
 		return response.GenH(response.FAIL, "服务器繁忙，请稍后")
 	}
@@ -42,8 +43,8 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 }
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
-	key := utils.USERINFO + strconv.FormatInt(id, 10)
-	userStr, _ := utils.RedisUtil.GET(key)
+	key := cache.USERINFO + strconv.FormatInt(id, 10)
+	userStr, _ := cache.RedisUtil.GET(key)
 	// 内容为“”，代表数据库中没有
 	if userStr == "" {
 		return response.GenH(response.FAIL, "非法参数")
@@ -51,13 +52,13 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
 	if err != nil {
-		err := utils.RedisUtil.SET(key, "", 5*time.Minute)
+		err := cache.RedisUtil.SET(key, "", 5*time.Minute)
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
 		return response.GenH(response.FAIL, response.ERROR)
 	}
-	_ = utils.RedisUtil.SET(key, user, 5*time.Minute)
+	_ = cache.RedisUtil.SET(key, user, 5*time.Minute)
 	_ = json.Unmarshal([]byte(userStr), user)
 	return response.GenH(response.FAIL, response.SUCCESS, user)
 }

@@ -1,4 +1,4 @@
-package utils
+package cache
 
 import (
 	"com.xpdj/go-gin/config"
@@ -29,7 +29,7 @@ type _RedisClient struct {
 	*redis.Client
 }
 
-func InitRedis(config config.RedisConfig) {
+func InitRedis(config *config.RedisConfig) {
 	RedisUtil = _RedisClient{
 		redis.NewClient(&redis.Options{
 			Addr:     config.Url,
@@ -78,6 +78,13 @@ func (rc *_RedisClient) HGETALL(key string) (resultMap map[string]string, err er
 
 func (rc *_RedisClient) HSET(key string, value any) (err error) {
 	if err = rc.Client.HSet(ctx, key, struct2map(value)).Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rc *_RedisClient) HSETNX(key string, field string, value any) (err error) {
+	if err = rc.Client.HSetNX(ctx, key, field, value).Err(); err != nil {
 		return err
 	}
 	return nil

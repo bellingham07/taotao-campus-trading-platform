@@ -4,7 +4,7 @@ import (
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/model/response"
 	commodityRepository "com.xpdj/go-gin/repository/commodity"
-	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/cache"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -16,7 +16,7 @@ type CommodityCategoryLogic struct {
 }
 
 func (*CommodityCategoryLogic) List() gin.H {
-	tagStr, err := utils.RedisUtil.GET(utils.COMMODITYCATEGORY)
+	tagStr, err := cache.RedisUtil.GET(cache.COMMODITYCATEGORY)
 	if err == nil {
 		return response.GenH(response.OK, response.SUCCESS, tagStr)
 	}
@@ -37,14 +37,14 @@ func (*CommodityCategoryLogic) Add(tag *model.CommodityTag) gin.H {
 	if tags == nil {
 		return response.GenH(response.FAIL, response.ERROR)
 	}
-	err = utils.RedisUtil.SET(utils.COMMODITYCATEGORY, tags, 0)
+	err = cache.RedisUtil.SET(cache.COMMODITYCATEGORY, tags, 0)
 	if err != nil {
 		log.Println("RemoveById 商品tag更新至redis出错！" + err.Error())
 	}
 	return response.GenH(response.OK, response.SUCCESS, tags)
 }
 
-func (*CommodityCategoryLogic) RemoveById(id int) gin.H {
+func (*CommodityCategoryLogic) RemoveById(id int64) gin.H {
 	err := commodityRepository.TagRepository.DeleteById(id)
 	if err != nil {
 		return response.GenH(response.FAIL, "删除出错，请重试。")
@@ -53,7 +53,7 @@ func (*CommodityCategoryLogic) RemoveById(id int) gin.H {
 	if tags == nil {
 		return response.GenH(response.FAIL, response.ERROR)
 	}
-	err = utils.RedisUtil.SET(utils.COMMODITYCATEGORY, tags, 0)
+	err = cache.RedisUtil.SET(cache.COMMODITYCATEGORY, tags, 0)
 	if err != nil {
 		log.Println("RemoveById 商品tag更新至redis出错！" + err.Error())
 	}

@@ -30,3 +30,10 @@ func (*OrderInfoRepository) QueryById(id int64) *model.OrderInfo {
 	}
 	return info
 }
+
+func (*OrderInfoRepository) Insert(info *model.OrderInfo) interface{} {
+	if err := repository.GetDB().Table(order_info()).Create(info); err != nil {
+		return err
+	}
+	return nil
+}

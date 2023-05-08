@@ -10,7 +10,8 @@ type OrderInfo struct {
 	BuyerName     string
 	CommodityId   int64
 	CommodityName string
-	Quantity      int
+	Payment       float64
+	Location      string
 	Status        int8
 	CreateAt      time.Time
 	DoneAt        time.Time
