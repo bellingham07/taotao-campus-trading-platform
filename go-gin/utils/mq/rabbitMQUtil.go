@@ -14,6 +14,7 @@ func InitRabbitMQ(config *config.RabbitMQConfig) {
 	username := config.Username
 	password := config.Password
 	MQURL = "amqp://" + username + ":" + password + "@" + url
+	initConsumers()
 }
 
 // RabbitMQ rabbitMQ结构体
@@ -88,3 +89,9 @@ func (r *RabbitMQ) failOnErr(err error, message string) {
 		panic(fmt.Sprintf("%s:%s", message, err))
 	}
 }
+
+const (
+	USERCOLLECTQUEUE      = "taotao_delay_user_collect"
+	COMMODITYCOLLECTQUEUE = "taotao_delay_commodity_collect"
+	LIKEQUEUE             = "taotao_delay_like"
+)
