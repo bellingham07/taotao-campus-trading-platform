@@ -15,6 +15,10 @@ func (*OrderRouter) InitOrderApiRouter(g *gin.RouterGroup) {
 	{
 		og.GET("/:id", orderApi.InfoApi.GetById)
 		og.GET("/list/", orderApi.InfoApi.List)
-		og.POST("/make", orderApi.InfoApi.Buy)
+		og.POST("/buy", orderApi.InfoApi.Buy)
+		og.POST("/sell", orderApi.InfoApi.Sell)
+		og.PUT("/cancel", orderApi.InfoApi.Cancel)
+		og.PUT("/sell/:id", orderApi.InfoApi.SellConfirm)
+		og.PUT("/:id/:gb", orderApi.InfoApi.Done)
 	}
 }

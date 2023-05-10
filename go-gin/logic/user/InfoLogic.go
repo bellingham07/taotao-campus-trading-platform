@@ -29,17 +29,17 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 	userDB, err := userRepository.UserInfo.QueryByUsername(username)
 	err2 := bcrypt.CompareHashAndPassword([]byte(userDB.Password), []byte(loginUser.Password))
 	if err != nil || err2 != nil {
-		return response.GenH(response.FAIL, "账号或密码错误！")
+		return response.ErrorMsg("账号或密码错误！")
 	}
 	userStr, _ := json.Marshal(userDB)
 	key := cache.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
 	err = cache.RedisUtil.SET(key, userStr, 7*24*time.Hour)
 	if err != nil {
-		return response.GenH(response.FAIL, "服务器繁忙，请稍后")
+		return response.ErrorMsg("服务器繁忙，请稍后")
 	}
 	token, _ := utils.GenerateToken(userDB)
 	log.Println(token)
-	return response.GenH(response.OK, "登录成功😊", token)
+	return response.OkMsgData("登录成功😊", token)
 }
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
@@ -47,7 +47,7 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	userStr, _ := cache.RedisUtil.GET(key)
 	// 内容为“”，代表数据库中没有
 	if userStr == "" {
-		return response.GenH(response.FAIL, "非法参数")
+		return response.ErrorMsg("非法参数")
 	}
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
@@ -56,22 +56,22 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
-		return response.GenH(response.FAIL, response.ERROR)
+		return response.Error()
 	}
 	_ = cache.RedisUtil.SET(key, user, 5*time.Minute)
 	_ = json.Unmarshal([]byte(userStr), user)
-	return response.GenH(response.FAIL, response.SUCCESS, user)
+	return response.OkData(user)
 }
 
 func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
 	password1 := userRegister.Password1
 	password2 := userRegister.Password2
 	if password1 != password2 {
-		return response.GenH(response.FAIL, "两次输入的密码不一致！")
+		return response.ErrorMsg("两次输入的密码不一致！")
 	}
 	password, err := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
 	if err != nil {
-		return response.GenH(response.FAIL, "请求错误！")
+		return response.ErrorMsg("请求参数错误！")
 	}
 	id := idgen.NextId()
 	randNum := rand.Int31()
@@ -85,14 +85,14 @@ func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
 	}
 	err = userRepository.UserInfo.InsertInfoRegister(&userInfo)
 	if err != nil {
-		return response.GenH(response.FAIL, "帐号已存在！")
+		return response.ErrorMsg("帐号已存在！")
 	}
-	return response.GenH(response.OK, "恭喜你，注册成功。😊")
+	return response.OkMsg("恭喜你，注册成功。😊")
 }
 
 func (*UserInfoLogic) UpdateInfo(info *model.UserInfo) gin.H {
 	if err := userRepository.UserInfo.UpdateInfo(info); err != nil {
-		return response.GenH(response.FAIL, "更新失败！")
+		return response.ErrorMsg("更新失败！")
 	}
-	return response.GenH(response.OK, "更新成功！")
+	return response.OkMsg("更新成功！")
 }

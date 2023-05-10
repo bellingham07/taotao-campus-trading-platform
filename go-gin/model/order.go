@@ -4,9 +4,9 @@ import "time"
 
 type OrderInfo struct {
 	Id            int64
-	Seller        int64
+	SellerId      int64
 	SellerName    string
-	Buyer         int64
+	BuyerId       int64
 	BuyerName     string
 	CommodityId   int64
 	CommodityName string
@@ -15,6 +15,7 @@ type OrderInfo struct {
 	Status        int8
 	CreateAt      time.Time
 	DoneAt        time.Time
+	IsGood        string
 }
 
 type OrderComment struct {

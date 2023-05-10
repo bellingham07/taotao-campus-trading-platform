@@ -1,10 +1,14 @@
 package commodityLogic
 
 import (
+	mqLogic "com.xpdj/go-gin/logic/mq"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/utils/cache"
+	"com.xpdj/go-gin/utils/mq"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
+	"github.com/streadway/amqp"
+	"log"
 	"time"
 )
 
@@ -14,45 +18,75 @@ type CommodityCollectLogic struct {
 }
 
 func (*CommodityCollectLogic) Collect(id, userId string) gin.H {
-	key := cache.COMMODITYCOLLECT + userId
-	z := redis.Z{
-		Score:  float64(time.Now().Unix()),
-		Member: id,
+	key := cache.COMMODITYCOLLECT + id
+	err := cache.RedisUtil.SADD(key, userId)
+	if err == 0 {
+		return response.ErrorMsg("不能再次收藏哦😊")
 	}
-	err := cache.RedisUtil.ZADDNX(key, &z)
-	if err != nil {
-		return response.GenH(response.FAIL, response.ERROR)
-	}
-	return response.GenH(response.OK, response.SUCCESS)
+	go CollectUpdatePublisher(key, userId, true)
+	return response.Ok()
 }
 
-//func (*CommodityCollectLogic) CollectRedis(id, userId string) gin.H {
-//	key := cache.COMMODITYCOLLECT + id
-//	err := cache.RedisUtil.HSETNX(key, userId, "")
-//	if err != nil {
-//		return response.GenH(response.FAIL, "服务器繁忙，请稍后😊")
-//	}
-//	err = delayInsertCollect(id, userId)
-//	if err != nil {
-//		return response.GenH(response.FAIL, response.ERROR)
-//	}
-//	return response.GenH(response.OK, response.SUCCESS)
-//}
-
-func (*CommodityCollectLogic) Uncollect(id, userId string) gin.H {
-	key := cache.COMMODITYCOLLECT + userId
-
-	if err := cache.RedisUtil.ZREM(key, id); err != nil {
-		return response.GenH(response.FAIL, response.ERROR)
+func CollectUpdatePublisher(redisKey, member string, isCollect bool) {
+	now := time.Now()
+	ticker := time.NewTicker(time.Second * 30)
+	message := mq.CcMessage{
+		RedisKey:  redisKey,
+		UserId:    member,
+		Time:      now,
+		IsCollect: isCollect,
 	}
-	return response.GenH(response.OK, response.SUCCESS)
+	body, _ := json.Marshal(message)
+	publisher := mq.CcPublisher()
+	if publisher == nil {
+		select {
+		case <-ticker.C:
+			if isCollect {
+				go mqLogic.CollectCheckUpdate(redisKey, member, now)
+			} else {
+				go mqLogic.CollectCheckDelete(redisKey, member)
+			}
+			return
+		}
+	}
+	err := publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
+		amqp.Publishing{DeliveryMode: amqp.Persistent,
+			ContentType: "application/json",
+			Body:        body,
+		})
+	if err == nil {
+		log.Println("发送成功咕咕咕咕咕咕过过过过过过过过过过过过过过过过过过过过过过")
+	}
+	if err != nil {
+		log.Println("[RABBITMQ ERROR] ", err.Error())
+		select {
+		case <-ticker.C:
+			if isCollect {
+				go mqLogic.CollectCheckUpdate(redisKey, member, now)
+			} else {
+				go mqLogic.CollectCheckDelete(redisKey, member)
+			}
+			return
+		}
+	}
+}
+
+func (*CommodityCollectLogic) Uncollect(idStr, userIdStr string) gin.H {
+	key := cache.COMMODITYCOLLECT + idStr
+	isMember := cache.RedisUtil.SISMEMBER(key, userIdStr)
+	if isMember {
+		cache.RedisUtil.SREM(key, userIdStr)
+		go CollectUpdatePublisher(key, userIdStr, false)
+		return response.Ok()
+	}
+	return response.ErrorMsg("你本来就没收藏人家嘛！😫")
 }
 
 func (*CommodityCollectLogic) List(userId string) gin.H {
 	key := cache.COMMODITYCOLLECT + userId
 	ids := cache.RedisUtil.ZREVRANGE(key, 0, -1)
 	if ids == nil {
-		return response.GenH(response.FAIL, response.ERROR)
+		return response.Error()
 	}
 	var infosMap []map[string]string
 	for _, id := range ids {
@@ -60,9 +94,5 @@ func (*CommodityCollectLogic) List(userId string) gin.H {
 		infoMap, _ := cache.RedisUtil.HGETALL(key)
 		infosMap = append(infosMap, infoMap)
 	}
-	return response.GenH(response.OK, response.SUCCESS, infosMap)
+	return response.OkData(infosMap)
 }
-
-//func delayInsertCollect() error {
-//
-//}

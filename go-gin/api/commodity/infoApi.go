@@ -16,14 +16,17 @@ type InfoApi struct {
 func (*InfoApi) GetInfoById(c *gin.Context) {
 	idStr := c.Param("id")
 	if idStr == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"code": response.FAIL, "msg": response.ERROR})
+		c.JSON(http.StatusBadRequest, response.Error())
 		return
 	}
 	id, _ := strconv.ParseInt(idStr, 10, 64)
-	userIdAny, exist := c.Get("userid")
-	userIdStr := userIdAny.(string)
+	userIdAny, isLogin := c.Get("userid")
+	var userIdStr = ""
+	if isLogin {
+		userIdStr = userIdAny.(string)
+	}
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, exist))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.GetById(id, userId, isLogin))
 }
 
 func (*InfoApi) ListByOption(c *gin.Context) {
@@ -36,7 +39,7 @@ func (*InfoApi) SellSave(c *gin.Context) {
 	var draft = new(request.CommodityArticleDraft)
 	err := c.ShouldBind(draft)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	// 第一次保存
@@ -51,7 +54,7 @@ func (*InfoApi) SellPublish(c *gin.Context) {
 	var info = new(request.CommodityArticleDraft)
 	err := c.ShouldBind(info)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	// 未保存就发布
@@ -67,7 +70,7 @@ func (*InfoApi) WantSave(c *gin.Context) {
 	var draft = new(request.CommodityArticleDraft)
 	err := c.ShouldBind(draft)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	// 第一次保存
@@ -82,7 +85,7 @@ func (*InfoApi) WantPublish(c *gin.Context) {
 	var info = new(request.CommodityArticleDraft)
 	err := c.ShouldBind(info)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	// 未保存就发布

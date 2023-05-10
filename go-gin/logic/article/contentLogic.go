@@ -22,17 +22,17 @@ func (cl *ArticleContentLogic) SavaOrPublish(contentDraft *model.ArticleContent,
 	if !isPublish {
 		err := articleRepository.ContentRepository.Insert(articleContent)
 		if err != nil {
-			return response.GenH(response.FAIL, "操作失败，请重试！")
+			return response.ErrorMsg("操作失败，请重试！")
 		}
-		return response.GenH(response.OK, response.SUCCESS, gin.H{"id": articleContent.Id})
+		return response.OkData(gin.H{"id": articleContent.Id})
 	}
 	// 发布
 	articleContent.Status = 2
 	err := articleRepository.ContentRepository.Insert(articleContent)
 	if err != nil {
-		return response.GenH(response.FAIL, "操作失败，请重试！")
+		return response.ErrorMsg("操作失败，请重试！")
 	}
-	return response.GenH(response.OK, response.SUCCESS, gin.H{"id": articleContent.Id})
+	return response.OkData(gin.H{"id": articleContent.Id})
 }
 
 func (cl *ArticleContentLogic) Update(content *model.ArticleContent, isPublish bool) gin.H {
@@ -40,16 +40,16 @@ func (cl *ArticleContentLogic) Update(content *model.ArticleContent, isPublish b
 	if !isPublish {
 		err := articleRepository.ContentRepository.Update(articleContent)
 		if err != nil {
-			return response.GenH(response.FAIL, "操作失败，请重试！")
+			return response.ErrorMsg("操作失败，请重试！")
 		}
-		return response.GenH(response.OK, response.SUCCESS)
+		return response.Ok()
 	}
 	articleContent.Status = 2
 	err := articleRepository.ContentRepository.Update(articleContent)
 	if err != nil {
-		return response.GenH(response.FAIL, "操作失败，请重试！")
+		return response.ErrorMsg("操作失败，请重试！")
 	}
-	return response.GenH(response.OK, response.SUCCESS)
+	return response.Ok()
 }
 
 func (*ArticleContentLogic) copyDraftAttribute(draft *model.ArticleContent) *model.ArticleContent {

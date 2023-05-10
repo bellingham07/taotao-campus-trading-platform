@@ -19,7 +19,7 @@ func (*UserLocationLogic) List() gin.H {
 	if err == redis.Nil {
 		userLocations := userRepository.UserLocation.QueryAll()
 		if userLocations == nil {
-			return gin.H{"code": response.FAIL, "msg": response.ERROR}
+			return gin.H{"code": response.ERROR, "msg": response.FAIL}
 		}
 		userLocationsStr, _ := json.Marshal(userLocations)
 		_ = cache.RedisUtil.SET(cache.USERLOCATION, userLocationsStr, 0)

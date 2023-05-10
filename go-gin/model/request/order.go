@@ -1,10 +1,21 @@
 package request
 
-type OrderMake struct {
-	SellerId      int64   `json:"sellerId"`
-	SellerName    string  `json:"sellerName"`
-	CommodityId   int64   `json:"commodityId"`
-	CommodityName string  `json:"commodityName"`
-	Location      string  `json:"location"`
-	Payment       float64 `json:"payment"`
+import "time"
+
+type OrderDto struct {
+	Id            int64
+	OwnerId       int64  `json:"ownerId"`
+	OwnerName     string `json:"ownerName"`
+	SellerId      int64
+	SellerName    string
+	BuyerId       int64
+	BuyerName     string
+	CommodityId   int64
+	CommodityName string
+	Payment       float64
+	Location      string
+	Status        int8
+	CreateAt      time.Time
+	DoneAt        time.Time
+	IsGood        string
 }

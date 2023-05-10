@@ -21,12 +21,11 @@ type CommodityInfo struct {
 }
 
 type CommodityCollect struct {
-	Id            int64
-	UserId        int64
-	CommodityId   int64
-	CommodityName string
-	Status        int8
-	CrateAt       time.Time
+	Id          int64
+	UserId      int64
+	CommodityId int64
+	Status      int8
+	CreateAt    time.Time
 }
 
 type CommodityHistory struct {

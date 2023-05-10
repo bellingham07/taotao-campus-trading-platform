@@ -16,13 +16,13 @@ func JWTAuthenticate(c *gin.Context) {
 	authHeader := c.Request.Header.Get("Authorization")
 	log.Println(authHeader)
 	if authHeader == "" {
-		c.JSON(http.StatusUnauthorized, response.GenH(response.FAIL, "访问失败,请登录!"))
+		c.JSON(http.StatusUnauthorized, response.ErrorMsg("访问失败,请登录!"))
 		c.Abort()
 		return
 	}
 	claim, err := utils.ParseToken(authHeader)
 	if err != nil {
-		c.JSON(http.StatusOK, response.GenH(response.FAIL, "身份认证错误或过期，请重新登录!"))
+		c.JSON(http.StatusOK, response.ErrorMsg("身份认证错误或过期，请重新登录!"))
 		c.Abort()
 		return
 	}
@@ -31,7 +31,7 @@ func JWTAuthenticate(c *gin.Context) {
 	err = cache.RedisUtil.EXPIRE(key, 7*24*time.Hour)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusOK, response.GenH(response.FAIL, "身份信息过期,请重新登录!"))
+		c.JSON(http.StatusOK, response.ErrorMsg("身份信息过期,请重新登录!"))
 		c.Abort()
 		return
 	}

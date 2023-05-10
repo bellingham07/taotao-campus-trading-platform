@@ -3,6 +3,7 @@ package orderRepository
 import (
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/repository"
+	"log"
 )
 
 var InfoRepository = new(OrderInfoRepository)
@@ -26,13 +27,30 @@ func (*OrderInfoRepository) QueryById(id int64) *model.OrderInfo {
 		Id: id,
 	}
 	if err := repository.GetDB().Table(order_info()).First(info); err != nil {
+		log.Println("[DB ERROR]: ORDER CANCEL NOT FOUND")
 		return nil
 	}
 	return info
 }
 
-func (*OrderInfoRepository) Insert(info *model.OrderInfo) interface{} {
-	if err := repository.GetDB().Table(order_info()).Create(info); err != nil {
+func (*OrderInfoRepository) Insert(info *model.OrderInfo) error {
+	if err := repository.GetDB().Table(order_info()).Create(info).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*OrderInfoRepository) UpdateById(info *model.OrderInfo) error {
+	if err := repository.GetDB().Table(order_info()).Updates(info).Error; err != nil {
+		log.Println("[DB ERROR]: ORDER CANCEL UPDATE FAIL")
+		return err
+	}
+	return nil
+}
+
+func (*OrderInfoRepository) UpdateByIdAndStatus(info *model.OrderInfo, status int8) error {
+	if err := repository.GetDB().Table(order_info()).Where("status = ?", status).Updates(info).Error; err != nil {
+		log.Println("[DB ERROR]: ORDER CANCEL UPDATE FAIL")
 		return err
 	}
 	return nil

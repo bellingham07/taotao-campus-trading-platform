@@ -133,7 +133,7 @@ func (rc *_RedisClient) HSET1(key string, field string, value any) (err error) {
 	return nil
 }
 
-func (rc *_RedisClient) HMSET(key string, value any, expiration time.Duration) (err error) {
+func (rc *_RedisClient) HMSET(key string, value any) (err error) {
 	valueMap := struct2map(value)
 	if err = rc.HSet(ctx, key, valueMap).Err(); err != nil {
 		return err
@@ -147,6 +147,27 @@ func (rc *_RedisClient) ZREVRANGE(key string, start, stop int64) (result []strin
 		return nil
 	}
 	return result
+}
+
+func (rc *_RedisClient) SADD(key string, members ...interface{}) (affect int64) {
+	if affect, _ = rc.SAdd(ctx, key, members).Result(); affect == 0 {
+		return 0
+	}
+	return affect
+}
+
+func (rc *_RedisClient) SISMEMBER(key string, member interface{}) (ok bool) {
+	if ok, _ = rc.SIsMember(ctx, key, member).Result(); !ok {
+		return ok
+	}
+	return ok
+}
+
+func (rc *_RedisClient) SREM(key string, member ...interface{}) (affect int64) {
+	if affect, _ = rc.SRem(ctx, key, member).Result(); affect == 0 {
+		return 0
+	}
+	return affect
 }
 
 func struct2map(value any) map[string]interface{} {

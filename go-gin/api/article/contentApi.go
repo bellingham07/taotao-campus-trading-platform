@@ -16,7 +16,7 @@ func (*ContentApi) Publish(c *gin.Context) {
 	var draft = new(model.ArticleContent)
 	err := c.ShouldBind(draft)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("参数错误！"))
 		return
 	}
 	// 直接发布
@@ -31,7 +31,7 @@ func (*ContentApi) Save(c *gin.Context) {
 	var draft = new(model.ArticleContent)
 	err := c.ShouldBind(draft)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("参数错误！"))
 		return
 	}
 	if draft.Id == 0 {

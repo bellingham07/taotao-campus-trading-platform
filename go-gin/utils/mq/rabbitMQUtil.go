@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
+	"time"
 )
 
 var MQURL string
@@ -20,7 +21,7 @@ func InitRabbitMQ(config *config.RabbitMQConfig) {
 // RabbitMQ rabbitMQ结构体
 type RabbitMQ struct {
 	conn      *amqp.Connection
-	channel   *amqp.Channel
+	Channel   *amqp.Channel
 	QueueName string // 队列名称
 	Exchange  string // 交换机名称
 	Key       string // bind Key 名称
@@ -41,7 +42,7 @@ func NewRabbitMQTopic(queueName string, exchangeName string, routingKey string) 
 	rabbitmq.conn, err = amqp.Dial(rabbitmq.Mqurl)
 	rabbitmq.failOnErr(err, "failed to connect rabbitmq!")
 	// 获取channel
-	rabbitmq.channel, err = rabbitmq.conn.Channel()
+	rabbitmq.Channel, err = rabbitmq.conn.Channel()
 	rabbitmq.failOnErr(err, "failed to open a channel")
 	return rabbitmq
 }
@@ -49,7 +50,7 @@ func NewRabbitMQTopic(queueName string, exchangeName string, routingKey string) 
 // PublishTopic 话题模式发送消息
 func (r *RabbitMQ) PublishTopic(message string) error {
 	// 发送消息
-	err := r.channel.Publish(r.Exchange, r.Key, false, false, amqp.Publishing{
+	err := r.Channel.Publish(r.Exchange, r.Key, false, false, amqp.Publishing{
 		ContentType: "text/plain",
 		Body:        []byte(message),
 	})
@@ -57,29 +58,6 @@ func (r *RabbitMQ) PublishTopic(message string) error {
 		return err
 	}
 	return nil
-}
-
-// ReceiveTopic 话题模式接受消息
-// 要注意key,规则
-// 其中“*”用于匹配一个单词，“#”用于匹配多个单词（可以是零个）
-// 匹配 kuteng.* 表示匹配 kuteng.hello, kuteng.hello.one需要用kuteng.#才能匹配到
-func (r *RabbitMQ) ReceiveTopic(queueName string) error {
-	// 绑定队列到 exchange 中
-	// 在pub/sub模式下，这里的key要为空
-	err := r.channel.QueueBind(queueName, r.Key, r.Exchange, false, nil)
-	if err != nil {
-		return err
-	}
-	// 消费消息
-	messges, err := r.channel.Consume(queueName, "", true, false, false, false, nil)
-	forever := make(chan bool)
-	go func() {
-		for d := range messges {
-			log.Printf("Received a message: %s", d.Body)
-		}
-	}()
-	fmt.Println("退出请按 CTRL+C\n")
-	<-forever
 }
 
 // 错误处理函数
@@ -91,7 +69,19 @@ func (r *RabbitMQ) failOnErr(err error, message string) {
 }
 
 const (
-	USERCOLLECTQUEUE      = "taotao_delay_user_collect"
-	COMMODITYCOLLECTQUEUE = "taotao_delay_commodity_collect"
-	LIKEQUEUE             = "taotao_delay_like"
+	CommodityCollectExchange     = "taotao_commodity_collect_exchange"
+	CommodityCollectDeadExchange = "taotao_commodity_collect_exchange_dead"
+	CommodityCollectQueue        = "taotao_commodity_collect"
+	CommodityCollectDeadQueue    = "taotao_commodity_collect_dead"
+
+	UserCollectQueue = "taotao_delay_user_collect"
+
+	LikeQueue = "taotao_delay_like"
 )
+
+type CcMessage struct {
+	RedisKey  string
+	Time      time.Time
+	UserId    string
+	IsCollect bool
+}

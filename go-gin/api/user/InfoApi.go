@@ -23,7 +23,7 @@ func (*InfoApi) UserLogin(c *gin.Context) {
 	// TODO
 	//if err != nil || loginUser.ValidCode == "" {
 	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"code": response.FAIL,
+	//		"code": response.ERROR,
 	//		"msg":  "请输入正确验证码",
 	//	})
 	//	return
@@ -35,7 +35,7 @@ func (*InfoApi) Logout(c *gin.Context) {
 	userId := middleware.GetUserIdStr(c)
 	key := cache.USERLOGIN + userId
 	_ = cache.RedisUtil.DEL(key)
-	c.JSON(http.StatusOK, response.GenH(response.OK, "期待下一次遇见！😊"))
+	c.JSON(http.StatusOK, response.OkMsg("期待下一次遇见！😊"))
 
 }
 
@@ -43,7 +43,7 @@ func (*InfoApi) GetInfoById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	c.JSON(http.StatusOK, userLogic.UserInfo.GetUserById(id))
@@ -53,7 +53,7 @@ func (*InfoApi) UpdateInfo(c *gin.Context) {
 	info := new(model.UserInfo)
 	if err := c.ShouldBind(info); err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	userId := middleware.GetUserId(c)
@@ -69,7 +69,7 @@ func (*InfoApi) Register(c *gin.Context) {
 	err := c.ShouldBind(registerUser)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, response.GenH(response.FAIL, "请求参数错误！"))
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	c.JSON(http.StatusOK, userLogic.UserInfo.Register(registerUser))

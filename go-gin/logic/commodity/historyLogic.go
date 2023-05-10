@@ -19,7 +19,7 @@ func (*CommodityHistoryLogic) ListByUserId(userId string) gin.H {
 	key := cache.COMMODITYHISOTRY + userId
 	zs := cache.RedisUtil.ZREVRANGEWITHSCORES(key, 0, -1)
 	if zs == nil {
-		return gin.H{"code": response.FAIL, "msg": "你还没有浏览过商品，快去看看有什么好物吧！😊"}
+		return response.OkMsg("你还没有浏览过商品，快去看看有什么好物吧！😊")
 	}
 	var zqualified []redis.Z
 	now := time.Now()

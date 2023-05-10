@@ -1,29 +1,67 @@
 package mq
 
 import (
-	"fmt"
+	"com.xpdj/go-gin/logic/mq"
+	"encoding/json"
+	"github.com/streadway/amqp"
 	"log"
 )
 
-// ReceiveTopic 话题模式接受消息
-// 要注意key,规则
-// 其中“*”用于匹配一个单词，“#”用于匹配多个单词（可以是零个）
-// 匹配 kuteng.* 表示匹配 kuteng.hello, kuteng.hello.one需要用kuteng.#才能匹配到
-func (r *RabbitMQ) DelayCollect(queueName string) error {
-	// 绑定队列到 exchange 中
-	// 在pub/sub模式下，这里的key要为空
-	err := r.channel.QueueBind(queueName, r.Key, r.Exchange, false, nil)
+func initConsumers() {
+	CcConsumer()
+}
+
+func CcConsumer() {
+	r := NewRabbitMQ(CommodityCollectDeadQueue, CommodityCollectDeadExchange, "cc")
+
+	// 获取connection
+	var err error
+	r.conn, err = amqp.Dial(r.Mqurl)
+	r.failOnErr(err, "failed to connect rabbitmq!")
+	// 获取channel
+	r.Channel, err = r.conn.Channel()
+	r.failOnErr(err, "failed to open a channel")
+
+	exchangeName := r.Exchange
+	queueName := r.QueueName
+	key := r.Key
+	// 声明死信交换机
+	err = r.Channel.ExchangeDeclare(exchangeName, "direct", true, false, false, false, nil)
 	if err != nil {
-		return err
+		panic(err)
 	}
-	// 消费消息
-	messges, err := r.channel.Consume(queueName, "", true, false, false, false, nil)
-	forever := make(chan bool)
-	go func() {
-		for d := range messges {
-			log.Printf("Received a message: %s", d.Body)
+	// 声明有死信队列
+	_, err = r.Channel.QueueDeclare(queueName, true, false, false, false, nil)
+	if err != nil {
+		panic(err)
+	}
+	// 将死信交换机和死信队列绑定
+	err = r.Channel.QueueBind(queueName, key, exchangeName, false, nil)
+	if err != nil {
+		panic(err)
+	}
+	// 开始监听
+	msgs, err := r.Channel.Consume(CommodityCollectDeadQueue, "", false, false, false, false, nil)
+	if err != nil {
+		panic(err)
+	}
+	forever := make(chan int, 0)
+	for msg := range msgs {
+		log.Println("接受成功咕咕咕咕咕咕过过过过过过过过过过过")
+		ccMessage := new(CcMessage)
+		err := json.Unmarshal(msg.Body, ccMessage)
+		if err != nil {
+			log.Printf("[RABBITMQ COMMODITYCOLLECT CONSUMER FAIL] Failed to unmarshal message: %v\n", err)
+			msg.Nack(false, false)
+			continue
 		}
-	}()
-	fmt.Println("退出请按 CTRL+C\n")
+		if ccMessage.IsCollect {
+			mqLogic.CollectCheckUpdate(ccMessage.RedisKey, ccMessage.UserId, ccMessage.Time)
+		} else {
+			mqLogic.CollectCheckDelete(ccMessage.RedisKey, ccMessage.UserId)
+		}
+
+		msg.Ack(false)
+	}
 	<-forever
 }
