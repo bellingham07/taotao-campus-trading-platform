@@ -32,8 +32,8 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 		return response.ErrorMsg("账号或密码错误！")
 	}
 	userStr, _ := json.Marshal(userDB)
-	key := cache.USERLOGIN + strconv.FormatInt(userDB.Id, 10)
-	err = cache.RedisUtil.SET(key, userStr, 7*24*time.Hour)
+	key := cache.UserLogin + strconv.FormatInt(userDB.Id, 10)
+	err = cache.RedisUtil.SET2JSON(key, userStr, 7*24*time.Hour)
 	if err != nil {
 		return response.ErrorMsg("服务器繁忙，请稍后")
 	}
@@ -43,7 +43,7 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 }
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
-	key := cache.USERINFO + strconv.FormatInt(id, 10)
+	key := cache.UserInfo + strconv.FormatInt(id, 10)
 	userStr, _ := cache.RedisUtil.GET(key)
 	// 内容为“”，代表数据库中没有
 	if userStr == "" {
@@ -52,13 +52,13 @@ func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
 	if err != nil {
-		err := cache.RedisUtil.SET(key, "", 5*time.Minute)
+		err := cache.RedisUtil.SET2JSON(key, "", 5*time.Minute)
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
 		return response.Error()
 	}
-	_ = cache.RedisUtil.SET(key, user, 5*time.Minute)
+	_ = cache.RedisUtil.SET2JSON(key, user, 5*time.Minute)
 	_ = json.Unmarshal([]byte(userStr), user)
 	return response.OkData(user)
 }
@@ -91,7 +91,7 @@ func (*UserInfoLogic) Register(userRegister *request.RegisterUser) gin.H {
 }
 
 func (*UserInfoLogic) UpdateInfo(info *model.UserInfo) gin.H {
-	if err := userRepository.UserInfo.UpdateInfo(info); err != nil {
+	if err := userRepository.UserInfo.UpdateById(info); err != nil {
 		return response.ErrorMsg("更新失败！")
 	}
 	return response.OkMsg("更新成功！")

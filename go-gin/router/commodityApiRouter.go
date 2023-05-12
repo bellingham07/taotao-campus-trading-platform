@@ -23,12 +23,14 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 		ig.POST("/wantpublish", commodityApi.InfoApi.WantPublish)
 	}
 
+	// 足迹
 	hg := g.Group("/history", middleware.JWTAuthenticate)
 	{
 		hg.GET("", commodityApi.HistoryApi.List)
 		hg.DELETE("", commodityApi.HistoryApi.Delete)
 	}
 
+	// 商品收藏
 	cog := g.Group("/collect", middleware.JWTAuthenticate)
 	{
 		cog.GET("/:id", commodityApi.CollectApi.Collect)
@@ -36,6 +38,7 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 		cog.DELETE("/:id", commodityApi.CollectApi.Uncollect)
 	}
 
+	// 商品标签
 	cag := g.Group("/tag")
 	{
 		cag.GET("", commodityApi.TagApi.List)

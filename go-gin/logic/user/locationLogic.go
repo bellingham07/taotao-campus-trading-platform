@@ -15,14 +15,14 @@ type UserLocationLogic struct {
 }
 
 func (*UserLocationLogic) List() gin.H {
-	userLocationsStr, err := cache.RedisUtil.GET(cache.USERLOCATION)
+	userLocationsStr, err := cache.RedisUtil.GET(cache.UserLocation)
 	if err == redis.Nil {
 		userLocations := userRepository.UserLocation.QueryAll()
 		if userLocations == nil {
 			return gin.H{"code": response.ERROR, "msg": response.FAIL}
 		}
 		userLocationsStr, _ := json.Marshal(userLocations)
-		_ = cache.RedisUtil.SET(cache.USERLOCATION, userLocationsStr, 0)
+		_ = cache.RedisUtil.SET2JSON(cache.UserLocation, userLocationsStr, 0)
 		return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": userLocations}
 	}
 	userLocations := json.Unmarshal([]byte(userLocationsStr), &userLocationsStr)

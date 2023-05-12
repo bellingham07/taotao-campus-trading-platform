@@ -10,17 +10,17 @@ import (
 const SECRETKEY = "xpdj"
 
 type Claims struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	//Avatar string `json:"avatar"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
 	jwt.RegisteredClaims
 }
 
 func GenerateToken(user *model.UserInfo) (string, error) {
 	claim := &Claims{
-		Id:   strconv.FormatInt(user.Id, 10),
-		Name: user.Name,
-		//Avatar: user.Avatar,
+		Id:     strconv.FormatInt(user.Id, 10),
+		Name:   user.Name,
+		Avatar: user.Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),

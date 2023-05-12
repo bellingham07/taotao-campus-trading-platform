@@ -11,6 +11,8 @@ type ArticleRouter struct {
 
 func (*ArticleRouter) InitArticleApiRouter(g *gin.RouterGroup) {
 	articleApi := api.SystemApis.ArticleApi
+
+	g.GET("/:id", articleApi.ContentApi.GetById)
 	ag := g.Group("", middleware.JWTAuthenticate)
 	{
 		ag.POST("/save", articleApi.ContentApi.Save)

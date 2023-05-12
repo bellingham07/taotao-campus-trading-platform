@@ -3,6 +3,7 @@ package commodityRepository
 import (
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/repository"
+	"log"
 )
 
 var CommodityInfo = new(CommodityInfoRepository)
@@ -39,6 +40,23 @@ func (*CommodityInfoRepository) RandomListByType(option int) (infos []model.Comm
 
 func (*CommodityInfoRepository) Insert(info *model.CommodityInfo) error {
 	if err := repository.GetDB().Table(commodity_info()).Create(info).Error; err != nil {
+		log.Println("[GORM ERROR] CommodityInfo Insert Fail, Error: " + err.Error())
+		return err
+	}
+	return nil
+}
+
+func (*CommodityInfoRepository) UpdateById(info *model.CommodityInfo) error {
+	if err := repository.GetDB().Table(commodity_info()).Updates(info).Error; err != nil {
+		log.Println("[GORM ERROR] CommodityInfo UpdateById Fail, Error: " + err.Error())
+		return err
+	}
+	return nil
+}
+
+func (*CommodityInfoRepository) UpdateViewById(id, count int64) error {
+	if err := repository.GetDB().Table(commodity_info()).Where("id = ?", id).Update("count = count + ?", count).Error; err != nil {
+		log.Println("[GORM ERROR] CommodityInfo UpdateById Fail, Error: " + err.Error())
 		return err
 	}
 	return nil

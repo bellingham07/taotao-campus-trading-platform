@@ -14,9 +14,9 @@ func (*FileRouter) InitFileApiRouter(g *gin.RouterGroup) {
 
 	fg := g.Group("", middleware.JWTAuthenticate, middleware.FileCheck)
 	{
-		fg.POST("/avatar", fileApi.InfoApi.UploadAvatar)
-		fg.POST("/pics", fileApi.InfoApi.UploadPics)
-		fg.DELETE("", fileApi.InfoApi.Delete)
+		fg.POST("/avatar", fileApi.AssetApi.UploadAvatar)
+		fg.POST("/cover", fileApi.AssetApi.UploadCover)
+		fg.POST("/pics", fileApi.AssetApi.UploadPics)
 	}
 
 }

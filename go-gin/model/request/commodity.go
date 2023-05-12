@@ -3,13 +3,12 @@ package request
 import "time"
 
 type CommodityArticleDraft struct {
-	Id        int64     `json:"id"`     // bigint自增，id
-	Name      string    `json:"name"`   // 名称
-	UserId    int64     `json:"userId"` // uuid，用户id
-	Brand     string    `json:"brand"`  // 品牌
-	Model     string    `json:"model"`  // 型号
-	Price     float64   `json:"price"`  // 商品价格
-	ArticleId int64     `json:"articleId"`
+	Id        int64     `json:"id"`        // bigint自增，id
+	Name      string    `json:"name"`      // 名称
+	UserId    int64     `json:"userId"`    // uuid，用户id
+	Brand     string    `json:"brand"`     // 品牌
+	Model     string    `json:"model"`     // 型号
+	Price     float64   `json:"price"`     // 商品价格
 	Status    int64     `json:"status"`    // 商品状态，默认1为发布，0为下架，-1为审核未通过需修改
 	Stock     int64     `json:"stock"`     // 库存
 	Tag       string    `json:"tag"`       // 分类名

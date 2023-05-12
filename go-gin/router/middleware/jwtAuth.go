@@ -27,7 +27,7 @@ func JWTAuthenticate(c *gin.Context) {
 		return
 	}
 	id := claim.Id
-	key := cache.USERLOGIN + id
+	key := cache.UserLogin + id
 	err = cache.RedisUtil.EXPIRE(key, 7*24*time.Hour)
 	if err != nil {
 		log.Println(err.Error())
@@ -38,6 +38,7 @@ func JWTAuthenticate(c *gin.Context) {
 	// 将当前请求的userID信息保存到请求的上下文c上
 	c.Set("userid", id)
 	c.Set("name", claim.Name)
+	c.Set("avatar", claim.Avatar)
 	c.Next() // 后续的处理函数可以用过c.GET("username")来获取当前请求的用户信息
 }
 
@@ -61,4 +62,10 @@ func GetUserIdAndName(c *gin.Context) (int64, string) {
 	name, _ := c.Get("name")
 	nameStr := name.(string)
 	return userId, nameStr
+}
+
+func GetAvatar(c *gin.Context) string {
+	avatarAny, _ := c.Get("avatar")
+	avatarStr := avatarAny.(string)
+	return avatarStr
 }

@@ -33,7 +33,7 @@ func (*InfoApi) UserLogin(c *gin.Context) {
 
 func (*InfoApi) Logout(c *gin.Context) {
 	userId := middleware.GetUserIdStr(c)
-	key := cache.USERLOGIN + userId
+	key := cache.UserLogin + userId
 	_ = cache.RedisUtil.DEL(key)
 	c.JSON(http.StatusOK, response.OkMsg("期待下一次遇见！😊"))
 
@@ -58,8 +58,6 @@ func (*InfoApi) UpdateInfo(c *gin.Context) {
 	}
 	userId := middleware.GetUserId(c)
 	info.Id = userId
-	log.Printf("%+v\n", info)
-
 	c.JSON(http.StatusOK, userLogic.UserInfo.UpdateInfo(info))
 }
 

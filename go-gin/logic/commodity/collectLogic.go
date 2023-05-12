@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -17,17 +18,18 @@ var CollectLogic = new(CommodityCollectLogic)
 type CommodityCollectLogic struct {
 }
 
-func (*CommodityCollectLogic) Collect(id, userId string) gin.H {
-	key := cache.COMMODITYCOLLECT + id
-	err := cache.RedisUtil.SADD(key, userId)
+func (*CommodityCollectLogic) Collect(id, userIdStr string) gin.H {
+	key := cache.CommodityCollect + id
+	err := cache.RedisUtil.SADD(key, userIdStr)
 	if err == 0 {
 		return response.ErrorMsg("不能再次收藏哦😊")
 	}
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	go CollectUpdatePublisher(key, userId, true)
 	return response.Ok()
 }
 
-func CollectUpdatePublisher(redisKey, member string, isCollect bool) {
+func CollectUpdatePublisher(redisKey string, member int64, isCollect bool) {
 	now := time.Now()
 	ticker := time.NewTicker(time.Second * 30)
 	message := mq.CcMessage{
@@ -38,6 +40,7 @@ func CollectUpdatePublisher(redisKey, member string, isCollect bool) {
 	}
 	body, _ := json.Marshal(message)
 	publisher := mq.CcPublisher()
+	// 假如无法使用mq
 	if publisher == nil {
 		select {
 		case <-ticker.C:
@@ -54,9 +57,6 @@ func CollectUpdatePublisher(redisKey, member string, isCollect bool) {
 			ContentType: "application/json",
 			Body:        body,
 		})
-	if err == nil {
-		log.Println("发送成功咕咕咕咕咕咕过过过过过过过过过过过过过过过过过过过过过过")
-	}
 	if err != nil {
 		log.Println("[RABBITMQ ERROR] ", err.Error())
 		select {
@@ -72,26 +72,27 @@ func CollectUpdatePublisher(redisKey, member string, isCollect bool) {
 }
 
 func (*CommodityCollectLogic) Uncollect(idStr, userIdStr string) gin.H {
-	key := cache.COMMODITYCOLLECT + idStr
+	key := cache.CommodityCollect + idStr
 	isMember := cache.RedisUtil.SISMEMBER(key, userIdStr)
 	if isMember {
 		cache.RedisUtil.SREM(key, userIdStr)
-		go CollectUpdatePublisher(key, userIdStr, false)
+		userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+		go CollectUpdatePublisher(key, userId, false)
 		return response.Ok()
 	}
 	return response.ErrorMsg("你本来就没收藏人家嘛！😫")
 }
 
 func (*CommodityCollectLogic) List(userId string) gin.H {
-	key := cache.COMMODITYCOLLECT + userId
+	key := cache.CommodityCollect + userId
 	ids := cache.RedisUtil.ZREVRANGE(key, 0, -1)
 	if ids == nil {
 		return response.Error()
 	}
 	var infosMap []map[string]string
 	for _, id := range ids {
-		key := cache.COMMODITYINFO + id
-		infoMap, _ := cache.RedisUtil.HGETALL(key)
+		key := cache.CommodityInfo + id
+		infoMap := cache.RedisUtil.HGETALL(key)
 		infosMap = append(infosMap, infoMap)
 	}
 	return response.OkData(infosMap)

@@ -39,7 +39,7 @@ type OrderApi struct {
 }
 
 type FileApi struct {
-	fileApi.InfoApi
+	fileApi.AssetApi
 }
 
 type ArticleApi struct {

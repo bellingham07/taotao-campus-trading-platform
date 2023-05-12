@@ -2,7 +2,7 @@ package commodityApi
 
 import (
 	commodityLogic "com.xpdj/go-gin/logic/commodity"
-	"com.xpdj/go-gin/model/request"
+	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ type InfoApi struct {
 func (*InfoApi) GetInfoById(c *gin.Context) {
 	idStr := c.Param("id")
 	if idStr == "" {
-		c.JSON(http.StatusBadRequest, response.Error())
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
 		return
 	}
 	id, _ := strconv.ParseInt(idStr, 10, 64)
@@ -36,7 +36,7 @@ func (*InfoApi) ListByOption(c *gin.Context) {
 }
 
 func (*InfoApi) SellSave(c *gin.Context) {
-	var draft = new(request.CommodityArticleDraft)
+	var draft = new(model.CommodityInfo)
 	err := c.ShouldBind(draft)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
@@ -44,14 +44,14 @@ func (*InfoApi) SellSave(c *gin.Context) {
 	}
 	// 第一次保存
 	if draft.Id == 0 {
-		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfoAndArticle(draft, middleware.GetUserId(c), 1, false))
+		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfo(draft, middleware.GetUserId(c), 1, false))
 	}
 	// 之前保存过
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfoAndArticle(draft, false))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfo(draft, false))
 }
 
 func (*InfoApi) SellPublish(c *gin.Context) {
-	var info = new(request.CommodityArticleDraft)
+	var info = new(model.CommodityInfo)
 	err := c.ShouldBind(info)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
@@ -59,15 +59,15 @@ func (*InfoApi) SellPublish(c *gin.Context) {
 	}
 	// 未保存就发布
 	if info.Id == 0 {
-		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfoAndArticle(info, middleware.GetUserId(c), 1, true))
+		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfo(info, middleware.GetUserId(c), 1, true))
 		return
 	}
 	// 发布（更新）
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfoAndArticle(info, true))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfo(info, true))
 }
 
 func (*InfoApi) WantSave(c *gin.Context) {
-	var draft = new(request.CommodityArticleDraft)
+	var draft = new(model.CommodityInfo)
 	err := c.ShouldBind(draft)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
@@ -75,14 +75,14 @@ func (*InfoApi) WantSave(c *gin.Context) {
 	}
 	// 第一次保存
 	if draft.Id == 0 {
-		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfoAndArticle(draft, middleware.GetUserId(c), 2, false))
+		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfo(draft, middleware.GetUserId(c), 2, false))
 	}
 	// 之前保存过
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfoAndArticle(draft, false))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfo(draft, false))
 }
 
 func (*InfoApi) WantPublish(c *gin.Context) {
-	var info = new(request.CommodityArticleDraft)
+	var info = new(model.CommodityInfo)
 	err := c.ShouldBind(info)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
@@ -90,9 +90,9 @@ func (*InfoApi) WantPublish(c *gin.Context) {
 	}
 	// 未保存就发布
 	if info.Id == 0 {
-		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfoAndArticle(info, middleware.GetUserId(c), 2, true))
+		c.JSON(http.StatusOK, commodityLogic.CommodityInfo.SaveOrPublishInfo(info, middleware.GetUserId(c), 2, true))
 		return
 	}
 	// 发布（更新）
-	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfoAndArticle(info, true))
+	c.JSON(http.StatusOK, commodityLogic.CommodityInfo.UpdateInfo(info, true))
 }

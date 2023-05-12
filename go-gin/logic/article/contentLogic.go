@@ -17,10 +17,9 @@ func (cl *ArticleContentLogic) SavaOrPublish(contentDraft *model.ArticleContent,
 	articleContent := cl.copyDraftAttribute(contentDraft)
 	articleContent.UserId = userId
 	articleContent.CreateAt = time.Now()
-	articleContent.Type = 2
 	// 保存草稿
 	if !isPublish {
-		err := articleRepository.ContentRepository.Insert(articleContent)
+		err := articleRepository.ArticleContent.Insert(articleContent)
 		if err != nil {
 			return response.ErrorMsg("操作失败，请重试！")
 		}
@@ -28,7 +27,7 @@ func (cl *ArticleContentLogic) SavaOrPublish(contentDraft *model.ArticleContent,
 	}
 	// 发布
 	articleContent.Status = 2
-	err := articleRepository.ContentRepository.Insert(articleContent)
+	err := articleRepository.ArticleContent.Insert(articleContent)
 	if err != nil {
 		return response.ErrorMsg("操作失败，请重试！")
 	}
@@ -38,14 +37,14 @@ func (cl *ArticleContentLogic) SavaOrPublish(contentDraft *model.ArticleContent,
 func (cl *ArticleContentLogic) Update(content *model.ArticleContent, isPublish bool) gin.H {
 	articleContent := cl.copyDraftAttribute(content)
 	if !isPublish {
-		err := articleRepository.ContentRepository.Update(articleContent)
+		err := articleRepository.ArticleContent.UpdateById(articleContent)
 		if err != nil {
 			return response.ErrorMsg("操作失败，请重试！")
 		}
 		return response.Ok()
 	}
 	articleContent.Status = 2
-	err := articleRepository.ContentRepository.Update(articleContent)
+	err := articleRepository.ArticleContent.UpdateById(articleContent)
 	if err != nil {
 		return response.ErrorMsg("操作失败，请重试！")
 	}

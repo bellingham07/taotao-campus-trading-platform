@@ -2,15 +2,26 @@ package model
 
 import "time"
 
+// ArticleContent 文章内容
 type ArticleContent struct {
-	Id       int64     `json:"id"`      // bigint自增，id
-	UserId   int64     `json:"userId"`  // uuid，用户的id
-	Content  string    `json:"content"` // 帖子内容
-	Status   int64     `json:"status"`  // 1为草稿，2为发布，-1为审核不通过
+	Id       int64     `json:"id"`     // bigint自增，id
+	UserId   int64     `json:"userId"` // uuid，用户的id
 	Title    string    `json:"title"`
-	Type     int64     `json:"type"`     // 1为商品介绍文章，2为文章
-	UpdateAt time.Time `json:"updateAt"` // datetime，更新时间
+	Content  string    `json:"content"`  // 帖子内容
+	Cover    string    `json:"cover"`    // 封面
+	Status   int64     `json:"status"`   // 1为草稿，2为发布，-1为审核不通过
 	CreateAt time.Time `json:"createAt"` // datetime，创建时间
+	UpdateAt time.Time `json:"updateAt"` // datetime，更新时间
+	Like     int64     `json:"like"`
+	Collect  int64     `json:"collect"`
+}
+
+// ArticleAsset 文章中相关的图片
+type ArticleAsset struct {
+	Id        int64 `json:"id"` // bigint自增
+	ArticleId int64 `json:"article_id"`
+	AssetId   int64 `json:"asset_id"`
+	UserId    int64 `json:"user_id"`
 }
 
 type ArticleComment struct {

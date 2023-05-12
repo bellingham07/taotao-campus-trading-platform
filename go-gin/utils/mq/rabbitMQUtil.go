@@ -2,7 +2,6 @@ package mq
 
 import (
 	"com.xpdj/go-gin/config"
-	"fmt"
 	"github.com/streadway/amqp"
 	"log"
 	"time"
@@ -33,8 +32,8 @@ func NewRabbitMQ(queueName string, exchange string, key string) *RabbitMQ {
 	return &RabbitMQ{QueueName: queueName, Exchange: exchange, Key: key, Mqurl: MQURL}
 }
 
-// NewRabbitMQTopic 创建RabbitMQ实例
-func NewRabbitMQTopic(queueName string, exchangeName string, routingKey string) *RabbitMQ {
+// DialRabbitMq 创建RabbitMQ实例
+func DialRabbitMq(queueName string, exchangeName string, routingKey string) *RabbitMQ {
 	// 创建RabbitMQ实例
 	rabbitmq := NewRabbitMQ(queueName, exchangeName, routingKey)
 	var err error
@@ -63,8 +62,7 @@ func (r *RabbitMQ) PublishTopic(message string) error {
 // 错误处理函数
 func (r *RabbitMQ) failOnErr(err error, message string) {
 	if err != nil {
-		log.Fatalf("%s:%s", message, err)
-		panic(fmt.Sprintf("%s:%s", message, err))
+		log.Fatalf(message + ":" + err.Error())
 	}
 }
 
@@ -74,7 +72,15 @@ const (
 	CommodityCollectQueue        = "taotao_commodity_collect"
 	CommodityCollectDeadQueue    = "taotao_commodity_collect_dead"
 
-	UserCollectQueue = "taotao_delay_user_collect"
+	ViewExchange     = "taotao_view_exchange"
+	ViewDeadExchange = "taotao_view_exchange_dead"
+	ViewQueue        = "taotao_view"
+	ViewDeadQueue    = "taotao_view_dead"
+
+	UserCollectExchange     = "taotao_user_collect_exchange"
+	UserCollectDeadExchange = "taotao_user_collect_exchange_dead"
+	UserCollectQueue        = "taotao_user_collect"
+	UserCollectDeadQueue    = "taotao_user_collect_dead"
 
 	LikeQueue = "taotao_delay_like"
 )
@@ -82,6 +88,12 @@ const (
 type CcMessage struct {
 	RedisKey  string
 	Time      time.Time
-	UserId    string
+	UserId    int64
 	IsCollect bool
+}
+
+type VMessage struct {
+	RedisKey    string
+	Time        time.Time
+	IsCommodity bool
 }

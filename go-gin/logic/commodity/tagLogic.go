@@ -16,7 +16,7 @@ type CommodityCategoryLogic struct {
 }
 
 func (*CommodityCategoryLogic) List() gin.H {
-	tagStr, err := cache.RedisUtil.GET(cache.COMMODITYCATEGORY)
+	tagStr, err := cache.RedisUtil.GET(cache.CommodityCategory)
 	if err == nil {
 		return response.OkData(tagStr)
 	}
@@ -37,7 +37,7 @@ func (*CommodityCategoryLogic) Add(tag *model.CommodityTag) gin.H {
 	if tags == nil {
 		return response.Error()
 	}
-	err = cache.RedisUtil.SET(cache.COMMODITYCATEGORY, tags, 0)
+	err = cache.RedisUtil.SET2JSON(cache.CommodityCategory, tags, 0)
 	if err != nil {
 		log.Println("RemoveById 商品tag更新至redis出错！" + err.Error())
 	}
@@ -53,7 +53,7 @@ func (*CommodityCategoryLogic) RemoveById(id int64) gin.H {
 	if tags == nil {
 		return response.Error()
 	}
-	err = cache.RedisUtil.SET(cache.COMMODITYCATEGORY, tags, 0)
+	err = cache.RedisUtil.SET2JSON(cache.CommodityCategory, tags, 0)
 	if err != nil {
 		log.Println("RemoveById 商品tag更新至redis出错！" + err.Error())
 	}

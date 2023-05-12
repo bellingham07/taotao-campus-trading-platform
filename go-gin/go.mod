@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/redis/go-redis/v9 v9.0.4
 	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.3.3
 	golang.org/x/crypto v0.8.0

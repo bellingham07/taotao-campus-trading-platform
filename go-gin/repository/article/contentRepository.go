@@ -3,9 +3,10 @@ package articleRepository
 import (
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/repository"
+	"log"
 )
 
-var ContentRepository = new(ArticleContentRepository)
+var ArticleContent = new(ArticleContentRepository)
 
 type ArticleContentRepository struct {
 }
@@ -21,19 +22,22 @@ func (*ArticleContentRepository) Insert(content *model.ArticleContent) error {
 	return nil
 }
 
-func (*ArticleContentRepository) Update(content *model.ArticleContent) error {
+func (*ArticleContentRepository) UpdateById(content *model.ArticleContent) error {
 	if err := repository.GetDB().Table(article_content()).Updates(content).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (*ArticleContentRepository) QueryById(id int64) (info model.CommodityInfo, err error) {
-	info.Id = id
-	if err := repository.GetDB().Table(article_content()).First(&info).Error; err != nil {
-		return info, err
+func (*ArticleContentRepository) QueryById(id int64) *model.CommodityInfo {
+	info := &model.CommodityInfo{
+		Id: id,
 	}
-	return info, nil
+	if err := repository.GetDB().Table(article_content()).First(&info).Error; err != nil {
+		log.Println("[GORM ERROR] ArticleContent QueryById Fail, Error: " + err.Error())
+		return nil
+	}
+	return info
 }
 
 func (*ArticleContentRepository) RandomListByType(option int) (infos []model.CommodityInfo) {
@@ -44,4 +48,12 @@ func (*ArticleContentRepository) RandomListByType(option int) (infos []model.Com
 		return nil
 	}
 	return infos
+}
+
+func (*ArticleContentRepository) UpdateViewById(id, count int64) interface{} {
+	if err := repository.GetDB().Table(article_content()).Where("id = ?", id).Update("view = view + ?", count).Error; err != nil {
+		log.Println("[GORM ERROR] ArticleContent UpdateViewById Fail, Error: " + err.Error())
+		return err
+	}
+	return nil
 }
