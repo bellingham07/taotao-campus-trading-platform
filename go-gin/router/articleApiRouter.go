@@ -18,4 +18,11 @@ func (*ArticleRouter) InitArticleApiRouter(g *gin.RouterGroup) {
 		ag.POST("/save", articleApi.ContentApi.Save)
 		ag.POST("/publish", articleApi.ContentApi.Publish)
 	}
+
+	// 商品点赞
+	lg := g.Group("/like", middleware.JWTAuthenticate)
+	{
+		lg.GET("/:id", articleApi.ContentApi.Like)
+		lg.DELETE("/:id", articleApi.ContentApi.Unlike)
+	}
 }

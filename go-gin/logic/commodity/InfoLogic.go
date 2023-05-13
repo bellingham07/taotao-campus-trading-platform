@@ -1,7 +1,7 @@
 package commodityLogic
 
 import (
-	mqLogic "com.xpdj/go-gin/logic/mq"
+	mqLogic "com.xpdj/go-gin/logic/rabbitmq"
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/repository"
@@ -9,7 +9,7 @@ import (
 	commodityRepository "com.xpdj/go-gin/repository/commodity"
 	"com.xpdj/go-gin/utils/cache"
 	"com.xpdj/go-gin/utils/json"
-	"com.xpdj/go-gin/utils/mq"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 	"gorm.io/gorm"
@@ -63,94 +63,101 @@ func (*CommodityInfoLogic) SaveOrPublishInfo(infoDraft *model.CommodityInfo, use
 	return response.OkData(infoDraft.Id)
 }
 
-func (*CommodityInfoLogic) GetById(id int64, userId int64, isLogin bool) gin.H {
+func (*CommodityInfoLogic) GetById(id, userId int64) gin.H {
 	idStr := strconv.FormatInt(id, 10)
 	key := cache.CommodityInfo + idStr
 	commodityInfoMap := cache.RedisUtil.HGETALL(key)
 	// 数据库也没有数据，防止缓存穿透
-	if commodityInfoMap["id"] == "" {
+	if commodityInfoMap["id"] == "nil" {
 		_ = cache.RedisUtil.EXPIRE(key, 30*time.Second)
-		return response.ErrorMsg("没有这个商品！你不要乱来呀😡")
+		return response.ErrorMsg("没有这个商品！你不要乱来呀😡1111")
 	}
 	collectKey := cache.CommodityCollect + idStr
-	var isCollected int8 = 0
+	var collectFlag int8 = 0
 	var isMine int8 = 1
 	// redis没有数据，就从数据库里查
-	if commodityInfoMap == nil {
+	if commodityInfoMap["id"] == "" {
+		fmt.Println(1)
 		commodityInfo := commodityRepository.CommodityInfo.QueryById(id)
 		// 数据无，设置空
 		if commodityInfo == nil {
-			_ = cache.RedisUtil.HSET(key, map[string]string{"Id": ""})
+			fmt.Println(2)
+
+			_ = cache.RedisUtil.HSET(key, map[string]string{"id": "nil"})
 			_ = cache.RedisUtil.EXPIRE(key, 30*time.Second)
 			return response.ErrorMsg("没有这个商品！你不要乱来呀😡")
 		}
 		// 数据有
 		go updateCommodityView(id)
 		// jwt中存在用户，判断是在访问自己的商品还是别人的
-		if isLogin {
-			// 当商品不是自己的时候更新足迹
+		if userId != 0 {
+			fmt.Println(3)
+
+			// 当商品不是自己的时候更新足迹，并且把标识也做好（是否是自己的，是为1，就不需要收藏按钮，否则为0）
 			if commodityInfo.UserId != userId {
-				isCollected, isMine = updateHistoryAndPD(id, userId, collectKey)
+				fmt.Println(4)
+
+				collectFlag, isMine = updateHistoryAndIsCollected(id, userId, collectKey)
 			}
 		}
-		return response.OkData(gin.H{"commodityInfo": commodityInfo, "isCollected": isCollected, "isMine": isMine})
+		return response.OkData(gin.H{"commodityInfo": commodityInfo, "isCollected": collectFlag, "isMine": isMine})
 	}
 	// redis有数据
-	if isLogin {
+	if userId != 0 {
 		if commodityInfoMap["userId"] != strconv.FormatInt(userId, 10) {
-			isCollected, isMine = updateHistoryAndPD(id, userId, collectKey)
+			collectFlag, isMine = updateHistoryAndIsCollected(id, userId, collectKey)
 			go updateCommodityView(id)
 		}
 	}
-	return response.OkData(gin.H{"commodityInfo": commodityInfoMap, "isCollected": isCollected, "isMine": isMine})
+	return response.OkData(gin.H{"commodityInfo": commodityInfoMap, "isCollected": collectFlag, "isMine": isMine})
 }
 
 func updateCommodityView(id int64) {
 	key := cache.CommodityView + strconv.FormatInt(id, 10)
 	// 1.如果hash的count字段设置成功，则说明，可以进行更新
-	err := cache.RedisUtil.HSETNXPX(key, "count", 1, time.Minute*2)
+	err := cache.RedisUtil.HSETNX(key, "count", 1)
 	ticker := time.NewTicker(time.Second * 30)
 	// 2.如果set失败，代表有点赞数，加1就好了
 	if err != nil {
 		_ = cache.RedisUtil.HINCRBY1(key, "count")
 	}
-	publisher := mq.VPublisher()
+	publisher := mqLogic.VPublisher()
+	vMessage := &mqLogic.VMessage{
+		RedisKey:    key,
+		IsCommodity: true,
+	}
 	// 3.假如无法使用mq
 	if publisher == nil {
 		select {
 		case <-ticker.C:
-			go mqLogic.ViewCheckUpdate(key, true)
+			go mqLogic.ViewCheckUpdate(vMessage)
 			return
 		}
 	}
-	vMessage := &mq.VMessage{
-		RedisKey:    key,
-		IsCommodity: true,
-	}
+
 	body, _ := json.Json.Marshal(vMessage)
 	err = publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
 		amqp.Publishing{
-			ContentType: "appliction/json",
+			ContentType: "application/json",
 			Body:        body,
 		})
 	if err != nil {
 		log.Println("[RABBITMQ ERROR] ", err.Error())
 		select {
 		case <-ticker.C:
-			go mqLogic.ViewCheckUpdate(key, true)
+			go mqLogic.ViewCheckUpdate(vMessage)
 			return
 		}
 	}
 }
 
-func updateHistoryAndPD(id, userId int64, collectKey string) (a1, a2 int8) {
+func updateHistoryAndIsCollected(id, userId int64, collectKey string) (a1, a2 int8) {
 	go HistoryLogic.UpdateHistory(id, userId)
 	// 如果是别人的商品，就需要判断有没有收藏过
 	if isMember := cache.RedisUtil.SISMEMBER(collectKey, userId); isMember {
 		a1 = 1
 	}
-	a2 = 0
-	return
+	return a1, 0
 }
 
 func (*CommodityInfoLogic) RandomListByType(option int) gin.H {
@@ -172,4 +179,58 @@ func (il *CommodityInfoLogic) create2(cmdtyInfo *model.CommodityInfo, articleCon
 		return nil
 	})
 	return err
+}
+
+func (*CommodityInfoLogic) Like(id int64, userId int64) interface{} {
+	key := cache.CommodityLike + strconv.FormatInt(id, 10)
+	affect := cache.RedisUtil.SADD(key, userId)
+	if affect == 0 {
+		return response.ErrorMsg("不能重复点赞哦😊")
+	}
+	go LikeUpdatePublisher(key, userId)
+	return response.Ok()
+}
+
+func (*CommodityInfoLogic) Unlike(id int64, userId int64) interface{} {
+	key := cache.CommodityLike + strconv.FormatInt(id, 10)
+	isMember := cache.RedisUtil.SISMEMBER(key, userId)
+	if !isMember {
+		return response.ErrorMsg("你本来就没有点赞🤡")
+	}
+	// 取消点赞，删去set中的member即可，没必要更改库
+	go cache.RedisUtil.SREM(key, userId)
+	return response.Ok()
+}
+
+func LikeUpdatePublisher(redisKey string, member int64) {
+	now := time.Now()
+	ticker := time.NewTicker(time.Second * 30)
+	message := &mqLogic.LMessage{
+		RedisKey:  redisKey,
+		UserId:    member,
+		Time:      now,
+		IsArticle: false,
+	}
+	body, _ := json.Json.Marshal(message)
+	publisher := mqLogic.LPublisher()
+	// 假如无法使用mq
+	if publisher == nil {
+		select {
+		case <-ticker.C:
+			go mqLogic.LikeCheckUpdate(message)
+			return
+		}
+	}
+	err := publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
+		amqp.Publishing{DeliveryMode: amqp.Persistent,
+			ContentType: "application/json",
+			Body:        body,
+		})
+	if err != nil {
+		log.Println("[RABBITMQ ERROR] ", err.Error())
+		select {
+		case <-ticker.C:
+			go mqLogic.LikeCheckUpdate(message)
+		}
+	}
 }

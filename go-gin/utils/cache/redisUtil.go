@@ -9,16 +9,23 @@ import (
 )
 
 const (
-	UserLogin         = "user:login:"
-	UserInfo          = "user:info:"
-	UserLocation      = "user:location"
+	UserLogin    = "user:login:"
+	UserInfo     = "user:info:"
+	UserLocation = "user:location:"
+
 	CommodityInfo     = "cmdty:info:"
 	CommodityHistory  = "cmdty:history:"
-	CommodityCategory = "cmdty:category"
+	CommodityCategory = "cmdty:category:"
 	CommodityCollect  = "cmdty:collect:"
 	CommodityView     = "cmdty:view:"
+	CommodityLike     = "cmdty:like:"
 
-	ORDERINFO = "order:info:"
+	ArticleContent = "atcl:content:"
+	ArticleCollect = "atcl:collect:"
+	ArticleView    = "atcl:view:"
+	ArticleLike    = "atcl:like:"
+
+	OrderInfo = "order:info:"
 )
 
 var (

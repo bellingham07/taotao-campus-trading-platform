@@ -16,7 +16,7 @@ func JWTAuthenticate(c *gin.Context) {
 	authHeader := c.Request.Header.Get("Authorization")
 	log.Println(authHeader)
 	if authHeader == "" {
-		c.JSON(http.StatusUnauthorized, response.ErrorMsg("访问失败,请登录!"))
+		c.JSON(http.StatusUnauthorized, response.ErrorMsg("访问失败,请登录!😼"))
 		c.Abort()
 		return
 	}
@@ -27,7 +27,7 @@ func JWTAuthenticate(c *gin.Context) {
 		return
 	}
 	id := claim.Id
-	key := cache.UserLogin + id
+	key := cache.UserLogin + strconv.FormatInt(id, 10)
 	err = cache.RedisUtil.EXPIRE(key, 7*24*time.Hour)
 	if err != nil {
 		log.Println(err.Error())
@@ -44,14 +44,13 @@ func JWTAuthenticate(c *gin.Context) {
 
 func GetUserIdStr(c *gin.Context) string {
 	userIdAny, _ := c.Get("userid")
-	userIdStr := userIdAny.(string)
-	return userIdStr
+	userIdStr := userIdAny.(int64)
+	return strconv.FormatInt(userIdStr, 10)
 }
 
 func GetUserId(c *gin.Context) int64 {
 	userIdAny, _ := c.Get("userid")
-	userIdStr := userIdAny.(string)
-	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+	userId := userIdAny.(int64)
 	return userId
 }
 

@@ -15,6 +15,7 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 	g.GET("/:id", commodityApi.InfoApi.GetInfoById)
 	g.GET("/list/:option", commodityApi.InfoApi.ListByOption)
 
+	// 发布相关
 	ig := g.Group("", middleware.JWTAuthenticate)
 	{
 		ig.POST("/sellsave", commodityApi.InfoApi.SellSave)
@@ -46,4 +47,10 @@ func (*CommodityRouter) InitCommodityApiRouter(g *gin.RouterGroup) {
 		cag.DELETE("/:id", commodityApi.TagApi.Remove)
 	}
 
+	// 商品点赞
+	lg := g.Group("/like", middleware.JWTAuthenticate)
+	{
+		lg.GET("/:id", commodityApi.InfoApi.Like)
+		lg.DELETE("/:id", commodityApi.InfoApi.Unlike)
+	}
 }

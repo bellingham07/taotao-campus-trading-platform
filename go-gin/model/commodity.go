@@ -18,6 +18,7 @@ type CommodityInfo struct {
 	PublishAt time.Time `json:"publishAt"` // datetime，发布时间
 	Collect   int64     `json:"collect"`   // 收藏数
 	View      int64     `json:"view"`      // 查看数量
+	Like      int       `json:"like"`
 }
 
 // CommodityAsset 商品介绍管理的图片

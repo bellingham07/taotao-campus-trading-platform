@@ -3,14 +3,13 @@ package utils
 import (
 	"com.xpdj/go-gin/model"
 	"github.com/golang-jwt/jwt/v4"
-	"strconv"
 	"time"
 )
 
 const SECRETKEY = "xpdj"
 
 type Claims struct {
-	Id     string `json:"id"`
+	Id     int64  `json:"id"`
 	Name   string `json:"name"`
 	Avatar string `json:"avatar"`
 	jwt.RegisteredClaims
@@ -18,7 +17,7 @@ type Claims struct {
 
 func GenerateToken(user *model.UserInfo) (string, error) {
 	claim := &Claims{
-		Id:     strconv.FormatInt(user.Id, 10),
+		Id:     user.Id,
 		Name:   user.Name,
 		Avatar: user.Avatar,
 		RegisteredClaims: jwt.RegisteredClaims{

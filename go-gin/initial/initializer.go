@@ -3,9 +3,9 @@ package initial
 import (
 	"com.xpdj/go-gin/config"
 	ossLogic "com.xpdj/go-gin/logic/oss"
+	"com.xpdj/go-gin/logic/rabbitmq"
 	"com.xpdj/go-gin/repository"
 	"com.xpdj/go-gin/utils/cache"
-	"com.xpdj/go-gin/utils/mq"
 	"github.com/yitter/idgenerator-go/idgen"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -26,7 +26,7 @@ func Initializer() {
 		go repository.InitMysql(_config.MysqlConfig)
 		go cache.InitRedis(_config.RedisConfig)
 		go ossLogic.InitOSS(_config.OSSConfig)
-		go mq.InitRabbitMQ(_config.RabbitMQConfig)
+		go mqLogic.InitRabbitMQ(_config.RabbitMQConfig)
 		go idgen.SetIdGenerator(options)
 	}
 }

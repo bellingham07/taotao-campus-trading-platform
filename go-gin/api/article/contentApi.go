@@ -7,6 +7,7 @@ import (
 	"com.xpdj/go-gin/router/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type ContentApi struct {
@@ -43,8 +44,37 @@ func (*ContentApi) Save(c *gin.Context) {
 
 func (*ContentApi) GetById(c *gin.Context) {
 	idStr := c.Param("id")
-	userIdAny, exists := c.Get("userid")
-	if !exists {
-
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
+		return
 	}
+	userIdAny, isLogin := c.Get("userid")
+	var userIdStr = ""
+	if isLogin {
+		userIdStr = userIdAny.(string)
+	}
+	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
+	c.JSON(http.StatusOK, articleLogic.ContentLogic.GetById(id, userId))
+
+}
+
+func (a *ContentApi) Like(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
+		return
+	}
+	c.JSON(http.StatusOK, articleLogic.ContentLogic.Like(id, middleware.GetUserId(c)))
+}
+
+func (a *ContentApi) Unlike(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.ErrorMsg("请求参数错误！"))
+		return
+	}
+	c.JSON(http.StatusOK, articleLogic.ContentLogic.Unlike(id, middleware.GetUserId(c)))
 }

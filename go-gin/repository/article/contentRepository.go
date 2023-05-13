@@ -50,9 +50,18 @@ func (*ArticleContentRepository) RandomListByType(option int) (infos []model.Com
 	return infos
 }
 
-func (*ArticleContentRepository) UpdateViewById(id, count int64) interface{} {
+func (*ArticleContentRepository) UpdateViewById(id, count int64) error {
 	if err := repository.GetDB().Table(article_content()).Where("id = ?", id).Update("view = view + ?", count).Error; err != nil {
 		log.Println("[GORM ERROR] ArticleContent UpdateViewById Fail, Error: " + err.Error())
+		return err
+	}
+	return nil
+}
+
+func (*ArticleContentRepository) UpdateLikeById(id int64) error {
+	log.Println(123123)
+	if err := repository.GetDB().Raw("update ? set like = like + 1 where id = ?", article_content(), id).Error; err != nil {
+		log.Println("[GORM ERROR] UserInfo UpdateLikeById Fail, Error: " + err.Error())
 		return err
 	}
 	return nil

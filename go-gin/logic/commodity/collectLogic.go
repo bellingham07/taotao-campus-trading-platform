@@ -1,10 +1,9 @@
 package commodityLogic
 
 import (
-	mqLogic "com.xpdj/go-gin/logic/mq"
+	mqLogic "com.xpdj/go-gin/logic/rabbitmq"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/utils/cache"
-	"com.xpdj/go-gin/utils/mq"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
@@ -32,22 +31,22 @@ func (*CommodityCollectLogic) Collect(id, userIdStr string) gin.H {
 func CollectUpdatePublisher(redisKey string, member int64, isCollect bool) {
 	now := time.Now()
 	ticker := time.NewTicker(time.Second * 30)
-	message := mq.CcMessage{
+	message := &mqLogic.CcMessage{
 		RedisKey:  redisKey,
 		UserId:    member,
 		Time:      now,
 		IsCollect: isCollect,
 	}
 	body, _ := json.Marshal(message)
-	publisher := mq.CcPublisher()
+	publisher := mqLogic.CcPublisher()
 	// 假如无法使用mq
 	if publisher == nil {
 		select {
 		case <-ticker.C:
 			if isCollect {
-				go mqLogic.CollectCheckUpdate(redisKey, member, now)
+				go mqLogic.CollectCheckUpdate(message)
 			} else {
-				go mqLogic.CollectCheckDelete(redisKey, member)
+				go mqLogic.CollectCheckDelete(message)
 			}
 			return
 		}
@@ -62,9 +61,9 @@ func CollectUpdatePublisher(redisKey string, member int64, isCollect bool) {
 		select {
 		case <-ticker.C:
 			if isCollect {
-				go mqLogic.CollectCheckUpdate(redisKey, member, now)
+				go mqLogic.CollectCheckUpdate(message)
 			} else {
-				go mqLogic.CollectCheckDelete(redisKey, member)
+				go mqLogic.CollectCheckDelete(message)
 			}
 			return
 		}

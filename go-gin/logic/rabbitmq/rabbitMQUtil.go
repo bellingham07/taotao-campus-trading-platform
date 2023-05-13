@@ -1,4 +1,4 @@
-package mq
+package mqLogic
 
 import (
 	"com.xpdj/go-gin/config"
@@ -67,22 +67,29 @@ func (r *RabbitMQ) failOnErr(err error, message string) {
 }
 
 const (
+	// 商品收藏相关
 	CommodityCollectExchange     = "taotao_commodity_collect_exchange"
 	CommodityCollectDeadExchange = "taotao_commodity_collect_exchange_dead"
 	CommodityCollectQueue        = "taotao_commodity_collect"
 	CommodityCollectDeadQueue    = "taotao_commodity_collect_dead"
 
+	// 浏览数相关（商品和文章）
 	ViewExchange     = "taotao_view_exchange"
 	ViewDeadExchange = "taotao_view_exchange_dead"
 	ViewQueue        = "taotao_view"
 	ViewDeadQueue    = "taotao_view_dead"
 
+	// 用户收藏相关
 	UserCollectExchange     = "taotao_user_collect_exchange"
 	UserCollectDeadExchange = "taotao_user_collect_exchange_dead"
 	UserCollectQueue        = "taotao_user_collect"
 	UserCollectDeadQueue    = "taotao_user_collect_dead"
 
-	LikeQueue = "taotao_delay_like"
+	// 点赞相关（商品和文章）
+	LikeExchange     = "taotao_like_exchange"
+	LikeDeadExchange = "taotao_like_exchange_dead"
+	LikeQueue        = "taotao_like"
+	LikeDeadQueue    = "taotao_like_dead"
 )
 
 type CcMessage struct {
@@ -96,4 +103,11 @@ type VMessage struct {
 	RedisKey    string
 	Time        time.Time
 	IsCommodity bool
+}
+
+type LMessage struct {
+	RedisKey  string
+	Time      time.Time
+	UserId    int64
+	IsArticle bool
 }
