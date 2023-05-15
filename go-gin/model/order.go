@@ -3,19 +3,19 @@ package model
 import "time"
 
 type OrderInfo struct {
-	Id            int64
-	SellerId      int64
-	SellerName    string
-	BuyerId       int64
-	BuyerName     string
-	CommodityId   int64
-	CommodityName string
-	Payment       float64
-	Location      string
-	Status        int8
-	CreateAt      time.Time
-	DoneAt        time.Time
-	IsGood        string
+	Id            int64     `json:"id"`
+	SellerId      int64     `json:"sellerId"`
+	SellerName    string    `json:"sellerName"`
+	BuyerId       int64     `json:"buyerId"`
+	BuyerName     string    `json:"buyerName"`
+	CommodityId   int64     `json:"commodityId"`
+	CommodityName string    `json:"commodityName"`
+	Payment       float64   `json:"payment"`
+	Location      string    `json:"location"`
+	Status        int8      `json:"status"`
+	CreateAt      time.Time `json:"createAt"`
+	DoneAt        time.Time `json:"doneAt"`
+	IsGood        string    `json:"isGood"`
 }
 
 type OrderComment struct {

@@ -2,6 +2,7 @@ package api
 
 import (
 	articleApi "com.xpdj/go-gin/api/article"
+	chatApi "com.xpdj/go-gin/api/chat"
 	commodityApi "com.xpdj/go-gin/api/commodity"
 	fileApi "com.xpdj/go-gin/api/file"
 	messageApi "com.xpdj/go-gin/api/message"
@@ -16,6 +17,7 @@ type SystemApi struct {
 	OrderApi
 	ArticleApi
 	MessageApi
+	ChatApi
 }
 
 var SystemApis = new(SystemApi)
@@ -50,4 +52,9 @@ type ArticleApi struct {
 
 type MessageApi struct {
 	messageApi.CommentApi
+}
+
+type ChatApi struct {
+	chatApi.RoomApi
+	chatApi.MessageApi
 }

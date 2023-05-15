@@ -8,7 +8,7 @@ import (
 	articleRepository "com.xpdj/go-gin/repository/article"
 	commodityRepository "com.xpdj/go-gin/repository/commodity"
 	"com.xpdj/go-gin/utils/cache"
-	"com.xpdj/go-gin/utils/json"
+	"com.xpdj/go-gin/utils/jsonUtil"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
@@ -135,7 +135,7 @@ func updateCommodityView(id int64) {
 		}
 	}
 
-	body, _ := json.Json.Marshal(vMessage)
+	body, _ := jsonUtil.Json.Marshal(vMessage)
 	err = publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
 		amqp.Publishing{
 			ContentType: "application/json",
@@ -211,7 +211,7 @@ func LikeUpdatePublisher(redisKey string, member int64) {
 		Time:      now,
 		IsArticle: false,
 	}
-	body, _ := json.Json.Marshal(message)
+	body, _ := jsonUtil.Json.Marshal(message)
 	publisher := mqLogic.LPublisher()
 	// 假如无法使用mq
 	if publisher == nil {

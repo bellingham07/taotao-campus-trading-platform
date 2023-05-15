@@ -4,6 +4,7 @@ import (
 	"com.xpdj/go-gin/model"
 	"com.xpdj/go-gin/repository"
 	"log"
+	"time"
 )
 
 var ArticleContent = new(ArticleContentRepository)
@@ -48,6 +49,14 @@ func (*ArticleContentRepository) RandomListByType(option int) (infos []model.Com
 		return nil
 	}
 	return infos
+}
+
+type RoomRecord struct {
+	Id      int64
+	RoomId  int64
+	Content int64
+	time    time.Time
+	UserId  int64
 }
 
 func (*ArticleContentRepository) UpdateViewById(id, count int64) error {

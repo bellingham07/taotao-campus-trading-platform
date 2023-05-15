@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var TagRepository = new(CommodityTagRepository)
+var CommodityTag = new(CommodityTagRepository)
 
 type CommodityTagRepository struct {
 }

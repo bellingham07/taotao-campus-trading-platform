@@ -6,7 +6,7 @@ import (
 	"com.xpdj/go-gin/model/response"
 	articleRepository "com.xpdj/go-gin/repository/article"
 	"com.xpdj/go-gin/utils/cache"
-	"com.xpdj/go-gin/utils/json"
+	"com.xpdj/go-gin/utils/jsonUtil"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 	"log"
@@ -138,7 +138,7 @@ func updateArticleView(id int64) {
 			return
 		}
 	}
-	body, _ := json.Json.Marshal(vMessage)
+	body, _ := jsonUtil.Json.Marshal(vMessage)
 	err = publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
 		amqp.Publishing{
 			ContentType: "application/json",
@@ -184,7 +184,7 @@ func LikeUpdatePublisher(redisKey string, member int64) {
 		Time:      now,
 		IsArticle: true,
 	}
-	body, _ := json.Json.Marshal(message)
+	body, _ := jsonUtil.Json.Marshal(message)
 	publisher := mqLogic.LPublisher()
 	// 假如无法使用mq
 	if publisher == nil {

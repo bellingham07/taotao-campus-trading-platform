@@ -11,6 +11,7 @@ type SystemRouterGroup struct {
 	OrderRouter
 	ArticleRouter
 	FileRouter
+	ChatRouter
 	MessageRouter
 }
 
@@ -25,8 +26,10 @@ func Routers() *gin.Engine {
 		myRouter.CommodityRouter.InitCommodityApiRouter(groupRegistry.Group("/cmdty"))
 		myRouter.FileRouter.InitFileApiRouter(groupRegistry.Group("/file"))
 		myRouter.OrderRouter.InitOrderApiRouter(groupRegistry.Group("/order"))
-		myRouter.MessageRouter.InitMessageApiRouter(groupRegistry.Group("/msg"))
+		myRouter.ChatRouter.InitChatApiRouter(groupRegistry.Group("/chat"))
 		myRouter.ArticleRouter.InitArticleApiRouter(groupRegistry.Group("/atcl"))
+		myRouter.MessageRouter.InitMessageApiRouter(groupRegistry.Group("/msg"))
+
 	}
 
 	return router

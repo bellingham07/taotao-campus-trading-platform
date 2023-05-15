@@ -13,9 +13,3 @@ type MessageContent struct {
 	Content  string
 	time     time.Time
 }
-
-type MessageChat struct {
-	Id      int64
-	Content string
-	time.Time
-}

@@ -10,23 +10,15 @@ type CommodityInfo struct {
 	Model     string    `json:"model"` // 型号
 	Name      string    `json:"name"`  // 名称
 	Price     float64   `json:"price"` // 商品价格
-	Intro     int64     `json:"articleId"`
+	Intro     int64     `json:"intro"`
 	Status    int64     `json:"status"`    // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
 	Tag       string    `json:"tag"`       // 分类名
-	Type      int64     `json:"type"`      // 1为售卖商品，2为收商品
+	Type      int64     `json:"type"`      // 1为售卖商品，2为收购商品
 	CreateAt  time.Time `json:"createAt"`  // datetime，创建时间
 	PublishAt time.Time `json:"publishAt"` // datetime，发布时间
 	Collect   int64     `json:"collect"`   // 收藏数
 	View      int64     `json:"view"`      // 查看数量
 	Like      int       `json:"like"`
-}
-
-// CommodityAsset 商品介绍管理的图片
-type CommodityAsset struct {
-	Id          int64  `json:"id"` // bigint自增
-	AssetId     string `json:"asset_id"`
-	CommodityId int64  `json:"commodity_id"`
-	UserId      string `json:"user_id"`
 }
 
 type CommodityCollect struct {
