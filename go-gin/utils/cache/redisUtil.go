@@ -2,8 +2,8 @@ package cache
 
 import (
 	"com.xpdj/go-gin/config"
+	"com.xpdj/go-gin/utils/jsonUtil"
 	"context"
-	"encoding/json"
 	"github.com/redis/go-redis/v9"
 	"time"
 )
@@ -59,7 +59,7 @@ func (rc *_RedisClient) GET(key string) (string, error) {
 }
 
 func (rc *_RedisClient) SET2JSON(key string, value any, expiration time.Duration) error {
-	jsonStr, err := json.Marshal(value)
+	jsonStr, err := jsonUtil.Json.Marshal(value)
 	if err != nil {
 		return err
 	}

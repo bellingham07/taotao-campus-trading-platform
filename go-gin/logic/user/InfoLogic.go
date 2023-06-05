@@ -7,7 +7,7 @@ import (
 	userRepository "com.xpdj/go-gin/repository/user"
 	"com.xpdj/go-gin/utils"
 	"com.xpdj/go-gin/utils/cache"
-	"encoding/json"
+	"com.xpdj/go-gin/utils/jsonUtil"
 	"github.com/gin-gonic/gin"
 	"github.com/yitter/idgenerator-go/idgen"
 	"golang.org/x/crypto/bcrypt"
@@ -31,7 +31,7 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 	if err != nil || err2 != nil {
 		return response.ErrorMsg("账号或密码错误！")
 	}
-	userStr, _ := json.Marshal(userDB)
+	userStr, _ := jsonUtil.Json.Marshal(userDB)
 	key := cache.UserLogin + strconv.FormatInt(userDB.Id, 10)
 	err = cache.RedisUtil.SET2JSON(key, userStr, 7*24*time.Hour)
 	if err != nil {
@@ -44,22 +44,23 @@ func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
 
 func (*UserInfoLogic) GetUserById(id int64) gin.H {
 	key := cache.UserInfo + strconv.FormatInt(id, 10)
-	userStr, _ := cache.RedisUtil.GET(key)
+	userStr, err := cache.RedisUtil.GET(key)
 	// 内容为“”，代表数据库中没有
-	if userStr == "" {
+	if userStr == "" && err == nil {
+		log.Println(userStr)
 		return response.ErrorMsg("非法参数")
 	}
 	// 数据库有
 	user, err := userRepository.UserInfo.QueryById(id)
 	if err != nil {
-		err := cache.RedisUtil.SET2JSON(key, "", 5*time.Minute)
+		err = cache.RedisUtil.SET2JSON(key, "", 5*time.Minute)
 		if err != nil {
 			log.Println("GetUserById 保存至redis失败：" + err.Error())
 		}
 		return response.Error()
 	}
 	_ = cache.RedisUtil.SET2JSON(key, user, 5*time.Minute)
-	_ = json.Unmarshal([]byte(userStr), user)
+	_ = jsonUtil.Json.Unmarshal([]byte(userStr), user)
 	return response.OkData(user)
 }
 

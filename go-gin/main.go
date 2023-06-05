@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	go initial.Initializer()
+	initial.Initializer()
 	server.ListenAndServe("12345")
 
 }

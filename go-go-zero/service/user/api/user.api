@@ -1,0 +1,31 @@
+syntax = "v1"
+
+type (
+	LoginReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	LoginResp {
+		Token string `json:"token"`
+	}
+
+	RegisterReq {
+		Username  string `json:"username"`
+		Password1 string `json:"password1"`
+		Password2 string `json:"password2"`
+	}
+)
+
+@server(
+	//    jwt: Auth
+	group: user
+	prefix: /user
+)
+service user {
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+	
+	@handler register
+	post /register (RegisterReq) returns ()
+}
