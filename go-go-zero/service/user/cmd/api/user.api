@@ -1,0 +1,121 @@
+syntax = "v1"
+
+@server(
+	prefix: /user
+)
+service user-api {
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+	
+	@handler register
+	post /register (RegisterReq) returns (BaseResp)
+}
+
+@server(
+	group: uinfo
+	prefix: /user/info
+)
+service user-api {
+	@handler getById
+	get /:id (IdReq) returns (UserInfoResp)
+	
+	@handler updateById
+	post / (UserInfoReq) returns (UserInfoResp)
+}
+
+@server(
+	group: follow
+	prefix: /user/follow
+)
+service user-api {
+	@handler follow
+	get /:id (IdReq) returns (BaseResp)
+	
+	@handler unfollow
+	delete /:id (IdReq) returns (BaseResp)
+	
+	@handler listById
+	get /list/:id (IdReq) returns (BaseResp)
+}
+
+@server(
+	group: dorm
+	prefix: /user/dorm
+)
+service user-api {
+	@handler list
+	get / returns (UserInfoResp)
+}
+
+// base
+type (
+	IdReq {
+		Id int64 `json:"id"`
+	}
+
+	BaseResp {
+		Code int8   `json:"code"`
+		Msg  string `json:"msg"`
+	}
+)
+
+// request
+type (
+	LoginReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	RegisterReq {
+		Username  string `json:"username"`
+		Password1 string `json:"password1"`
+		Password2 string `json:"password2"`
+	}
+
+	UserInfoReq {
+		IdReq
+		Username string `json:"username"` // 账户
+		Name     string `json:"name"`     // 姓名
+		Gender   string `json:"gender"`   // 性别
+		Phone    string `json:"phone"`    // 手机号
+		Avatar   string `json:"avatar"`   // 头像url
+		Intro    string `json:"intro"`    // 个人简介
+		Location string `json:"location"` // 住址
+	}
+)
+
+// response
+type (
+	LoginResp {
+		Token string `json:"token"`
+	}
+
+	RegisterResp {
+		BaseResp
+	}
+
+	UserInfoResp {
+		IdReq
+		Username  string `json:"username"`  // 账户
+		Name      string `json:"name"`      // 姓名
+		Gender    string `json:"gender"`    // 性别
+		Phone     string `json:"phone"`     // 手机号
+		Avatar    string `json:"avatar"`    // 头像url
+		Intro     string `json:"intro"`     // 个人简介
+		Location  string `json:"location"`  // 住址
+		LastLogin string `json:"lastLogin"` // date，上次登录时间
+		Status    int64  `json:"status"`    // 用户账户状态
+		Call      string `json:"call"`      // 称号
+		Done      int64  `json:"done"`      // 成交数
+		Fans      int64  `json:"fans"`      // 粉丝数
+		Follow    int64  `json:"follow"`    // 关注数
+		Like      int64  `json:"like"`      // 点赞数
+		Negative  int64  `json:"negative"`  // 差评次数
+		Positive  int64  `json:"positive"`  // 好评次数
+	}
+
+	DormResp {
+		Id   int    `json:"id"`
+		Name string `json:"name"`
+	}
+)
