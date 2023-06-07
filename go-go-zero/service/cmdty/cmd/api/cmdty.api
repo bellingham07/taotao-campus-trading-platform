@@ -1,0 +1,44 @@
+syntax = "v1"
+
+@server(
+	group: collect
+	prefix: /cmdty/collect
+	//	middleware: auth
+)
+service cmdty-api {
+	@handler collect
+	get /:id (IdReq) returns (BaseResp)
+	
+	@handler uncollect
+	delete /:id (IdReq) returns (BaseResp)
+	
+	@handler list
+	get /list returns ([]CollectResponse)
+}
+
+// base
+type (
+	IdReq {
+		Id int64 `json:"id"`
+	}
+
+	BaseResp {
+		Code int8   `json:"code"`
+		Msg  string `json:"msg"`
+	}
+)
+
+// request
+
+// response
+type (
+	CollectResponse {
+		Id       int64   `json:"id"`
+		UserId   int64   `json:"userId"`
+		CmdtyId  int64   `json:"cmdtyId"`
+		Cover    string  `json:"cover"`
+		Price    float64 `json:"price"`
+		Status   int64   `json:"status"`
+		CreateAt string  `json:"createAt"`
+	}
+)

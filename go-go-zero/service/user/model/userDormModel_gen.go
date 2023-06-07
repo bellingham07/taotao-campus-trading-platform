@@ -38,9 +38,9 @@ type (
 	UserDorm struct {
 		Id       int64     `db:"id"`        // id
 		Name     string    `db:"name"`      // 地址名
-		CreateBy time.Time `db:"create_by"` // 管理员的id
+		CreateBy int64     `db:"create_by"` // 管理员的id
 		CreateAt time.Time `db:"create_at"` // 创建时间
-		UpdateBy time.Time `db:"update_by"` // 管理员的id
+		UpdateBy int64     `db:"update_by"` // 管理员的id
 		UpdateAt time.Time `db:"update_at"` // 更新时间
 	}
 )

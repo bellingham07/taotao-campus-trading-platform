@@ -25,8 +25,7 @@ type UserInfoLogic struct {
 }
 
 func (*UserInfoLogic) Login(loginUser *request.LoginUser) gin.H {
-	username := loginUser.Username
-	userDB, err := userRepository.UserInfo.QueryByUsername(username)
+	userDB, err := userRepository.UserInfo.QueryByUsername(loginUser.Username)
 	err2 := bcrypt.CompareHashAndPassword([]byte(userDB.Password), []byte(loginUser.Password))
 	if err != nil || err2 != nil {
 		return response.ErrorMsg("账号或密码错误！")

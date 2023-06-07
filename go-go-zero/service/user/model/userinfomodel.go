@@ -1,6 +1,10 @@
 package model
 
-import "github.com/zeromicro/go-zero/core/stores/sqlx"
+import (
+	"context"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 var _ UserInfoModel = (*customUserInfoModel)(nil)
 
@@ -9,7 +13,7 @@ type (
 	// and implement the added methods in customUserInfoModel.
 	UserInfoModel interface {
 		userInfoModel
-		QueryByUsername(username string) *UserInfo
+		QueryInfoByUsername(username string) *UserInfo
 	}
 
 	customUserInfoModel struct {
@@ -24,7 +28,13 @@ func NewUserInfoModel(conn sqlx.SqlConn) UserInfoModel {
 	}
 }
 
-func (m *defaultUserInfoModel) QueryByUsername(username string) *UserInfo {
-	//defaultUserInfoModel.
-	return nil
+func (m *defaultUserInfoModel) QueryInfoByUsername(username string) *UserInfo {
+	ui := new(UserInfo)
+	query := "select * from user_info where username = ?"
+	err := m.conn.QueryRowCtx(context.Background(), ui, query, username)
+	if err != nil {
+		logx.Errorf("[DB ERROR] : %v", err)
+		return nil
+	}
+	return ui
 }

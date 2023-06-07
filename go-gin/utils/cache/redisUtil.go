@@ -25,7 +25,7 @@ const (
 	ArticleView    = "atcl:view:"
 	ArticleLike    = "atcl:like:"
 
-	OrderInfo = "order:info:"
+	OrderInfo = "trade:info:"
 )
 
 var (

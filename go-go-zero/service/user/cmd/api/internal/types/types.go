@@ -33,6 +33,7 @@ type UserInfoReq struct {
 }
 
 type LoginResp struct {
+	BaseResp
 	Token string `json:"token"`
 }
 

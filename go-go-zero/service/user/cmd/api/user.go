@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/yitter/idgenerator-go/idgen"
+	"go-go-zero/common/middleware"
 
 	"go-go-zero/service/user/cmd/api/internal/config"
 	"go-go-zero/service/user/cmd/api/internal/handler"
@@ -25,6 +27,11 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	server.Use(middleware.JWTAuthenticate)
+
+	options := idgen.NewIdGeneratorOptions(c.Idgen.WorkerId)
+	idgen.SetIdGenerator(options)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

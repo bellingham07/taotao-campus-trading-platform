@@ -87,6 +87,7 @@ type (
 // response
 type (
 	LoginResp {
+		BaseResp
 		Token string `json:"token"`
 	}
 

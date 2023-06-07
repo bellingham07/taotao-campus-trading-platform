@@ -3,8 +3,11 @@ module go-go-zero
 go 1.20
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/yitter/idgenerator-go v1.3.3
 	github.com/zeromicro/go-zero v1.5.2
+	golang.org/x/crypto v0.6.0
 )
 
 require (
@@ -18,7 +21,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
 	github.com/google/uuid v1.3.0 // indirect
