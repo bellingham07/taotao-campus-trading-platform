@@ -4,8 +4,8 @@ package handler
 import (
 	"net/http"
 
-	dorm "go-go-zero/service/user/cmd/api/internal/handler/dorm"
 	follow "go-go-zero/service/user/cmd/api/internal/handler/follow"
+	location "go-go-zero/service/user/cmd/api/internal/handler/location"
 	uinfo "go-go-zero/service/user/cmd/api/internal/handler/uinfo"
 	"go-go-zero/service/user/cmd/api/internal/svc"
 
@@ -71,9 +71,9 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/",
-				Handler: dorm.ListHandler(serverCtx),
+				Handler: location.ListHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/user/dorm"),
+		rest.WithPrefix("/user/location"),
 	)
 }

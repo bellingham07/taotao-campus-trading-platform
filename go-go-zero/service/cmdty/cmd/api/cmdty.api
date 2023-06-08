@@ -9,7 +9,7 @@ service cmdty-api {
 	get /:id (IdReq) returns (InfoResp)
 	
 	@handler listByUidAndOption
-	get / returns ([]InfoRespLite)
+	get / returns (ListInfoLiteResp)
 	
 	@handler sellsave
 	post /sellsave (InfoReq) returns (BaseResp)
@@ -30,19 +30,19 @@ service cmdty-api {
 )
 service cmdty-api {
 	@handler collect
-	get /:id (IdReq) returns (BaseResp)
+	get /:id returns (BaseResp)
 	
 	@handler uncollect
-	delete /:id (IdReq) returns (BaseResp)
+	delete /:id returns (BaseResp)
 	
 	@handler list
-	get /list returns ([]CollectResp)
+	get /list returns (CollectListResp)
 }
 
 // base
 type (
 	IdReq {
-		Id int64 `json:"id"`
+		Id int64 `path:"id" json:"id"`
 	}
 
 	BaseResp {
@@ -71,7 +71,7 @@ type (
 
 // response
 type (
-	InfoResp {
+	Info {
 		Id        int64   `json:"id"`     // id
 		UserId    int64   `json:"userId"` // 用户id
 		Cover     string  `json:"cover"`  // 封面图片
@@ -90,7 +90,12 @@ type (
 		Like      int64   `json:"like"`
 	}
 
-	InfoRespLite {
+	InfoResp {
+		BaseResp
+		Info
+	}
+
+	InfoLite {
 		Id     int64   `json:"id"`     // id
 		UserId int64   `json:"userId"` // 用户id
 		Cover  string  `json:"cover"`
@@ -98,7 +103,12 @@ type (
 		Intro  string  `json:"intro"`
 	}
 
-	CollectResp {
+	ListInfoLiteResp {
+		BaseResp
+		Data []InfoLite `json:"data"`
+	}
+
+	Collect {
 		Id       int64   `json:"id"`
 		UserId   int64   `json:"userId"`
 		CmdtyId  int64   `json:"cmdtyId"`
@@ -106,5 +116,10 @@ type (
 		Price    float64 `json:"price"`
 		Status   int64   `json:"status"`
 		CreateAt string  `json:"createAt"`
+	}
+
+	CollectListResp {
+		BaseResp
+		Data []Collect `json:"data"`
 	}
 )

@@ -2,11 +2,10 @@ package cinfo
 
 import (
 	"context"
-
-	"go-go-zero/service/cmdty/cmd/api/internal/svc"
-	"go-go-zero/service/cmdty/cmd/api/internal/types"
+	"go-go-zero/service/cmdty/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 )
 
 type ListByUidAndOptionLogic struct {
@@ -23,7 +22,7 @@ func NewListByUidAndOptionLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-func (l *ListByUidAndOptionLogic) ListByUidAndOption() (resp []types.InfoRespLite, err error) {
+func (l *ListByUidAndOptionLogic) ListByUidAndOption() (resp []*model.CmdtyInfo, err error) {
 	// todo: add your logic here and delete this line
 
 	return

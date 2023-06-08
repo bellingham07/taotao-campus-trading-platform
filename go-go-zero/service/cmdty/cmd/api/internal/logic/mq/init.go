@@ -10,16 +10,16 @@ import (
 func InitRabbitMQ(svcCtx *svc.ServiceContext) {
 	RabbitMQ = NewRabbitMQLogic(context.Background(), svcCtx)
 
-	go InitCcPublisher(svcCtx.RabbitMQConn)
+	go InitCcPublisher(svcCtx.RmqCore)
 
-	go StartCcConsumer(svcCtx.MQUrl)
+	go StartCcConsumer(svcCtx.RmqCore.Conn)
 }
 
-func InitCcPublisher(conn *amqp.Connection) {
+func InitCcPublisher(core *utils.RabbitmqCore) {
 	// 获取connection
-	r := utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", conn)
+	r := utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", core.Conn, core.Channel)
 	if r == nil {
-		panic("RabbitMQ 初始化 cmdty collect publisher 错误！")
+		panic("[RABBITMQ ERROR] InitCcPublisher 初始化 cmdty collect publisher 错误！")
 	}
 	// 延迟队列配置
 	delaySeconds := 1000
@@ -29,7 +29,7 @@ func InitCcPublisher(conn *amqp.Connection) {
 	// 声明ttl队列的交换机
 	err := r.Channel.ExchangeDeclare(exchangeName, "direct", true, false, false, false, nil)
 	if err != nil {
-		panic("[RABBITMQ ERROR] ExchangeDeclare error : " + err.Error())
+		panic("[RABBITMQ ERROR] InitCcPublisher ExchangeDeclare 错误 : " + err.Error())
 		return
 	}
 	args := amqp.Table{

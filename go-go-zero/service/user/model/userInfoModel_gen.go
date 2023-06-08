@@ -26,6 +26,7 @@ type (
 	userInfoModel interface {
 		Insert(ctx context.Context, data *UserInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*UserInfo, error)
+		FindOneByUsername(ctx context.Context, username string) (*UserInfo, error)
 		Update(ctx context.Context, data *UserInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -84,15 +85,29 @@ func (m *defaultUserInfoModel) FindOne(ctx context.Context, id int64) (*UserInfo
 	}
 }
 
+func (m *defaultUserInfoModel) FindOneByUsername(ctx context.Context, username string) (*UserInfo, error) {
+	var resp UserInfo
+	query := fmt.Sprintf("select %s from %s where `username` = ? limit 1", userInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, username)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserInfoModel) Insert(ctx context.Context, data *UserInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
 	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Username, data.Password, data.Name, data.Gender, data.Phone, data.Avatar, data.Intro, data.Location, data.LastLogin, data.Like, data.Status, data.Done, data.Call, data.Fans, data.Follow, data.Positive, data.Negative)
 	return ret, err
 }
 
-func (m *defaultUserInfoModel) Update(ctx context.Context, data *UserInfo) error {
+func (m *defaultUserInfoModel) Update(ctx context.Context, newData *UserInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Username, data.Password, data.Name, data.Gender, data.Phone, data.Avatar, data.Intro, data.Location, data.LastLogin, data.Like, data.Status, data.Done, data.Call, data.Fans, data.Follow, data.Positive, data.Negative, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Username, newData.Password, newData.Name, newData.Gender, newData.Phone, newData.Avatar, newData.Intro, newData.Location, newData.LastLogin, newData.Like, newData.Status, newData.Done, newData.Call, newData.Fans, newData.Follow, newData.Positive, newData.Negative, newData.Id)
 	return err
 }
 

@@ -1,4 +1,4 @@
-package dorm
+package location
 
 import (
 	"context"

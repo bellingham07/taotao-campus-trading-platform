@@ -36,9 +36,12 @@ type (
 	}
 
 	CmdtyCollect struct {
-		Id       int64     `db:"id"`        // id
-		UserId   int64     `db:"user_id"`   // 用户id
-		CmdtyId  int64     `db:"cmdty_id"`  // 商品id
+		Id       int64     `db:"id"`       // id
+		UserId   int64     `db:"user_id"`  // 用户id
+		CmdtyId  int64     `db:"cmdty_id"` // 商品id
+		Intro    string    `db:"intro"`    // 20字的简介
+		Cover    string    `db:"cover"`
+		Price    float64   `db:"price"`
 		Status   int64     `db:"status"`    // 1存在，0失效
 		CreateAt time.Time `db:"create_at"` // 创建时间
 	}
@@ -72,14 +75,14 @@ func (m *defaultCmdtyCollectModel) FindOne(ctx context.Context, id int64) (*Cmdt
 }
 
 func (m *defaultCmdtyCollectModel) Insert(ctx context.Context, data *CmdtyCollect) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, cmdtyCollectRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CmdtyId, data.Status)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, cmdtyCollectRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CmdtyId, data.Intro, data.Cover, data.Price, data.Status)
 	return ret, err
 }
 
 func (m *defaultCmdtyCollectModel) Update(ctx context.Context, data *CmdtyCollect) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, cmdtyCollectRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CmdtyId, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CmdtyId, data.Intro, data.Cover, data.Price, data.Status, data.Id)
 	return err
 }
 

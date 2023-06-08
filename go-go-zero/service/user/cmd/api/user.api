@@ -39,8 +39,8 @@ service user-api {
 }
 
 @server(
-	group: dorm
-	prefix: /user/dorm
+	group: location
+	prefix: /user/location
 )
 service user-api {
 	@handler list
@@ -73,7 +73,7 @@ type (
 	}
 
 	UserInfoReq {
-		IdReq
+		Id       int64  `json:"id"`
 		Username string `json:"username"` // 账户
 		Name     string `json:"name"`     // 姓名
 		Gender   string `json:"gender"`   // 性别
@@ -89,10 +89,6 @@ type (
 	LoginResp {
 		BaseResp
 		Token string `json:"token"`
-	}
-
-	RegisterResp {
-		BaseResp
 	}
 
 	UserInfoResp {
@@ -115,8 +111,13 @@ type (
 		Positive  int64  `json:"positive"`  // 好评次数
 	}
 
-	DormResp {
+	Location {
 		Id   int    `json:"id"`
 		Name string `json:"name"`
+	}
+
+	LocationListResp {
+		BaseResp
+		Data []Location `json:"data"`
 	}
 )

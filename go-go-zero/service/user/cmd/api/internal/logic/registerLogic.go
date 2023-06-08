@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"github.com/yitter/idgenerator-go/idgen"
 	"go-go-zero/service/user/model"
 	"golang.org/x/crypto/bcrypt"
@@ -35,7 +34,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.BaseResp, 
 	password1 := strings.TrimSpace(req.Password1)
 	password2 := strings.TrimSpace(req.Password2)
 	if equal := strings.Compare(password1, password2); equal != 0 {
-		return nil, errors.New("两次输入的密码不一样！")
+		return &types.BaseResp{Code: 0, Msg: "两次输入的密码不一样！"}, nil
 	}
 	password, err := bcrypt.GenerateFromPassword([]byte(password1), bcrypt.DefaultCost)
 	randNum := rand.Int31()
@@ -48,17 +47,11 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.BaseResp, 
 	}
 	_, err = model.UserInfoModel.Insert(l.svcCtx.UserInfo, l.ctx, ui)
 	if err == nil {
-		resp = &types.BaseResp{
-			Code: 1,
-			Msg:  "注册成功😊",
-		}
+		resp = &types.BaseResp{Code: 1, Msg: "注册成功😊"}
 		return
 	} else if strings.Contains(err.Error(), "Duplicate") {
-		resp = &types.BaseResp{
-			Code: 0,
-			Msg:  "来晚了一步，该账号已经被抢走了😭",
-		}
+		resp = &types.BaseResp{Code: 0, Msg: "来晚了一步，该账号已经被抢走了😭"}
 		return resp, nil
 	}
-	return nil, errors.New("注册失败🥲")
+	return &types.BaseResp{Code: 0, Msg: "注册失败啦😥"}, nil
 }

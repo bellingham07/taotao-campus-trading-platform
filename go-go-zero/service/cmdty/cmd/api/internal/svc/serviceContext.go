@@ -4,6 +4,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/streadway/amqp"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
 	"go-go-zero/service/cmdty/model"
 )
@@ -20,15 +21,18 @@ type ServiceContext struct {
 	RedisClient *redis.Client
 
 	// rabbitMQ
-	MQUrl        string
-	RabbitMQConn *amqp.Connection
+	RmqCore *utils.RabbitmqCore
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	c1 := sqlx.NewMysql(c.Mysql.Dsn)
-	c2, err := amqp.Dial(c.RabbitMQ.MQUrl)
+	c2, err := amqp.Dial(c.RabbitMQ.RmqUrl)
 	if err != nil {
-		panic("连接不到rabbitmq")
+		panic("[RABBITMQ ERROR] NewServiceContext 连接不到rabbitmq")
+	}
+	channel, err := c2.Channel()
+	if err != nil {
+		panic("[RABBITMQ ERROR] NewServiceContext 获取rabbitmq通道失败")
 	}
 	return &ServiceContext{
 		Config:       c,
@@ -40,7 +44,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Password: c.Redis.Password,
 			DB:       c.Redis.Db,
 		}),
-		MQUrl:        c.RabbitMQ.MQUrl,
-		RabbitMQConn: c2,
+		RmqCore: &utils.RabbitmqCore{
+			Conn:    c2,
+			Channel: channel,
+		},
 	}
 }

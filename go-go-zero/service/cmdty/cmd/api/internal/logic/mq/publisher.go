@@ -31,9 +31,10 @@ func CollectUpdatePublisher(redisKey string, member int64, isCollect bool, mqLog
 		}
 	}
 	err := publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
-		amqp.Publishing{DeliveryMode: amqp.Persistent,
-			ContentType: "application/json",
-			Body:        body,
+		amqp.Publishing{
+			DeliveryMode: amqp.Persistent,
+			ContentType:  "application/json",
+			Body:         body,
 		})
 	if err != nil {
 		logx.Infof("[RABBITMQ ERROR] : %v\n", err.Error())
@@ -50,5 +51,5 @@ func CollectUpdatePublisher(redisKey string, member int64, isCollect bool, mqLog
 }
 
 func newCcPublisher(mqLogic *RabbitMQLogic) *utils.RabbitMQ {
-	return utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", mqLogic.svcCtx.RabbitMQConn)
+	return utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", mqLogic.svcCtx.RmqCore.Conn, mqLogic.svcCtx.RmqCore.Channel)
 }

@@ -1,6 +1,8 @@
+USE `taotao_trading_user`;
+
 DROP TABLE `user_info`;
 DROP TABLE `user_call`;
-DROP TABLE `user_dorm`;
+DROP TABLE `user_location`;
 DROP TABLE `user_follow`;
 DROP TABLE `user_opt`;
 
@@ -47,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `user_follow`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `user_dorm`
+CREATE TABLE IF NOT EXISTS `user_location`
 (
     `id`        INT         NOT NULL COMMENT 'id',
     `name`      VARCHAR(20) NOT NULL COMMENT '地址名',
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `user_opt`
 (
     `id`       BIGINT            NOT NULL,
     `username` VARCHAR(20)       NOT NULL,
-    `password` VARCHAR(20)       NOT NULL,
+    `password` VARCHAR(255)      NOT NULL,
     `name`     VARCHAR(20)       NOT NULL,
     `status`   TINYINT DEFAULT 1 NOT NULL,
     `level`    TINYINT DEFAULT 1 NOT NULL,

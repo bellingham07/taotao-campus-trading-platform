@@ -6,13 +6,12 @@ import (
 	"log"
 )
 
-func StartCcConsumer(mqurl string) {
-	conn, err := amqp.Dial(mqurl)
+func StartCcConsumer(conn *amqp.Connection) {
+	channel, err := conn.Channel()
 	if err != nil {
-		panic("RabbitMQ 初始化 cmdty collect consumer 错误！")
+		panic("[RABBITMQ ERROR] 初始化 cmdty collect consumer 错误！" + err.Error())
 	}
-
-	r := utils.NewRabbitMQ(utils.CmdtyCollectDeadQueue, utils.CmdtyCollectDeadExchange, "cc", conn)
+	r := utils.NewRabbitMQ(utils.CmdtyCollectDeadQueue, utils.CmdtyCollectDeadExchange, "cc", conn, channel)
 
 	exchangeName := r.Exchange
 	queueName := r.QueueName
@@ -44,7 +43,7 @@ func StartCcConsumer(mqurl string) {
 		ccMessage := new(utils.CcMessage)
 		err = Json.Unmarshal(msg.Body, ccMessage)
 		if err != nil {
-			log.Printf("[RABBITMQ COMMODITYCOLLECT CONSUMER FAIL] Failed to unmarshal message: %v\n", err)
+			log.Printf("[RABBITMQ ERROR] Failed to unmarshal message: %v\n", err)
 			msg.Nack(false, false)
 			continue
 		}

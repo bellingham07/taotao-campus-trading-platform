@@ -2,11 +2,10 @@ package collect
 
 import (
 	"context"
-
-	"go-go-zero/service/cmdty/cmd/api/internal/svc"
-	"go-go-zero/service/cmdty/cmd/api/internal/types"
-
+	"errors"
 	"github.com/zeromicro/go-zero/core/logx"
+	"go-go-zero/service/cmdty/cmd/api/internal/svc"
+	"go-go-zero/service/cmdty/model"
 )
 
 type ListLogic struct {
@@ -23,8 +22,11 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-func (l *ListLogic) List() (resp []types.CollectResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *ListLogic) List() ([]*model.CmdtyCollect, error) {
+	var userId int64 = 408301323265285
+	ccList := l.svcCtx.CmdtyCollect.ListByUserId(userId)
+	if ccList == nil {
+		return nil, errors.New("出错啦😫")
+	}
+	return ccList, nil
 }

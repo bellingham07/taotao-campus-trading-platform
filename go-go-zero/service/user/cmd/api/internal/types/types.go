@@ -22,7 +22,7 @@ type RegisterReq struct {
 }
 
 type UserInfoReq struct {
-	IdReq
+	Id       int64  `json:"id"`
 	Username string `json:"username"` // 账户
 	Name     string `json:"name"`     // 姓名
 	Gender   string `json:"gender"`   // 性别
@@ -35,10 +35,6 @@ type UserInfoReq struct {
 type LoginResp struct {
 	BaseResp
 	Token string `json:"token"`
-}
-
-type RegisterResp struct {
-	BaseResp
 }
 
 type UserInfoResp struct {
@@ -61,7 +57,12 @@ type UserInfoResp struct {
 	Positive  int64  `json:"positive"`  // 好评次数
 }
 
-type DormResp struct {
+type Location struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
+}
+
+type LocationListResp struct {
+	BaseResp
+	Data []Location `json:"data"`
 }

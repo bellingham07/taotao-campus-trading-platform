@@ -31,8 +31,9 @@ func (l *CollectLogic) Collect(req *types.IdReq) (resp *types.BaseResp, err erro
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	var userId int64 = 408301323265285
 	userIdStr := "408301323265285"
-	err = l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Err()
-	if err != nil {
+	r, _ := l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Result()
+	if r == 0 {
+		//logx.Error("[REDIS ERROR] collect " + err.Error())
 		return nil, errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")
 	}
 	mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)

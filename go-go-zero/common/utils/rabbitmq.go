@@ -2,7 +2,6 @@ package utils
 
 import (
 	"github.com/streadway/amqp"
-	"log"
 	"time"
 )
 
@@ -11,7 +10,12 @@ var MQUrl string
 type (
 	// RabbitMQConf rabbitMQ配置
 	RabbitMQConf struct {
-		MQUrl string
+		RmqUrl string
+	}
+
+	RabbitmqCore struct {
+		Conn    *amqp.Connection
+		Channel *amqp.Channel
 	}
 
 	// RabbitMQ rabbitMQ结构体
@@ -25,15 +29,11 @@ type (
 	}
 )
 
-//func InitRabbitMQ(config *RabbitMQConf) {
-//	MQUrl = config.MQUrl
-//	initConsumers()
-//}
-
 // NewRabbitMQ 创建结构体实例
-func NewRabbitMQ(queueName string, exchange string, key string, conn *amqp.Connection) *RabbitMQ {
+func NewRabbitMQ(queueName string, exchange string, key string, conn *amqp.Connection, channel *amqp.Channel) *RabbitMQ {
 	return &RabbitMQ{
 		Conn:      conn,
+		Channel:   channel,
 		QueueName: queueName,
 		Exchange:  exchange,
 		Key:       key,
@@ -52,13 +52,6 @@ func (r *RabbitMQ) PublishTopic(message string) error {
 		return err
 	}
 	return nil
-}
-
-// FailOnErr 错误处理函数
-func (r *RabbitMQ) FailOnErr(err error, message string) {
-	if err != nil {
-		log.Fatalf(message + ":" + err.Error())
-	}
 }
 
 const (

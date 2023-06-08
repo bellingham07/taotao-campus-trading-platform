@@ -2,7 +2,7 @@
 package types
 
 type IdReq struct {
-	Id int64 `json:"id"`
+	Id int64 `path:"id" json:"id"`
 }
 
 type BaseResp struct {
@@ -25,7 +25,7 @@ type InfoReq struct {
 	Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
 }
 
-type InfoResp struct {
+type Info struct {
 	Id        int64   `json:"id"`     // id
 	UserId    int64   `json:"userId"` // 用户id
 	Cover     string  `json:"cover"`  // 封面图片
@@ -44,7 +44,12 @@ type InfoResp struct {
 	Like      int64   `json:"like"`
 }
 
-type InfoRespLite struct {
+type InfoResp struct {
+	BaseResp
+	Info
+}
+
+type InfoLite struct {
 	Id     int64   `json:"id"`     // id
 	UserId int64   `json:"userId"` // 用户id
 	Cover  string  `json:"cover"`
@@ -52,7 +57,12 @@ type InfoRespLite struct {
 	Intro  string  `json:"intro"`
 }
 
-type CollectResp struct {
+type ListInfoLiteResp struct {
+	BaseResp
+	Data []InfoLite `json:"data"`
+}
+
+type Collect struct {
 	Id       int64   `json:"id"`
 	UserId   int64   `json:"userId"`
 	CmdtyId  int64   `json:"cmdtyId"`
@@ -60,4 +70,9 @@ type CollectResp struct {
 	Price    float64 `json:"price"`
 	Status   int64   `json:"status"`
 	CreateAt string  `json:"createAt"`
+}
+
+type CollectListResp struct {
+	BaseResp
+	Data []Collect `json:"data"`
 }

@@ -1,28 +1,25 @@
 package collect
 
 import (
+	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/service/cmdty/cmd/api/internal/types"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/collect"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
-	"go-go-zero/service/cmdty/cmd/api/internal/types"
 )
 
 func CollectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.IdReq
-		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-			return
-		}
-
+		req := new(types.IdReq)
+		err := httpx.Parse(r, &req)
 		l := collect.NewCollectLogic(r.Context(), svcCtx)
-		resp, err := l.Collect(&req)
+		resp, err := l.Collect(req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }

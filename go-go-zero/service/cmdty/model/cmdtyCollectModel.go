@@ -14,6 +14,7 @@ type (
 	CmdtyCollectModel interface {
 		cmdtyCollectModel
 		DeleteByCmdtyIdAndUserId(id int64, userId int64) error
+		ListByUserId(userId int64) []*CmdtyCollect
 	}
 
 	customCmdtyCollectModel struct {
@@ -32,8 +33,19 @@ func (c *customCmdtyCollectModel) DeleteByCmdtyIdAndUserId(cmdtyId int64, userId
 	query := "delete from cmdty_collect where cmdty_id = ? AND user_id = ?"
 	_, err := c.conn.ExecCtx(context.Background(), query, cmdtyId, userId)
 	if err != nil {
-		logx.Errorf("[GORM ERROR] DeleteByCmdtyIdAndUserId Fail : %s \n", err.Error())
+		logx.Errorf("[GO-ZERO ORM ERROR] DeleteByCmdtyIdAndUserId Fail : %s \n", err.Error())
 		return err
 	}
 	return nil
+}
+
+func (c *customCmdtyCollectModel) ListByUserId(userId int64) []*CmdtyCollect {
+	cc := make([]*CmdtyCollect, 0)
+	query := "select * from cmdty_collect where user_id = ?"
+	err := c.conn.QueryRowCtx(context.Background(), cc, query, userId)
+	if err != nil {
+		logx.Errorf("[GO-ZERO ORM ERROR] ListByUserId Fail : %s \n", err.Error())
+		return nil
+	}
+	return cc
 }
