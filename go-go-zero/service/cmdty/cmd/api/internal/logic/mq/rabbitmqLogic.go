@@ -25,9 +25,10 @@ func NewRabbitMQLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RabbitMQ
 	}
 }
 
-var Json = jsoniter.ConfigCompatibleWithStandardLibrary
-
-var RabbitMQ = &RabbitMQLogic{}
+var (
+	RabbitMQ *RabbitMQLogic
+	Json     = jsoniter.ConfigCompatibleWithStandardLibrary
+)
 
 func (l *RabbitMQLogic) CollectCheck(ccMessage *utils.CcMessage) {
 	redisKey := ccMessage.RedisKey
@@ -50,8 +51,8 @@ func (l *RabbitMQLogic) UncollectCheck(ccMessage *utils.CcMessage) {
 	userId := ccMessage.UserId
 	isMember, _ := l.svcCtx.RedisClient.SIsMember(l.ctx, redisKey, strconv.FormatInt(userId, 10)).Result()
 	if !isMember {
-		commodityId := getIdByRedisKey(redisKey)
-		_ = l.svcCtx.CmdtyCollect.DeleteByCmdtyIdAndUserId(commodityId, userId)
+		cmdtyId := getIdByRedisKey(redisKey)
+		_ = l.svcCtx.CmdtyCollect.DeleteByCmdtyIdAndUserId(cmdtyId, userId)
 	}
 }
 

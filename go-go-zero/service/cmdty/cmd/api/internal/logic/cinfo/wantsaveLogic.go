@@ -1,4 +1,4 @@
-package collect
+package cinfo
 
 import (
 	"context"
@@ -9,21 +9,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ListLogic struct {
+type WantsaveLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
-	return &ListLogic{
+func NewWantsaveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *WantsaveLogic {
+	return &WantsaveLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ListLogic) List() (resp []types.CollectResp, err error) {
+func (l *WantsaveLogic) Wantsave(req *types.InfoReq) (resp *types.BaseResp, err error) {
 	// todo: add your logic here and delete this line
 
 	return

@@ -33,9 +33,13 @@ func (l *CollectLogic) Collect(req *types.IdReq) (resp *types.BaseResp, err erro
 	userIdStr := "408301323265285"
 	err = l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Err()
 	if err != nil {
-		return nil, errors.New("不能再次收藏哦😚")
+		return nil, errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")
 	}
 	mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
 	mq.CollectUpdatePublisher(key, userId, true, mqLogic)
+	resp = &types.BaseResp{
+		Code: 1,
+		Msg:  "收藏成功😊",
+	}
 	return
 }

@@ -79,7 +79,7 @@ func (*CommodityCollectLogic) Uncollect(idStr, userIdStr string) gin.H {
 		go CollectUpdatePublisher(key, userId, false)
 		return response.Ok()
 	}
-	return response.ErrorMsg("你本来就没收藏人家嘛！😫")
+	return response.ErrorMsg("")
 }
 
 func (*CommodityCollectLogic) List(userId string) gin.H {

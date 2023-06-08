@@ -10,7 +10,49 @@ type BaseResp struct {
 	Msg  string `json:"msg"`
 }
 
-type CollectResponse struct {
+type InfoReq struct {
+	Id        int64   `json:"id"`        // id
+	UserId    int64   `json:"userId"`    // 用户id
+	Cover     string  `json:"cover"`     // 封面图片
+	Tag       string  `json:"tag"`       // 分类名
+	Price     float64 `json:"price"`     // 商品价格
+	Brand     string  `json:"brand"`     // 品牌
+	Model     string  `json:"model"`     // 型号
+	Intro     string  `json:"intro"`     // 商品介绍
+	Status    int64   `json:"status"`    // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
+	CreateAt  string  `json:"createAt"`  // 创建时间
+	PublishAt string  `json:"publishAt"` // 发布时间
+	Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
+}
+
+type InfoResp struct {
+	Id        int64   `json:"id"`     // id
+	UserId    int64   `json:"userId"` // 用户id
+	Cover     string  `json:"cover"`  // 封面图片
+	Tag       string  `json:"tag"`    // 分类名
+	Price     float64 `json:"price"`  // 商品价格
+	Brand     string  `json:"brand"`  // 品牌
+	Model     string  `json:"model"`  // 型号
+	Intro     string  `json:"intro"`  // 商品介绍
+	Old       string  `json:"old"`
+	Status    int64   `json:"status"`    // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
+	CreateAt  string  `json:"createAt"`  // 创建时间
+	PublishAt string  `json:"publishAt"` // 发布时间
+	View      int64   `json:"view"`      // 查看数量
+	Collect   int64   `json:"collect"`   // 收藏数
+	Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
+	Like      int64   `json:"like"`
+}
+
+type InfoRespLite struct {
+	Id     int64   `json:"id"`     // id
+	UserId int64   `json:"userId"` // 用户id
+	Cover  string  `json:"cover"`
+	Price  float64 `json:"price"` // 商品价格
+	Intro  string  `json:"intro"`
+}
+
+type CollectResp struct {
 	Id       int64   `json:"id"`
 	UserId   int64   `json:"userId"`
 	CmdtyId  int64   `json:"cmdtyId"`

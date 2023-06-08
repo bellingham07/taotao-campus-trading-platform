@@ -1,9 +1,32 @@
 syntax = "v1"
 
 @server(
+	group: cinfo
+	prefix: /cmdty
+)
+service cmdty-api {
+	@handler getById
+	get /:id (IdReq) returns (InfoResp)
+	
+	@handler listByUidAndOption
+	get / returns ([]InfoRespLite)
+	
+	@handler sellsave
+	post /sellsave (InfoReq) returns (BaseResp)
+	
+	@handler sellpublish
+	post /sellpublish (InfoReq) returns (BaseResp)
+	
+	@handler wantsave
+	post /wantsave (InfoReq) returns (BaseResp)
+	
+	@handler wantpublish
+	post /wantpublish (InfoReq) returns (BaseResp)
+}
+
+@server(
 	group: collect
 	prefix: /cmdty/collect
-	//	middleware: auth
 )
 service cmdty-api {
 	@handler collect
@@ -13,7 +36,7 @@ service cmdty-api {
 	delete /:id (IdReq) returns (BaseResp)
 	
 	@handler list
-	get /list returns ([]CollectResponse)
+	get /list returns ([]CollectResp)
 }
 
 // base
@@ -29,10 +52,53 @@ type (
 )
 
 // request
+type (
+	InfoReq {
+		Id        int64   `json:"id"`        // id
+		UserId    int64   `json:"userId"`    // 用户id
+		Cover     string  `json:"cover"`     // 封面图片
+		Tag       string  `json:"tag"`       // 分类名
+		Price     float64 `json:"price"`     // 商品价格
+		Brand     string  `json:"brand"`     // 品牌
+		Model     string  `json:"model"`     // 型号
+		Intro     string  `json:"intro"`     // 商品介绍
+		Status    int64   `json:"status"`    // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
+		CreateAt  string  `json:"createAt"`  // 创建时间
+		PublishAt string  `json:"publishAt"` // 发布时间
+		Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
+	}
+)
 
 // response
 type (
-	CollectResponse {
+	InfoResp {
+		Id        int64   `json:"id"`     // id
+		UserId    int64   `json:"userId"` // 用户id
+		Cover     string  `json:"cover"`  // 封面图片
+		Tag       string  `json:"tag"`    // 分类名
+		Price     float64 `json:"price"`  // 商品价格
+		Brand     string  `json:"brand"`  // 品牌
+		Model     string  `json:"model"`  // 型号
+		Intro     string  `json:"intro"`  // 商品介绍
+		Old       string  `json:"old"`
+		Status    int64   `json:"status"`    // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
+		CreateAt  string  `json:"createAt"`  // 创建时间
+		PublishAt string  `json:"publishAt"` // 发布时间
+		View      int64   `json:"view"`      // 查看数量
+		Collect   int64   `json:"collect"`   // 收藏数
+		Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
+		Like      int64   `json:"like"`
+	}
+
+	InfoRespLite {
+		Id     int64   `json:"id"`     // id
+		UserId int64   `json:"userId"` // 用户id
+		Cover  string  `json:"cover"`
+		Price  float64 `json:"price"` // 商品价格
+		Intro  string  `json:"intro"`
+	}
+
+	CollectResp {
 		Id       int64   `json:"id"`
 		UserId   int64   `json:"userId"`
 		CmdtyId  int64   `json:"cmdtyId"`

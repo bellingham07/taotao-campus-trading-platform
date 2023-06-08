@@ -7,7 +7,7 @@ DROP TABLE `user_opt`;
 CREATE TABLE IF NOT EXISTS `user_info`
 (
     `id`         BIGINT       NOT NULL COMMENT 'id(snowflake)',
-    `username`   VARCHAR(20)  NOT NULL COMMENT '账户',
+    `username`   VARCHAR(20)  NOT NULL UNIQUE COMMENT '账户',
     `password`   VARCHAR(255) NOT NULL COMMENT '密码',
     `name`       VARCHAR(20)  NOT NULL COMMENT '姓名x',
     `gender`     TINYINT      NOT NULL DEFAULT 3 COMMENT '性别',

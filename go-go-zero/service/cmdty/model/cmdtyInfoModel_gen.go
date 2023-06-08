@@ -38,13 +38,13 @@ type (
 	CmdtyInfo struct {
 		Id        int64     `db:"id"`         // id
 		UserId    int64     `db:"user_id"`    // 用户id
-		Name      string    `db:"name"`       // 名称
 		Cover     string    `db:"cover"`      // 封面图片
 		Tag       string    `db:"tag"`        // 分类名
 		Price     float64   `db:"price"`      // 商品价格
 		Brand     string    `db:"brand"`      // 品牌
 		Model     string    `db:"model"`      // 型号
 		Intro     string    `db:"intro"`      // 商品介绍
+		Old       string    `db:"old"`        // 新旧程度
 		Status    int64     `db:"status"`     // 商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改
 		CreateAt  time.Time `db:"create_at"`  // 创建时间
 		PublishAt time.Time `db:"publish_at"` // 发布时间
@@ -84,13 +84,13 @@ func (m *defaultCmdtyInfoModel) FindOne(ctx context.Context, id int64) (*CmdtyIn
 
 func (m *defaultCmdtyInfoModel) Insert(ctx context.Context, data *CmdtyInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, cmdtyInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Name, data.Cover, data.Tag, data.Price, data.Brand, data.Model, data.Intro, data.Status, data.PublishAt, data.View, data.Collect, data.Type, data.Like)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Cover, data.Tag, data.Price, data.Brand, data.Model, data.Intro, data.Old, data.Status, data.PublishAt, data.View, data.Collect, data.Type, data.Like)
 	return ret, err
 }
 
 func (m *defaultCmdtyInfoModel) Update(ctx context.Context, data *CmdtyInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, cmdtyInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Name, data.Cover, data.Tag, data.Price, data.Brand, data.Model, data.Intro, data.Status, data.PublishAt, data.View, data.Collect, data.Type, data.Like, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Cover, data.Tag, data.Price, data.Brand, data.Model, data.Intro, data.Old, data.Status, data.PublishAt, data.View, data.Collect, data.Type, data.Like, data.Id)
 	return err
 }
 

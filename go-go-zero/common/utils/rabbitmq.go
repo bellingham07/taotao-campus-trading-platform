@@ -25,28 +25,20 @@ type (
 	}
 )
 
-func InitRabbitMQ(config *RabbitMQConf) {
-	MQUrl = config.MQUrl
-	initConsumers()
-}
+//func InitRabbitMQ(config *RabbitMQConf) {
+//	MQUrl = config.MQUrl
+//	initConsumers()
+//}
 
 // NewRabbitMQ 创建结构体实例
-func NewRabbitMQ(queueName string, exchange string, key string) *RabbitMQ {
-	return &RabbitMQ{QueueName: queueName, Exchange: exchange, Key: key, MQUrl: MQUrl}
-}
-
-// DialRabbitMq 创建RabbitMQ实例
-func DialRabbitMq(queueName string, exchangeName string, routingKey string) *RabbitMQ {
-	// 创建RabbitMQ实例
-	rabbitmq := NewRabbitMQ(queueName, exchangeName, routingKey)
-	var err error
-	// 获取connection
-	rabbitmq.Conn, err = amqp.Dial(rabbitmq.MQUrl)
-	rabbitmq.FailOnErr(err, "failed to connect rabbitmq!")
-	// 获取channel
-	rabbitmq.Channel, err = rabbitmq.Conn.Channel()
-	rabbitmq.FailOnErr(err, "failed to open a channel")
-	return rabbitmq
+func NewRabbitMQ(queueName string, exchange string, key string, conn *amqp.Connection) *RabbitMQ {
+	return &RabbitMQ{
+		Conn:      conn,
+		QueueName: queueName,
+		Exchange:  exchange,
+		Key:       key,
+		MQUrl:     MQUrl,
+	}
 }
 
 // PublishTopic 话题模式发送消息

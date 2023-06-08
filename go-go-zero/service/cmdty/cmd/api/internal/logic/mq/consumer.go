@@ -6,16 +6,13 @@ import (
 	"log"
 )
 
-func CcConsumer() {
-	r := utils.NewRabbitMQ(utils.CmdtyCollectDeadQueue, utils.CmdtyCollectDeadExchange, "cc")
+func StartCcConsumer(mqurl string) {
+	conn, err := amqp.Dial(mqurl)
+	if err != nil {
+		panic("RabbitMQ 初始化 cmdty collect consumer 错误！")
+	}
 
-	// 获取connection
-	var err error
-	r.Conn, err = amqp.Dial(r.MQUrl)
-	r.FailOnErr(err, "failed to connect rabbitmq!")
-	// 获取channel
-	r.Channel, err = r.Conn.Channel()
-	r.FailOnErr(err, "failed to open a channel")
+	r := utils.NewRabbitMQ(utils.CmdtyCollectDeadQueue, utils.CmdtyCollectDeadExchange, "cc", conn)
 
 	exchangeName := r.Exchange
 	queueName := r.QueueName
@@ -40,6 +37,7 @@ func CcConsumer() {
 	if err != nil {
 		panic(err)
 	}
+
 	forever := make(chan int, 0)
 	for msg := range msgs {
 		log.Println("接受成功咕咕咕咕咕咕过过过过过过过过过过过")
@@ -51,9 +49,9 @@ func CcConsumer() {
 			continue
 		}
 		if ccMessage.IsCollect {
-			CollectCheckUpdate(ccMessage)
+			RabbitMQ.CollectCheck(ccMessage)
 		} else {
-			CollectCheckDelete(ccMessage)
+			RabbitMQ.UncollectCheck(ccMessage)
 		}
 		msg.Ack(false)
 	}

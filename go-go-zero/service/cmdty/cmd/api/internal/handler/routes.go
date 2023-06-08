@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	cinfo "go-go-zero/service/cmdty/cmd/api/internal/handler/cinfo"
 	collect "go-go-zero/service/cmdty/cmd/api/internal/handler/collect"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 
@@ -11,6 +12,42 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/:id",
+				Handler: cinfo.GetByIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/",
+				Handler: cinfo.ListByUidAndOptionHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/sellsave",
+				Handler: cinfo.SellsaveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/sellpublish",
+				Handler: cinfo.SellpublishHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/wantsave",
+				Handler: cinfo.WantsaveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/wantpublish",
+				Handler: cinfo.WantpublishHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty"),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{

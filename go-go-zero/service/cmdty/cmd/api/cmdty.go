@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
 	"go-go-zero/service/cmdty/cmd/api/internal/handler"
@@ -25,6 +26,8 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	mq.InitRabbitMQ(ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

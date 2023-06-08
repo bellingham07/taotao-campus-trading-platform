@@ -2,6 +2,10 @@ package collect
 
 import (
 	"context"
+	"errors"
+	"go-go-zero/common/utils"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
+	"strconv"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
@@ -24,7 +28,18 @@ func NewUncollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uncolle
 }
 
 func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
+	userIdStr := "408301323265285"
+	var userId int64 = 408301323265285
+	isMember, _ := l.svcCtx.RedisClient.SIsMember(l.ctx, key, userIdStr).Result()
+	if isMember {
+		mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
+		go mq.CollectUpdatePublisher(key, userId, false, mqLogic)
+		resp = &types.BaseResp{
+			Code: 1,
+			Msg:  "取消成功😊",
+		}
+		return
+	}
+	return nil, errors.New("你本来就没收藏人家嘛！😫")
 }
