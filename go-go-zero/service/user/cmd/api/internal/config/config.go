@@ -7,11 +7,11 @@ import (
 type Config struct {
 	rest.RestConf
 
-	MysqlConf struct {
+	Mysql struct {
 		Dsn string
 	}
 
-	RedisConf struct {
+	Redis struct {
 		Addr     string
 		Password string
 		Db       int

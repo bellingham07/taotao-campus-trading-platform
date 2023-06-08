@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS `cmdty_tag`
 
 CREATE TABLE IF NOT EXISTS `cmdty_collect`
 (
-    `id`           BIGINT   NOT NULL AUTO_INCREMENT COMMENT 'id',
-    `user_id`      BIGINT   NOT NULL COMMENT '用户id',
-    `cmdty_id` BIGINT   NOT NULL COMMENT '商品id',
-    `status`       TINYINT  NOT NULL DEFAULT 1 COMMENT '1存在，0失效',
-    `create_at`    DATETIME NOT NULL DEFAULT NOW() COMMENT '创建时间',
+    `id`        BIGINT   NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `user_id`   BIGINT   NOT NULL COMMENT '用户id',
+    `cmdty_id`  BIGINT   NOT NULL COMMENT '商品id',
+    `status`    TINYINT  NOT NULL DEFAULT 1 COMMENT '1存在，0失效',
+    `create_at` DATETIME NOT NULL DEFAULT NOW() COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;

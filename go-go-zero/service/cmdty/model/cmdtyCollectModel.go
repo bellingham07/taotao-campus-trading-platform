@@ -1,6 +1,10 @@
 package model
 
-import "github.com/zeromicro/go-zero/core/stores/sqlx"
+import (
+	"context"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 var _ CmdtyCollectModel = (*customCmdtyCollectModel)(nil)
 
@@ -9,6 +13,7 @@ type (
 	// and implement the added methods in customCmdtyCollectModel.
 	CmdtyCollectModel interface {
 		cmdtyCollectModel
+		DeleteByCmdtyIdAndUserId(id int64, userId int64) error
 	}
 
 	customCmdtyCollectModel struct {
@@ -21,4 +26,14 @@ func NewCmdtyCollectModel(conn sqlx.SqlConn) CmdtyCollectModel {
 	return &customCmdtyCollectModel{
 		defaultCmdtyCollectModel: newCmdtyCollectModel(conn),
 	}
+}
+
+func (c *customCmdtyCollectModel) DeleteByCmdtyIdAndUserId(cmdtyId int64, userId int64) error {
+	query := "delete from cmdty_collect where cmdty_id = ? AND user_id = ?"
+	_, err := c.conn.ExecCtx(context.Background(), query, cmdtyId, userId)
+	if err != nil {
+		logx.Errorf("[GORM ERROR] DeleteByCmdtyIdAndUserId Fail : %s \n", err.Error())
+		return err
+	}
+	return nil
 }

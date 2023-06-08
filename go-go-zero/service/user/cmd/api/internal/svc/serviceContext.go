@@ -23,7 +23,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	conn := sqlx.NewSqlConn("mysql", c.MysqlConf.Dsn)
+	conn := sqlx.NewSqlConn("mysql", c.Mysql.Dsn)
 	return &ServiceContext{
 		Config:     c,
 		UserInfo:   model.NewUserInfoModel(conn),
@@ -32,9 +32,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserDorm:   model.NewUserDormModel(conn),
 		UserOpt:    model.NewUserOptModel(conn),
 		RedisClient: redis.NewClient(&redis.Options{
-			Addr:     c.RedisConf.Addr,
-			Password: c.RedisConf.Password,
-			DB:       c.RedisConf.Db,
+			Addr:     c.Redis.Addr,
+			Password: c.Redis.Password,
+			DB:       c.Redis.Db,
 		}),
 	}
 }

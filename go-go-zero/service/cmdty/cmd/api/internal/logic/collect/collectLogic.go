@@ -2,6 +2,10 @@ package collect
 
 import (
 	"context"
+	"errors"
+	"go-go-zero/common/utils"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
+	"strconv"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
@@ -24,7 +28,14 @@ func NewCollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CollectLo
 }
 
 func (l *CollectLogic) Collect(req *types.IdReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
+	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
+	var userId int64 = 408301323265285
+	userIdStr := "408301323265285"
+	err = l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Err()
+	if err != nil {
+		return nil, errors.New("不能再次收藏哦😚")
+	}
+	mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
+	mq.CollectUpdatePublisher(key, userId, true, mqLogic)
 	return
 }

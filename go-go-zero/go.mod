@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.3.3
 	github.com/zeromicro/go-zero v1.5.2
 	golang.org/x/crypto v0.6.0
