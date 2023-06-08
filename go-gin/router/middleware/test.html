@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="upload-form">
+    <input type="file" id="file-input" accept="image/*">
+    <button type="submit">Upload</button>
+    <img src=""/>
+</form>
+
+<script>
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // 防止默认提交行为
+
+        var fileInput = document.getElementById('file-input');
+        var file = fileInput.files[0];
+
+        var formData = new FormData();
+        formData.append('pics', file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:12345/file/pics');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Upload successful!');
+            } else {
+                console.log('Upload failed.');
+            }
+        };
+        xhr.send(formData);
+    });
+</script>
+
+</body>
+</html>
