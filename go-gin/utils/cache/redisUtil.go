@@ -9,6 +9,8 @@ import (
 )
 
 const (
+	UserLoginCode = "user:login:code:"
+
 	UserLogin    = "user:login:"
 	UserInfo     = "user:info:"
 	UserLocation = "user:location:"

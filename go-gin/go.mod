@@ -5,11 +5,11 @@ go 1.20
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/gin-gonic/gin v1.7.7
-	github.com/redis/go-redis/v9 v9.0.5
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/json-iterator/go v1.1.12
-	github.com/redis/go-redis/v9 v9.0.4
+	github.com/redis/go-redis/v9 v9.0.5
 	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.3.3
 	golang.org/x/crypto v0.8.0
