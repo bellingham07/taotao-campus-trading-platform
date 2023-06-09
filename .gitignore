@@ -17,3 +17,5 @@
 .idea
 .webstorm
 ./go-gin/config/config.yaml
+
+./**/**.yaml

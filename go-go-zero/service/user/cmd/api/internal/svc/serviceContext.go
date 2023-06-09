@@ -15,7 +15,7 @@ type ServiceContext struct {
 	UserInfo   model.UserInfoModel
 	UserFollow model.UserFollowModel
 	UserCall   model.UserCallModel
-	UserDorm   model.UserDormModel
+	UserDorm   model.UserLocationModel
 	UserOpt    model.UserOptModel
 
 	// redis
@@ -29,7 +29,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserInfo:   model.NewUserInfoModel(conn),
 		UserFollow: model.NewUserFollowModel(conn),
 		UserCall:   model.NewUserCallModel(conn),
-		UserDorm:   model.NewUserDormModel(conn),
+		UserDorm:   model.NewUserLocationModel(conn),
 		UserOpt:    model.NewUserOptModel(conn),
 		RedisClient: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
