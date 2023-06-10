@@ -27,20 +27,16 @@ func NewCollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CollectLo
 	}
 }
 
-func (l *CollectLogic) Collect(req *types.IdReq) (resp *types.BaseResp, err error) {
+func (l *CollectLogic) Collect(req *types.IdReq) error {
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	var userId int64 = 408301323265285
 	userIdStr := "408301323265285"
-	r, _ := l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Result()
+	r, err := l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Result()
 	if r == 0 {
-		//logx.Error("[REDIS ERROR] collect " + err.Error())
-		return nil, errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")
+		logx.Debugf("[REDIS ERROR] collect 收藏失败 " + err.Error())
+		return errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")
 	}
 	mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
 	mq.CollectUpdatePublisher(key, userId, true, mqLogic)
-	resp = &types.BaseResp{
-		Code: 1,
-		Msg:  "收藏成功😊",
-	}
-	return
+	return nil
 }

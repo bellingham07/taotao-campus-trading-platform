@@ -1,4 +1,4 @@
-package cinfo
+package like
 
 import (
 	"context"
@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SellpublishLogic struct {
+type LikeLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSellpublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SellpublishLogic {
-	return &SellpublishLogic{
+func NewLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeLogic {
+	return &LikeLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SellpublishLogic) Sellpublish(req *types.InfoReq) error {
+func (l *LikeLogic) Like() (resp *types.BaseResp, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }

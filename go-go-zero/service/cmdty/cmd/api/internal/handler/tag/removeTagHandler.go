@@ -1,24 +1,26 @@
-package collect
+package tag
 
 import (
 	xhttp "github.com/zeromicro/x/http"
-	"go-go-zero/service/cmdty/cmd/api/internal/types"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-go-zero/service/cmdty/cmd/api/internal/logic/collect"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/tag"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
+	"go-go-zero/service/cmdty/cmd/api/internal/types"
 )
 
-func CollectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func RemoveTagHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := new(types.IdReq)
-		err := httpx.Parse(r, &req)
-		if err != nil {
+		var req types.IdsReq
+		if err := httpx.Parse(r, &req); err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
 		}
-		l := collect.NewCollectLogic(r.Context(), svcCtx)
-		err = l.Collect(req)
+
+		l := tag.NewRemoveTagLogic(r.Context(), svcCtx)
+		err := l.RemoveTag(&req)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

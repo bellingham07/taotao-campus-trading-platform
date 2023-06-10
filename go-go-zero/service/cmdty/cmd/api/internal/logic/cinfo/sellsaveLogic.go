@@ -23,8 +23,8 @@ func NewSellsaveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sellsave
 	}
 }
 
-func (l *SellsaveLogic) Sellsave(req *types.InfoReq) (resp *types.BaseResp, err error) {
+func (l *SellsaveLogic) Sellsave(req *types.InfoReq) error {
 	// todo: add your logic here and delete this line
 
-	return
+	return nil
 }

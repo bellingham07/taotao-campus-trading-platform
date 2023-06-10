@@ -16,6 +16,7 @@ type ServiceContext struct {
 	CmdtyInfo    model.CmdtyInfoModel
 	CmdtyCollect model.CmdtyCollectModel
 	CmdtyTag     model.CmdtyTagModel
+	CmdtyCmt     model.CmdtyCmtModel
 
 	// redis
 	RedisClient *redis.Client
@@ -39,6 +40,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CmdtyInfo:    model.NewCmdtyInfoModel(c1),
 		CmdtyCollect: model.NewCmdtyCollectModel(c1),
 		CmdtyTag:     model.NewCmdtyTagModel(c1),
+		CmdtyCmt:     model.NewCmdtyCmtModel(c1),
 		RedisClient: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,

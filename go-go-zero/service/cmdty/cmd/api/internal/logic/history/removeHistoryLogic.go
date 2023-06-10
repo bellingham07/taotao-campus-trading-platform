@@ -1,4 +1,4 @@
-package cinfo
+package history
 
 import (
 	"context"
@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SellpublishLogic struct {
+type RemoveHistoryLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSellpublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SellpublishLogic {
-	return &SellpublishLogic{
+func NewRemoveHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveHistoryLogic {
+	return &RemoveHistoryLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SellpublishLogic) Sellpublish(req *types.InfoReq) error {
+func (l *RemoveHistoryLogic) RemoveHistory(req *types.IdsReq) (resp *types.BaseResp, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }

@@ -5,7 +5,11 @@ import (
 	"net/http"
 
 	cinfo "go-go-zero/service/cmdty/cmd/api/internal/handler/cinfo"
+	cmt "go-go-zero/service/cmdty/cmd/api/internal/handler/cmt"
 	collect "go-go-zero/service/cmdty/cmd/api/internal/handler/collect"
+	history "go-go-zero/service/cmdty/cmd/api/internal/handler/history"
+	like "go-go-zero/service/cmdty/cmd/api/internal/handler/like"
+	tag "go-go-zero/service/cmdty/cmd/api/internal/handler/tag"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -67,5 +71,74 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/cmdty/collect"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/",
+				Handler: tag.ListTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/",
+				Handler: tag.RemoveTagHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty/tag"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/",
+				Handler: history.ListHistoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/",
+				Handler: history.RemoveHistoryHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty/history"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/:id",
+				Handler: like.LikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/id",
+				Handler: like.UnlikeHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty/like"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/",
+				Handler: cmt.CmtHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:cmdtyId",
+				Handler: cmt.ListByInfoIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/:id",
+				Handler: cmt.RemoveCmtHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty/cmt"),
 	)
 }

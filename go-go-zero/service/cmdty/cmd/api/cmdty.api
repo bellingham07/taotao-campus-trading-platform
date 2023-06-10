@@ -9,19 +9,19 @@ service cmdty-api {
 	get /:id (IdReq) returns (InfoResp)
 	
 	@handler listByUidAndOption
-	get / returns (InfoLiteListResp)
+	get / returns ([]InfoLiteResp)
 	
 	@handler sellsave
-	post /sellsave (InfoReq) returns (BaseResp)
+	post /sellsave (InfoReq) returns ()
 	
 	@handler sellpublish
-	post /sellpublish (InfoReq) returns (BaseResp)
+	post /sellpublish (InfoReq) returns ()
 	
 	@handler wantsave
-	post /wantsave (InfoReq) returns (BaseResp)
+	post /wantsave (InfoReq) returns ()
 	
 	@handler wantpublish
-	post /wantpublish (InfoReq) returns (BaseResp)
+	post /wantpublish (InfoReq) returns ()
 }
 
 @server(
@@ -30,13 +30,13 @@ service cmdty-api {
 )
 service cmdty-api {
 	@handler collect
-	get /:id returns (BaseResp)
+	get /:id returns ()
 	
 	@handler uncollect
-	delete /:id returns (BaseResp)
+	delete /:id returns ()
 	
 	@handler list
-	get /list returns (CollectListResp)
+	get /list returns ([]CollectResp)
 }
 
 @server(
@@ -45,10 +45,10 @@ service cmdty-api {
 )
 service cmdty-api {
 	@handler listTag
-	get / returns (BaseResp)
-
+	get / returns ()
+	
 	@handler removeTag
-	delete / (IdsReq) returns (BaseResp)
+	delete / (IdsReq) returns ()
 }
 
 @server(
@@ -57,10 +57,10 @@ service cmdty-api {
 )
 service cmdty-api {
 	@handler listHistory
-	get / returns (BaseResp)
-
+	get / returns ([]HistoryResp)
+	
 	@handler removeHistory
-	delete / (IdsReq) returns (BaseResp)
+	delete / (IdsReq) returns ()
 }
 
 @server(
@@ -69,26 +69,37 @@ service cmdty-api {
 )
 service cmdty-api {
 	@handler like
-	get /:id returns (BaseResp)
-
+	get /:id returns ()
+	
 	@handler unlike
-	delete /id returns (BaseResp)
+	delete /id returns ()
 }
 
-// base
+@server(
+	group: cmt
+	prefix: /cmdty/cmt
+)
+service cmdty-api {
+	@handler cmt
+	post / (CmtReq) returns ()
+	
+	@handler listByInfoId
+	get /:cmdtyId returns ([]CmtResp)
+	
+	@handler removeCmt
+	delete /:id returns ()
+}
+
+// request
 type (
 	IdReq {
 		Id int64 `path:"id" json:"id"`
 	}
 
-	BaseResp {
-		Code int8   `json:"code"`
-		Msg  string `json:"msg"`
+	CmdtyIdReq {
+		Id int64 `path:"cmdtyId" json:"cmdtyId"`
 	}
-)
 
-// request
-type (
 	InfoReq {
 		Id        int64   `json:"id"`        // id
 		UserId    int64   `json:"userId"`    // 用户id
@@ -105,7 +116,15 @@ type (
 	}
 
 	IdsReq {
-		Ids []IdReq `json:"ids"`
+		Ids []int64 `json:"ids"`
+	}
+
+	CmtReq {
+		CmdtyId  int64  `json:"cmdtyId"`  // 对应的商品id
+		UserId   int64  `json:"userId"`   // 留言的用户id
+		Content  string `json:"content"`  // 留言内容
+		RootId   int64  `json:"rootId"`   // 根留言
+		ToUserId int64  `json:"toUserId"` // 回复给到用户
 	}
 )
 
@@ -130,16 +149,12 @@ type (
 		Like      int64   `json:"like"`
 	}
 
-	InfoLite {
+	InfoLiteResp {
 		Id     int64   `json:"id"`     // id
 		UserId int64   `json:"userId"` // 用户id
 		Cover  string  `json:"cover"`
 		Price  float64 `json:"price"` // 商品价格
 		Intro  string  `json:"intro"`
-	}
-
-	InfoLiteListResp {
-		Data []InfoLite `json:"data"`
 	}
 
 	CollectResp {
@@ -152,20 +167,28 @@ type (
 		CreateAt string  `json:"createAt"`
 	}
 
-	CollectListResp {
-		Data []CollectResp `json:"data"`
-	}
-
 	TagResp {
-		Id       int64     `json:"id"`        // 分类ID编号
-		Name     string    `json:"name"`      // 分类名称
-		CreateBy int64     `json:"createBy""` // 管理员的id
-		CreateAt string `json:"createAt"` // 创建时间
-		UpdateBy int64     `json:"updateBy"` // 管理员的id
-		UpdateAt string `json:"updateAt"` // 更新时间
+		Id       int64  `json:"id"`        // 分类ID编号
+		Name     string `json:"name"`      // 分类名称
+		CreateBy int64  `json:"createBy""` // 管理员的id
+		CreateAt string `json:"createAt"`  // 创建时间
+		UpdateBy int64  `json:"updateBy"`  // 管理员的id
+		UpdateAt string `json:"updateAt"`  // 更新时间
 	}
 
-	TagListResp {
-		Data []TagResp `json:"data"`
+	HistoryResp {
+		Id    int64   `json:"id"`
+		Cover string  `json:"cover"`
+		Price float64 `json:"price"`
+	}
+
+	CmtResp {
+		Id       int64  `json:"id"`       // id
+		CmdtyId  int64  `json:"cmdtyId"`  // 对应的商品id
+		UserId   int64  `json:"userId"`   // 留言的用户id
+		Content  string `json:"content"`  // 留言内容
+		RootId   int64  `json:"rootId"`   // 根留言
+		ToUserId int64  `json:"toUserId"` // 回复给到用户
+		CreateAt string `json:"createAt"` // 评论时间
 	}
 )

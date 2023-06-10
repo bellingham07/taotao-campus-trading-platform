@@ -5,9 +5,8 @@ type IdReq struct {
 	Id int64 `path:"id" json:"id"`
 }
 
-type BaseResp struct {
-	Code int8   `json:"code"`
-	Msg  string `json:"msg"`
+type CmdtyIdReq struct {
+	Id int64 `path:"cmdtyId" json:"cmdtyId"`
 }
 
 type InfoReq struct {
@@ -25,7 +24,19 @@ type InfoReq struct {
 	Type      int64   `json:"type"`      // 1为售卖商品，2为收商品
 }
 
-type Info struct {
+type IdsReq struct {
+	Ids []int64 `json:"ids"`
+}
+
+type CmtReq struct {
+	CmdtyId  int64  `json:"cmdtyId"`  // 对应的商品id
+	UserId   int64  `json:"userId"`   // 留言的用户id
+	Content  string `json:"content"`  // 留言内容
+	RootId   int64  `json:"rootId"`   // 根留言
+	ToUserId int64  `json:"toUserId"` // 回复给到用户
+}
+
+type InfoResp struct {
 	Id        int64   `json:"id"`     // id
 	UserId    int64   `json:"userId"` // 用户id
 	Cover     string  `json:"cover"`  // 封面图片
@@ -44,12 +55,7 @@ type Info struct {
 	Like      int64   `json:"like"`
 }
 
-type InfoResp struct {
-	BaseResp
-	Info
-}
-
-type InfoLite struct {
+type InfoLiteResp struct {
 	Id     int64   `json:"id"`     // id
 	UserId int64   `json:"userId"` // 用户id
 	Cover  string  `json:"cover"`
@@ -57,12 +63,7 @@ type InfoLite struct {
 	Intro  string  `json:"intro"`
 }
 
-type ListInfoLiteResp struct {
-	BaseResp
-	Data []InfoLite `json:"data"`
-}
-
-type Collect struct {
+type CollectResp struct {
 	Id       int64   `json:"id"`
 	UserId   int64   `json:"userId"`
 	CmdtyId  int64   `json:"cmdtyId"`
@@ -72,7 +73,27 @@ type Collect struct {
 	CreateAt string  `json:"createAt"`
 }
 
-type CollectListResp struct {
-	BaseResp
-	Data []Collect `json:"data"`
+type TagResp struct {
+	Id       int64  `json:"id"`        // 分类ID编号
+	Name     string `json:"name"`      // 分类名称
+	CreateBy int64  `json:"createBy""` // 管理员的id
+	CreateAt string `json:"createAt"`  // 创建时间
+	UpdateBy int64  `json:"updateBy"`  // 管理员的id
+	UpdateAt string `json:"updateAt"`  // 更新时间
+}
+
+type HistoryResp struct {
+	Id    int64   `json:"id"`
+	Cover string  `json:"cover"`
+	Price float64 `json:"price"`
+}
+
+type CmtResp struct {
+	Id       int64  `json:"id"`       // id
+	CmdtyId  int64  `json:"cmdtyId"`  // 对应的商品id
+	UserId   int64  `json:"userId"`   // 留言的用户id
+	Content  string `json:"content"`  // 留言内容
+	RootId   int64  `json:"rootId"`   // 根留言
+	ToUserId int64  `json:"toUserId"` // 回复给到用户
+	CreateAt string `json:"createAt"` // 评论时间
 }

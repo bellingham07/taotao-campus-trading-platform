@@ -3,6 +3,7 @@ package collect
 import (
 	"context"
 	"errors"
+	errorsx "github.com/zeromicro/x/errors"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
 	"strconv"
@@ -27,7 +28,7 @@ func NewUncollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uncolle
 	}
 }
 
-func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *types.BaseResp, err error) {
+func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *errorsx.CodeMsg, err error) {
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	userIdStr := "408301323265285"
 	var userId int64 = 408301323265285
@@ -35,7 +36,7 @@ func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *types.BaseResp, err 
 	if isMember {
 		mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
 		go mq.CollectUpdatePublisher(key, userId, false, mqLogic)
-		resp = &types.BaseResp{
+		resp = &errorsx.CodeMsg{
 			Code: 1,
 			Msg:  "取消成功😊",
 		}

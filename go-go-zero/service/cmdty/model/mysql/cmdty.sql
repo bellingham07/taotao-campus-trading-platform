@@ -42,3 +42,15 @@ CREATE TABLE IF NOT EXISTS `cmdty_collect`
     `create_at` DATETIME     NOT NULL DEFAULT NOW() COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `cmdty_cmt`
+(
+    `id`         BIGINT       NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `cmdty_id`   BIGINT       NOT NULL COMMENT '对应的商品id',
+    `user_id`    BIGINT       NOT NULL COMMENT '留言的用户id',
+    `content`    VARCHAR(100) NOT NULL COMMENT '留言内容',
+    `root_id`    BIGINT       NOT NULL COMMENT '根留言',
+    `to_user_id` BIGINT       NOT NULL COMMENT '回复给到用户',
+    `create_at`  DATETIME     NOT NULL DEFAULT NOW() COMMENT '评论时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;

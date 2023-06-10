@@ -23,8 +23,8 @@ func NewWantpublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Wantp
 	}
 }
 
-func (l *WantpublishLogic) Wantpublish(req *types.InfoReq) (resp *types.BaseResp, err error) {
+func (l *WantpublishLogic) Wantpublish(req *types.InfoReq) error {
 	// todo: add your logic here and delete this line
 
-	return
+	return nil
 }
