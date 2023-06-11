@@ -24,7 +24,18 @@ func NewSellpublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sellp
 }
 
 func (l *SellpublishLogic) Sellpublish(req *types.InfoReq) error {
-	// todo: add your logic here and delete this line
-
+	infoCommonLogic := NewInfoCommonLogic(l.ctx, l.svcCtx)
+	ci := infoCommonLogic.CopyPartial(req)
+	// 未保存直接发布
+	if req.Id == 0 {
+		if err := infoCommonLogic.SaveOrPublishInfo(ci, 1, true); err != nil {
+			return err
+		}
+		return nil
+	}
+	// 已经保存过，进行更新
+	if err := infoCommonLogic.UpdateInfo(ci, true); err != nil {
+		return err
+	}
 	return nil
 }

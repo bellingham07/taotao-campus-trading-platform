@@ -23,7 +23,6 @@ func NewListByUidAndOptionLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *ListByUidAndOptionLogic) ListByUidAndOption() (resp []*model.CmdtyInfo, err error) {
-	// todo: add your logic here and delete this line
 
 	return
 }

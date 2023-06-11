@@ -24,7 +24,18 @@ func NewSellsaveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sellsave
 }
 
 func (l *SellsaveLogic) Sellsave(req *types.InfoReq) error {
-	// todo: add your logic here and delete this line
-
+	infoCommonLogic := NewInfoCommonLogic(l.ctx, l.svcCtx)
+	ci := infoCommonLogic.CopyPartial(req)
+	// 第一次保存
+	if req.Id == 0 {
+		if err := infoCommonLogic.SaveOrPublishInfo(ci, 1, false); err != nil {
+			return err
+		}
+		return nil
+	}
+	// 已经保存过，进行更新
+	if err := infoCommonLogic.UpdateInfo(ci, false); err != nil {
+		return err
+	}
 	return nil
 }
