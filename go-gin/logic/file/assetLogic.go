@@ -60,7 +60,7 @@ func (*FileAssetLogic) SavePics(fileHeader []*multipart.FileHeader, userIdStr st
 	}
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	if isArticle {
-		var fa []model.FileArticle
+		fa := make([]model.FileArticle, 0)
 		for index, url := range urls {
 			fileAsset := model.FileArticle{
 				UserId:     userId,

@@ -7,7 +7,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -37,24 +36,23 @@ type (
 	}
 
 	UserInfo struct {
-		Id        int64     `db:"id"`         // id(snowflake)
-		Username  string    `db:"username"`   // 账户
-		Password  string    `db:"password"`   // 密码
-		Name      string    `db:"name"`       // 姓名x
-		Gender    int64     `db:"gender"`     // 性别
-		Phone     string    `db:"phone"`      // 手机号
-		Avatar    string    `db:"avatar"`     // 头像url
-		Intro     string    `db:"intro"`      // 个人简介
-		Location  string    `db:"location"`   // 住址
-		LastLogin time.Time `db:"last_login"` // 上次登录时间
-		Like      int64     `db:"like"`       // 获赞数
-		Status    int64     `db:"status"`     // 用户账户状态
-		Done      int64     `db:"done"`       // 成交数
-		Call      string    `db:"call"`       // 称号
-		Fans      int64     `db:"fans"`       // 粉丝数
-		Follow    int64     `db:"follow"`     // 关注数
-		Positive  int64     `db:"positive"`   // 好评次数
-		Negative  int64     `db:"negative"`   // 差评次数
+		Id       int64  `db:"id"`       // id(snowflake)
+		Username string `db:"username"` // 账户
+		Password string `db:"password"` // 密码
+		Name     string `db:"name"`     // 姓名x
+		Gender   int64  `db:"gender"`   // 性别
+		Phone    string `db:"phone"`    // 手机号
+		Avatar   string `db:"avatar"`   // 头像url
+		Intro    string `db:"intro"`    // 个人简介
+		Location string `db:"location"` // 住址
+		Like     int64  `db:"like"`     // 获赞数
+		Status   int64  `db:"status"`   // 用户账户状态
+		Done     int64  `db:"done"`     // 成交数
+		Call     string `db:"call"`     // 称号
+		Fans     int64  `db:"fans"`     // 粉丝数
+		Follow   int64  `db:"follow"`   // 关注数
+		Positive int64  `db:"positive"` // 好评次数
+		Negative int64  `db:"negative"` // 差评次数
 	}
 )
 
@@ -100,14 +98,14 @@ func (m *defaultUserInfoModel) FindOneByUsername(ctx context.Context, username s
 }
 
 func (m *defaultUserInfoModel) Insert(ctx context.Context, data *UserInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Username, data.Password, data.Name, data.Gender, data.Phone, data.Avatar, data.Intro, data.Location, data.LastLogin, data.Like, data.Status, data.Done, data.Call, data.Fans, data.Follow, data.Positive, data.Negative)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Username, data.Password, data.Name, data.Gender, data.Phone, data.Avatar, data.Intro, data.Location, data.Like, data.Status, data.Done, data.Call, data.Fans, data.Follow, data.Positive, data.Negative)
 	return ret, err
 }
 
 func (m *defaultUserInfoModel) Update(ctx context.Context, newData *UserInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.Username, newData.Password, newData.Name, newData.Gender, newData.Phone, newData.Avatar, newData.Intro, newData.Location, newData.LastLogin, newData.Like, newData.Status, newData.Done, newData.Call, newData.Fans, newData.Follow, newData.Positive, newData.Negative, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Username, newData.Password, newData.Name, newData.Gender, newData.Phone, newData.Avatar, newData.Intro, newData.Location, newData.Like, newData.Status, newData.Done, newData.Call, newData.Fans, newData.Follow, newData.Positive, newData.Negative, newData.Id)
 	return err
 }
 

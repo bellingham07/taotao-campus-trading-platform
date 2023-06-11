@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS `user_info`
     `avatar`     VARCHAR(255) NOT NULL DEFAULT '' COMMENT '头像url',
     `intro`      VARCHAR(200) NOT NULL DEFAULT '' COMMENT '个人简介',
     `location`   VARCHAR(50)  NOT NULL DEFAULT '' COMMENT '住址',
-    `last_login` DATETIME     NOT NULL DEFAULT NOW() COMMENT '上次登录时间',
     `like`       BIGINT       NOT NULL DEFAULT 0 COMMENT '获赞数',
     `status`     TINYINT      NOT NULL DEFAULT 0 COMMENT '用户账户状态',
     `done`       BIGINT       NOT NULL DEFAULT 0 COMMENT '成交数',

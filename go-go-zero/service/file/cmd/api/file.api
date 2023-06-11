@@ -1,0 +1,86 @@
+syntax = "v1"
+
+@server(
+	group: avatar
+	prefix: /file/avatar
+)
+service file-api {
+	@handler upload
+	post / (AvatarReq) returns (AvatarResp)
+	
+	@handler check
+	delete / (IdsReq) returns ()
+}
+
+@server(
+	group: atcl
+	prefix: /file/atcl
+)
+service file-api {
+	@handler upload
+	post / (AtclPicsReq) returns ([]PicResp)
+	
+	@handler remove
+	delete /:id returns ()
+	
+	@handler check
+	patch / (IdsReq) returns ()
+}
+
+@server(
+	group: cmdty
+	prefix: /file/cmdty
+)
+service file-api {
+	@handler upload
+	post / (CmdtyPicsReq) returns ([]PicResp)
+	
+	@handler remove
+	delete /:id returns ()
+	
+	@handler check
+	patch / (IdsReq) returns ()
+}
+
+// request
+type (
+	IdReq {
+		Id int64 `json:"id" path:"id"`
+	}
+
+	IdsReq {
+		Ids []int64 `json:"ids"`
+	}
+
+	AvatarReq {
+		Avatar []byte `json:"avatar"`
+	}
+
+	PicReq {
+		Pic   []byte `json:"pic"`
+		Order int64  `json:"order"`
+	}
+
+	CmdtyPicsReq {
+		CmdtyId int64    `json:"cmdtyId"`
+		Pics    []PicReq `json:"pics"`
+	}
+
+	AtclPicsReq {
+		AtclId int64    `json:"atclId"`
+		Pics   []PicReq `json:"pics"`
+	}
+)
+
+// response
+type (
+	AvatarResp {
+		Url string `json:"url"`
+	}
+
+	PicResp {
+		Id    int64  `json:"id"`
+		Url   string `json:"url"`
+		Order int64  `json:"order"`
+	}
+)

@@ -4,13 +4,13 @@ package user;
 
 option go_package = ".";
 
-service UserService{
-  rpc UpdateAvatar (AvatarReq) returns (CodeResp);
+service CmdtyService{
+  rpc UpdateCover (CoverReq) returns (CodeResp);
 }
 
-message AvatarReq {
+message CoverReq {
   int64 Id = 1;
-  string Avatar = 2;
+  string Cover = 2;
 }
 
 message CodeResp {
