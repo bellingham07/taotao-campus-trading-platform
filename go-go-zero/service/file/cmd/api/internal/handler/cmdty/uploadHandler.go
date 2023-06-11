@@ -30,9 +30,9 @@ func UploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := cmdty.NewUploadLogic(r.Context(), svcCtx)
 		resp, err := l.Upload(req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }
