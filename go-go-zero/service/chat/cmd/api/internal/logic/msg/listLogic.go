@@ -2,6 +2,9 @@ package msg
 
 import (
 	"context"
+	"errors"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go-go-zero/service/chat/cmd/api/internal/svc"
 	"go-go-zero/service/chat/cmd/api/internal/types"
@@ -23,8 +26,27 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-func (l *ListLogic) List(req *types.ListMessageReq) (resp []types.ChatMessageResp, err error) {
-	// todo: add your logic here and delete this line
+func (l *ListLogic) List(req *types.ListMessageReq) ([]*types.ChatMessageResp, error) {
+	filter := bson.M{"room_id": req.Id}
+	page := req.Page - 1
+	var pageSize int64 = 20
+	skip := (page - 1) * pageSize
+	sort := bson.M{"time": -1} // 按消息发出倒序排序
+	// 执行查询
+	cursor, err := l.svcCtx.ChatMessage.Find(l.ctx, filter,
+		options.Find().SetSkip(skip).SetLimit(pageSize).SetSort(sort))
+	if err != nil {
+		return nil, errors.New("聊天记录加载错误！😥")
+	}
+	defer cursor.Close(l.ctx)
 
-	return
+	resp := make([]*types.ChatMessageResp, 0)
+	for cursor.Next(l.ctx) {
+		cm := new(types.ChatMessageResp)
+		if err = cursor.Decode(cm); err != nil {
+			return resp, errors.New("出错啦！😥")
+		}
+		resp = append(resp, cm)
+	}
+	return resp, nil
 }

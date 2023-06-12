@@ -9,6 +9,10 @@ type Config struct {
 		Dsn string
 	}
 
+	Mongo struct {
+		Url string
+	}
+
 	Idgen struct {
 		WorkerId uint16
 	}

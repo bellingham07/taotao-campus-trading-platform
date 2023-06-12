@@ -7,6 +7,7 @@ import (
 	"errors"
 	"github.com/gorilla/websocket"
 	"go-go-zero/service/chat/model"
+	"go-go-zero/service/chat/model/mongo"
 	"log"
 	"net/http"
 	"time"
@@ -32,6 +33,7 @@ func NewChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatLogic {
 }
 
 func (l *ChatLogic) Chat(req *types.IdReq, w http.ResponseWriter, r *http.Request) error {
+	var userId int64 = 408301323265285
 	roomId := req.Id
 	conn, err := l.svcCtx.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -43,16 +45,17 @@ func (l *ChatLogic) Chat(req *types.IdReq, w http.ResponseWriter, r *http.Reques
 		return errors.New("出错啦！😭")
 	}
 	for {
-		msg := &model.ChatMessage{
-			RoomId: id,
+		cm := mongo.ChatMessage{
+			RoomId: 0,
 			Time:   time.Now(),
 			UserId: userId,
 		}
-		err = myConn.readJSON(msg)
-		if err != nil {
-			log.Println("地欧弟3", err)
-			c.JSON(http.StatusBadRequest, response.ErrorMsg("消息发送失败"))
-			return
+		if err = conn.ReadJSON(cm); err != nil {
+			logx.Debugf("[WEBSOCKET ERROR] Chat 解析websocket消息错误 " + err.Error())
+			return errors.New("消息发送失败！")
+		}
+		if one, err := l.svcCtx.ChatMessage.InsertOne(l.ctx, cm); err != nil {
+			return err
 		}
 		if err = chatRepository.ChatMessage.Insert(msg); err != nil {
 			log.Println("地欧弟4", err)
