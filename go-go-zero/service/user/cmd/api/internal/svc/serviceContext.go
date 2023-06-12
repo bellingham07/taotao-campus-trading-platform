@@ -2,6 +2,7 @@ package svc
 
 import (
 	"github.com/redis/go-redis/v9"
+	"github.com/yitter/idgenerator-go/idgen"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go-go-zero/service/user/cmd/api/internal/config"
 	"go-go-zero/service/user/model"
@@ -23,7 +24,11 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	options := idgen.NewIdGeneratorOptions(c.Idgen.WorkerId)
+	idgen.SetIdGenerator(options)
+
 	conn := sqlx.NewSqlConn("mysql", c.Mysql.Dsn)
+
 	return &ServiceContext{
 		Config:     c,
 		UserInfo:   model.NewUserInfoModel(conn),

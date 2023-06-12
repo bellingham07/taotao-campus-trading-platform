@@ -3,15 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-go-zero/service/user/cmd/api/internal/config"
-	"go-go-zero/service/user/cmd/api/internal/handler"
-	"go-go-zero/service/user/cmd/api/internal/svc"
+
+	"go-go-zero/service/chat/cmd/api/internal/config"
+	"go-go-zero/service/chat/cmd/api/internal/handler"
+	"go-go-zero/service/chat/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "service/user/cmd/api/etc/user-api.yaml", "the config file")
+var configFile = flag.String("f", "etc/chat-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -24,8 +25,6 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
-
-	//server.Use(middleware.JWTAuthenticate)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

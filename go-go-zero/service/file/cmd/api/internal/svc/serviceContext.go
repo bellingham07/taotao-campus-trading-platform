@@ -2,7 +2,6 @@ package svc
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/service/atcl/cmd/rpc/atclservice"
@@ -43,11 +42,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	engine, err := xorm.NewEngine("mysql", c.Mysql.Dsn)
 	if err != nil {
-		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误" + err.Error())
+		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误 " + err.Error())
+	}
+	err = engine.Ping()
+	if err != nil {
+		panic("[XORM ERROR] NewServiceContext ping mysql 失败" + err.Error())
+
 	}
 
-	asd := c.Mysql.Dsn
-	logx.Debugf(asd)
 	endPoint := c.Oss.EndPoint
 	accessKeyId := c.Oss.AccessKeyId
 	accessKeySecret := c.Oss.AccessKeySecret

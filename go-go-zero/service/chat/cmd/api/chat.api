@@ -1,0 +1,59 @@
+syntax = "v1"
+
+@server(
+	group: room
+	prefix: /chat/room
+)
+service chat-api {
+	@handler createRoom
+	post / (CreateRoomReq) returns (IdResp)
+	
+	@handler chat
+	get /:id (IdReq) returns ()
+}
+
+@server(
+	group: msg
+	prefix: /chat/msg
+)
+service chat-api {
+	@handler list
+	get / (ListMessageReq) returns ([]ChatMessageResp)
+}
+
+// request
+type (
+	IdReq {
+		Id int64 `json:"id" path:"id"`
+	}
+
+	CreateRoomReq {
+		Buyer    string `json:"buyer"`
+		BuyerId  int64  `json:"buyerId"`
+		CmdtyId  int64  `json:"cmdtyId"` // 对应的商品信息
+		Cover    string `json:"cover"`
+		Seller   string `json:"seller"`
+		SellerId int64  `json:"sellerId"`
+	}
+
+	ListMessageReq {
+		Id   int64 `form:"id"`
+		Page int64 `form:"page"`
+	}
+)
+
+// response
+type (
+	IdResp {
+		Id int64 `json:"id"`
+	}
+
+	ChatMessageResp {
+		Id       int64  `json:"id"` // bigint自增
+		Content  string `json:"content"`
+		RoomId   int64  `json:"roomId"`
+		Time     string `json:"time"`
+		ToUserId int64  `json:"toUserId"`
+		UserId   int64  `json:"userId"`
+	}
+)

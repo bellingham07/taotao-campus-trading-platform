@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c
 	github.com/json-iterator/go v1.1.12
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/streadway/amqp v1.0.0
