@@ -9,7 +9,7 @@ service chat-api {
 	post / (CreateRoomReq) returns (IdResp)
 	
 	@handler chat
-	get /:id (IdReq) returns ()
+	get / (ChatReq) returns ()
 }
 
 @server(
@@ -25,6 +25,12 @@ service chat-api {
 type (
 	IdReq {
 		Id int64 `json:"id" path:"id"`
+	}
+
+	ChatReq {
+		RoomId   int64 `form:"roomId"`
+		SellerId int64 `form:"sellerId"`
+		BuyerId  int64 `form:"buyerId"`
 	}
 
 	CreateRoomReq {

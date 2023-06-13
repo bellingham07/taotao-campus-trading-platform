@@ -7,6 +7,7 @@ import (
 	"go-go-zero/service/chat/cmd/api/internal/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"sync"
 	"xorm.io/xorm"
 )
 
@@ -18,6 +19,13 @@ type ServiceContext struct {
 	ChatMessage *mongo.Collection
 
 	Upgrader websocket.Upgrader
+
+	Conn *Conn
+}
+
+type Conn struct {
+	ConnPool map[string]*websocket.Conn
+	Lock     sync.RWMutex
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -49,5 +57,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:      c,
 		Xorm:        engine,
 		ChatMessage: cmCollection,
+		Conn: &Conn{
+			ConnPool: make(map[string]*websocket.Conn),
+		},
 	}
 }

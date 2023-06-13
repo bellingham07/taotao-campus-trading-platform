@@ -1,6 +1,8 @@
 package room
 
 import (
+	"errors"
+	"github.com/zeromicro/go-zero/core/logx"
 	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 
@@ -14,7 +16,8 @@ func CreateRoomHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.CreateRoomReq
 		if err := httpx.Parse(r, &req); err != nil {
-			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
+			logx.Infof("%v \n", err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！🤡"))
 			return
 		}
 

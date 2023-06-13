@@ -44,12 +44,15 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (*types.IdResp, e
 	if err == nil {
 		return resp, nil
 	}
+	logx.Infof("[DB ERROR] CreateRoom 聊天室插入数据库错误 %v\n", err)
+
 	has, err := l.svcCtx.Xorm.Table("chat_room").
-		Where("`cmdty_id` = ? AND `seller_id` = ? AND buyer_id` = ?",
+		Where("`cmdty_id` = ? AND `seller_id` = ? AND `buyer_id` = ?",
 			req.CmdtyId, req.SellerId, req.BuyerId).Get(cr)
 	if has && err == nil {
 		resp.Id = cr.Id
 		return resp, err
 	}
+	logx.Infof("[DB ERROR] CreateRoom 查询聊天室错误 %v\n", err)
 	return nil, errors.New("创建失败！😢")
 }

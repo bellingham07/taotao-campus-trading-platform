@@ -33,7 +33,7 @@ func (m *defaultUserInfoModel) QueryInfoByUsername(username string) *UserInfo {
 	query := "select * from user_info where username = ?"
 	err := m.conn.QueryRowCtx(context.Background(), ui, query, username)
 	if err != nil {
-		logx.Errorf("[DB ERROR] : %v", err)
+		logx.Debugf("[DB ERROR] : %v\n", err)
 		return nil
 	}
 	return ui

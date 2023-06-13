@@ -5,6 +5,12 @@ type IdReq struct {
 	Id int64 `json:"id" path:"id"`
 }
 
+type ChatReq struct {
+	RoomId   int64 `form:"roomId"`
+	SellerId int64 `form:"sellerId"`
+	BuyerId  int64 `form:"buyerId"`
+}
+
 type CreateRoomReq struct {
 	Buyer    string `json:"buyer"`
 	BuyerId  int64  `json:"buyerId"`
