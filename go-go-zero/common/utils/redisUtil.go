@@ -8,13 +8,15 @@ const (
 	UserDorm  = "user:dorm:"
 
 	// commodity
-	CmdtyInfo     = "cmdty:info:"
-	CmdtyHistory  = "cmdty:history:"
-	CmdtyCategory = "cmdty:category:"
-	CmdtyCollect  = "cmdty:collect:"
-	CmdtyView     = "cmdty:view:"
-	CmdtyLike     = "cmdty:like:"
-	CmdtyTag      = "cmdty:tag"
+	CmdtySellingPrepared = "cmdty:selling:prepared"
+	CmdtyWantPrepared    = "cmdty:selling:prepared"
+	CmdtyInfo            = "cmdty:info:"
+	CmdtyHistory         = "cmdty:history:"
+	CmdtyCategory        = "cmdty:category:"
+	CmdtyCollect         = "cmdty:collect:"
+	CmdtyView            = "cmdty:view:"
+	CmdtyLike            = "cmdty:like:"
+	CmdtyTag             = "cmdty:tag"
 
 	// article
 	AtclContent = "atcl:content:"

@@ -39,7 +39,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	err = engine.Ping()
 	if err != nil {
 		panic("[XORM ERROR] NewServiceContext ping mysql 失败" + err.Error())
-
 	}
 
 	clientOptions := options.Client().ApplyURI(c.Mongo.Url) // 设置客户端连接配置

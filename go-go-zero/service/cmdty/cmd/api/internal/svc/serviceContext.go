@@ -7,6 +7,7 @@ import (
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
 	"go-go-zero/service/cmdty/model"
+	"xorm.io/xorm"
 )
 
 type ServiceContext struct {
@@ -17,6 +18,7 @@ type ServiceContext struct {
 	CmdtyCollect model.CmdtyCollectModel
 	CmdtyTag     model.CmdtyTagModel
 	CmdtyCmt     model.CmdtyCmtModel
+	Xorm         *xorm.Engine
 
 	// redis
 	RedisClient *redis.Client
@@ -27,6 +29,16 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	c1 := sqlx.NewMysql(c.Mysql.Dsn)
+
+	engine, err := xorm.NewEngine("mysql", c.Mysql.Dsn)
+	if err != nil {
+		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误 " + err.Error())
+	}
+	err = engine.Ping()
+	if err != nil {
+		panic("[XORM ERROR] NewServiceContext ping mysql 失败" + err.Error())
+	}
+
 	c2, err := amqp.Dial(c.RabbitMQ.RmqUrl)
 	if err != nil {
 		panic("[RABBITMQ ERROR] NewServiceContext 连接不到rabbitmq")
@@ -41,6 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CmdtyCollect: model.NewCmdtyCollectModel(c1),
 		CmdtyTag:     model.NewCmdtyTagModel(c1),
 		CmdtyCmt:     model.NewCmdtyCmtModel(c1),
+		Xorm:         engine,
 		RedisClient: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,

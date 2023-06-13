@@ -46,6 +46,13 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 		isBuyer = true
 	}
 
+	// 然后开始进行websocket的连接
+	conn, err := l.svcCtx.Upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		conn.Close()
+		return errors.New("无法连接到聊天室！😭")
+	}
+
 	// TODO 第一次连接，先验证身份，拿出userId，后面就不需要了
 	// 处理 TOKEN...
 	var userId int64 = 408301323265285
@@ -61,12 +68,6 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 		return errors.New("聊天室不存在！🫠")
 	}
 
-	// 然后开始进行websocket的连接
-	conn, err := l.svcCtx.Upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		conn.Close()
-		return errors.New("无法连接到聊天室！😭")
-	}
 	conn.SetReadDeadline(time.Now().Add(pongWait)) // 连接进来先给一个60秒的超时时间
 	conn.SetPongHandler(func(string) error {       // 每次收到 Pong 消息，更新连接的超时时间
 		conn.SetReadDeadline(time.Now().Add(pongWait))
