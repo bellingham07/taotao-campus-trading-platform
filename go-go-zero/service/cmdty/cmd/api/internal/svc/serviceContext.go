@@ -1,6 +1,7 @@
 package svc
 
 import (
+	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/streadway/amqp"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -25,6 +26,8 @@ type ServiceContext struct {
 
 	// rabbitMQ
 	RmqCore *utils.RabbitmqCore
+
+	Json jsoniter.API
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -63,5 +66,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Conn:    c2,
 			Channel: channel,
 		},
+		Json: jsoniter.ConfigCompatibleWithStandardLibrary,
 	}
 }

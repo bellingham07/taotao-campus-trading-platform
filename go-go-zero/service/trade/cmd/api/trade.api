@@ -1,3 +1,16 @@
 syntax = "v1"
 
+@server(
+    group: collect
+    prefix: /cmdty/collect
+)
+service cmdty-api {
+    @handler collect
+    get /:id returns ()
 
+    @handler uncollect
+    delete /:id returns ()
+
+    @handler list
+    get /list returns ([]CollectResp)
+}

@@ -48,6 +48,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/wantpublish",
 				Handler: cinfo.WantpublishHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/cache",
+				Handler: cinfo.ListCacheByTypeHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/cmdty"),
 	)

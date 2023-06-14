@@ -5,6 +5,10 @@ type IdReq struct {
 	Id int64 `path:"id" json:"id"`
 }
 
+type TypeReq struct {
+	Type int64 `path:"type" json:"type"`
+}
+
 type IdTypeReq struct {
 	Id   int64 `path:"id" json:"id"`
 	Type int64 `path:"type" json:"type"`

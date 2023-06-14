@@ -22,6 +22,9 @@ service cmdty-api {
 	
 	@handler wantpublish
 	post /wantpublish (InfoReq) returns ()
+	
+	@handler listCacheByType
+	post /cache (TypeReq) returns ()
 }
 
 @server(
@@ -94,6 +97,10 @@ service cmdty-api {
 type (
 	IdReq {
 		Id int64 `path:"id" json:"id"`
+	}
+
+	TypeReq {
+		Type int64 `path:"type" json:"type"`
 	}
 
 	IdTypeReq {
