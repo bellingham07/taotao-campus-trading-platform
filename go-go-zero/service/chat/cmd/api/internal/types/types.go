@@ -7,8 +7,8 @@ type IdReq struct {
 
 type ChatReq struct {
 	RoomId   int64 `form:"roomId"`
-	SellerId int64 `form:"sellerId"`
-	BuyerId  int64 `form:"buyerId"`
+	SellerId int64 `form:"sellerId, optional"`
+	BuyerId  int64 `form:"buyerId, optional"`
 }
 
 type CreateRoomReq struct {

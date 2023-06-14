@@ -28,7 +28,7 @@ func NewListTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListTagLo
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func (l *ListTagLogic) ListTag() (resp []*model.CmdtyTag, err error) {
-	result, err := l.svcCtx.RedisClient.Get(l.ctx, utils.CmdtyTag).Result()
+	result, err := l.svcCtx.Redis.Get(l.ctx, utils.CmdtyTag).Result()
 	if err != nil {
 		logx.Debugf("[REDIS ERROR] ListTag redis中的 cmdtyTag 已被淘汰，请运营进行同步 " + err.Error())
 		resp = l.svcCtx.CmdtyTag.List()

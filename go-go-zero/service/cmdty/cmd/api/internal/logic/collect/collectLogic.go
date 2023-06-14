@@ -31,7 +31,7 @@ func (l *CollectLogic) Collect(req *types.IdReq) error {
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	var userId int64 = 408301323265285
 	userIdStr := "408301323265285"
-	r, err := l.svcCtx.RedisClient.SAdd(l.ctx, key, userIdStr).Result()
+	r, err := l.svcCtx.Redis.SAdd(l.ctx, key, userIdStr).Result()
 	if r == 0 {
 		logx.Debugf("[REDIS ERROR] collect 收藏失败 " + err.Error())
 		return errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/yitter/idgenerator-go/idgen"
 	"go-go-zero/service/chat/model"
 	"go-go-zero/service/chat/model/mongo"
 	"net/http"
@@ -85,6 +86,7 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 		if err = conn.ReadJSON(cm); err != nil {
 			return errors.New("消息未能发送成功！")
 		}
+		cm.Id = idgen.NextId()
 		cm.RoomId = roomId
 		cm.UserId = userId
 		cm.Time = time.Now()
@@ -117,11 +119,10 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 		if !ok {
 			return nil
 		}
-		err = conn.WriteJSON(msg)
+
+		_ = conn.WriteJSON(msg)
 		if err != nil {
-			logx.Debugf("[WEBSOCKET ERROR] Chat 发送数据错误 %v\n", err)
-			conn.Close()
-			return errors.New("消息发送失败！")
+			return nil
 		}
 	}
 }

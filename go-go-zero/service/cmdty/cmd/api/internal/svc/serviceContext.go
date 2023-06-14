@@ -21,7 +21,7 @@ type ServiceContext struct {
 	Xorm         *xorm.Engine
 
 	// redis
-	RedisClient *redis.Client
+	Redis *redis.Client
 
 	// rabbitMQ
 	RmqCore *utils.RabbitmqCore
@@ -54,7 +54,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CmdtyTag:     model.NewCmdtyTagModel(c1),
 		CmdtyCmt:     model.NewCmdtyCmtModel(c1),
 		Xorm:         engine,
-		RedisClient: redis.NewClient(&redis.Options{
+		Redis: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,
 			DB:       c.Redis.Db,

@@ -6,7 +6,7 @@ syntax = "v1"
 )
 service cmdty-api {
 	@handler getById
-	get /:id (IdReq) returns (InfoResp)
+	get /:id (IdTypeReq) returns (InfoResp)
 	
 	@handler listByUidAndOption
 	get / returns ([]InfoLiteResp)
@@ -94,6 +94,11 @@ service cmdty-api {
 type (
 	IdReq {
 		Id int64 `path:"id" json:"id"`
+	}
+
+	IdTypeReq {
+		Id   int64 `path:"id" json:"id"`
+		Type int64 `path:"type" json:"type"`
 	}
 
 	CmdtyIdReq {

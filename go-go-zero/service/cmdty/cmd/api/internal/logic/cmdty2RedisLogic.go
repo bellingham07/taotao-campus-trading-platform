@@ -45,26 +45,67 @@ func (l *Cmdty2RedisLogic) Cmdty2Redis() {
 				wg.Done()
 			}()
 			wg.Wait()
-			ticker.Reset(31 * time.Minute)
+			ticker.Reset(30 * time.Minute)
 		}
 	}
 }
 
 func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
+	cmdtyPrepared := make(map[int64][]byte)
 	sellingCmdty := make([]*model.CmdtyInfo, 0)
-	_ = l.svcCtx.Xorm.Table("cmdty_info").
+	// 查库
+	err := l.svcCtx.Xorm.Table("cmdty_info").
 		Where("status = ? AND type = ?", 2, 1).
 		Desc("publish_at").Limit(100, 0).Find(sellingCmdty)
-	data, _ := json.Marshal(sellingCmdty)
-	l.svcCtx.RedisClient.Set(l.ctx, utils.CmdtySellingPrepared, data, 31*time.Minute)
+	if err != nil {
+		logx.Infof("[DB ERROR] SellingCmdty2Redis 数据库查询错误 %v\n", err)
+		return
+	}
+	// 序列化
+	for _, v := range sellingCmdty {
+		data, err := json.Marshal(v)
+		if err == nil {
+			cmdtyPrepared[v.Id] = data
+			continue
+		}
+		logx.Infof("[JSON MARSHAL ERROR] SellingCmdty2Redis 序列化数据错误 %v\n", err)
+	}
+	// 使用pipeline发给redis
+	pipeline := l.svcCtx.Redis.Pipeline()
+	pipeline.HSet(l.ctx, utils.CmdtySellingPrepared, cmdtyPrepared)
+	pipeline.Expire(l.ctx, utils.CmdtySellingPrepared, 31*time.Minute)
+	_, err = pipeline.Exec(l.ctx)
+	if err != nil {
+		logx.Infof("[REDIS ERROR] SellingCmdty2Redis redis执行错误 %v\n", err)
+	}
 }
 
 func (l *Cmdty2RedisLogic) WantCmdty2Redis() {
-
+	cmdtyPrepared := make(map[int64][]byte)
 	wantCmdty := make([]*model.CmdtyInfo, 0)
-	_ = l.svcCtx.Xorm.Table("cmdty_info").
+	// 查库
+	err := l.svcCtx.Xorm.Table("cmdty_info").
 		Where("status = ? AND type = ?", 2, 2).
 		Desc("publish_at").Limit(100, 0).Find(wantCmdty)
-	data, _ := json.Marshal(wantCmdty)
-	l.svcCtx.RedisClient.Set(l.ctx, utils.CmdtyWantPrepared, data, 31*time.Minute)
+	if err != nil {
+		logx.Infof("[DB ERROR] SellingCmdty2Redis 数据库查询错误 %v\n", err)
+		return
+	}
+	// 序列化
+	for _, v := range wantCmdty {
+		data, _ := json.Marshal(v)
+		if err == nil {
+			cmdtyPrepared[v.Id] = data
+			continue
+		}
+		logx.Infof("[JSON MARSHAL ERROR] SellingCmdty2Redis 序列化数据错误 %v\n", err)
+	}
+	// 使用pipeline发给redis
+	pipeline := l.svcCtx.Redis.Pipeline()
+	pipeline.HSet(l.ctx, utils.CmdtyWantPrepared, cmdtyPrepared)
+	pipeline.Expire(l.ctx, utils.CmdtyWantPrepared, 31*time.Minute)
+	_, err = pipeline.Exec(l.ctx)
+	if err != nil {
+		logx.Infof("[REDIS ERROR] SellingCmdty2Redis redis执行错误 %v\n", err)
+	}
 }

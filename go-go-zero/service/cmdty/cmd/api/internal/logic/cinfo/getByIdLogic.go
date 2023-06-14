@@ -3,8 +3,12 @@ package cinfo
 import (
 	"context"
 	"errors"
+	jsoniter "github.com/json-iterator/go"
+	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
+	"go-go-zero/service/cmdty/model"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,28 +27,31 @@ func NewGetByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByIdLo
 	}
 }
 
-func (l *GetByIdLogic) GetById(req *types.IdReq) (resp *types.InfoResp, err error) {
-	ci, err := l.svcCtx.CmdtyInfo.FindOne(l.ctx, req.Id)
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
+func (l *GetByIdLogic) GetById(req *types.IdTypeReq) (*model.CmdtyInfo, error) {
+	var (
+		id    = req.Id
+		IdStr = strconv.FormatInt(id, 10)
+	)
+	key := utils.CmdtySellingPrepared
+	if req.Type == 2 {
+		key = utils.CmdtyWantPrepared
+	}
+	ci := new(model.CmdtyInfo)
+	result, err := l.svcCtx.Redis.HGet(l.ctx, key, IdStr).Result()
+	if result != "" && err == nil {
+		err := json.Unmarshal([]byte(result), ci)
+		if err != nil {
+			return nil, errors.New("出错了！😢")
+		}
+		return ci, nil
+	}
+	key = utils.CmdtyInfo + IdStr
+	ci.Id = id
+	has, err := l.svcCtx.Xorm.Table("cmdty_info").Get(ci)
 	if err != nil {
 		return nil, errors.New("出错啦😥")
-	}
-	resp = &types.InfoResp{
-		Id:        ci.Id,
-		UserId:    ci.UserId,
-		Cover:     ci.Cover,
-		Tag:       ci.Tag,
-		Price:     ci.Price,
-		Brand:     ci.Brand,
-		Model:     ci.Model,
-		Intro:     ci.Intro,
-		Old:       ci.Old,
-		Status:    ci.Status,
-		CreateAt:  ci.CreateAt.Format("2006-01-02 15:04:05"),
-		PublishAt: ci.PublishAt.Format("2006-01-02 15:04:05"),
-		View:      ci.View,
-		Collect:   ci.Collect,
-		Type:      ci.Type,
-		Like:      ci.Like,
 	}
 	return
 }

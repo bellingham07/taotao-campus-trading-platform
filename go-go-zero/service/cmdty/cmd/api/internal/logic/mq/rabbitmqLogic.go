@@ -33,7 +33,7 @@ var (
 func (l *RabbitMQLogic) CollectCheck(ccMessage *utils.CcMessage) {
 	redisKey := ccMessage.RedisKey
 	userId := ccMessage.UserId
-	isMember, _ := l.svcCtx.RedisClient.SIsMember(l.ctx, redisKey, userId).Result()
+	isMember, _ := l.svcCtx.Redis.SIsMember(l.ctx, redisKey, userId).Result()
 	if isMember {
 		commodityId := getIdByRedisKey(redisKey)
 		collect := &model.CmdtyCollect{
@@ -49,7 +49,7 @@ func (l *RabbitMQLogic) CollectCheck(ccMessage *utils.CcMessage) {
 func (l *RabbitMQLogic) UncollectCheck(ccMessage *utils.CcMessage) {
 	redisKey := ccMessage.RedisKey
 	userId := ccMessage.UserId
-	isMember, _ := l.svcCtx.RedisClient.SIsMember(l.ctx, redisKey, strconv.FormatInt(userId, 10)).Result()
+	isMember, _ := l.svcCtx.Redis.SIsMember(l.ctx, redisKey, strconv.FormatInt(userId, 10)).Result()
 	if !isMember {
 		cmdtyId := getIdByRedisKey(redisKey)
 		_ = l.svcCtx.CmdtyCollect.DeleteByCmdtyIdAndUserId(cmdtyId, userId)

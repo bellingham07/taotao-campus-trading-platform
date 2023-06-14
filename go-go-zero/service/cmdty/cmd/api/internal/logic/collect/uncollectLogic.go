@@ -32,7 +32,7 @@ func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *errorsx.CodeMsg, err
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	userIdStr := "408301323265285"
 	var userId int64 = 408301323265285
-	isMember, _ := l.svcCtx.RedisClient.SIsMember(l.ctx, key, userIdStr).Result()
+	isMember, _ := l.svcCtx.Redis.SIsMember(l.ctx, key, userIdStr).Result()
 	if isMember {
 		mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
 		go mq.CollectUpdatePublisher(key, userId, false, mqLogic)

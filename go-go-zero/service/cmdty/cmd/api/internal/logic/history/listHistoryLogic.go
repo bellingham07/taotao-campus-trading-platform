@@ -30,7 +30,7 @@ func NewListHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListH
 func (l *ListHistoryLogic) ListHistory() ([]*types.HistoryResp, error) {
 	resp := make([]*types.HistoryResp, 0)
 	key := utils.CmdtyHistory + "408301323265285"
-	zs, err := l.svcCtx.RedisClient.ZRevRangeWithScores(l.ctx, key, 0, -1).Result()
+	zs, err := l.svcCtx.Redis.ZRevRangeWithScores(l.ctx, key, 0, -1).Result()
 	now := time.Now()
 	var zqualified []redis.Z
 	for idx, z := range zs {
@@ -42,7 +42,7 @@ func (l *ListHistoryLogic) ListHistory() ([]*types.HistoryResp, error) {
 				for _, z := range zs[idx:] {
 					ids = append(ids, z.Member)
 				}
-				err = l.svcCtx.RedisClient.ZRem(l.ctx, key, ids).Err()
+				err = l.svcCtx.Redis.ZRem(l.ctx, key, ids).Err()
 				if err != nil {
 					logx.Debugf("[REDIS ERROR] ListHistory 删除过期足迹错误 " + err.Error())
 				}
@@ -55,7 +55,7 @@ func (l *ListHistoryLogic) ListHistory() ([]*types.HistoryResp, error) {
 		idStr := z.Member.(string)
 		id, _ := strconv.ParseInt(idStr, 10, 64)
 		key := utils.CmdtyInfo + idStr
-		cir, err := l.svcCtx.RedisClient.HGetAll(l.ctx, key).Result()
+		cir, err := l.svcCtx.Redis.HGetAll(l.ctx, key).Result()
 		if err != nil {
 			// 缓存中没有了
 			cidb, err := l.svcCtx.CmdtyInfo.FindOne(l.ctx, id)
