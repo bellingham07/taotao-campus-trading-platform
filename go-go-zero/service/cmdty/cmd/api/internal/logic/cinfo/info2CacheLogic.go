@@ -1,8 +1,7 @@
-package logic
+package cinfo
 
 import (
 	"context"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
@@ -26,7 +25,6 @@ func NewCmdty2RedisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cmdty
 }
 
 var (
-	json   = jsoniter.ConfigCompatibleWithStandardLibrary
 	ticker = time.NewTicker(30 * time.Minute)
 	wg     sync.WaitGroup
 )
@@ -63,7 +61,7 @@ func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
 	}
 	// 序列化
 	for _, v := range sellingCmdty {
-		data, err := json.Marshal(v)
+		data, err := l.svcCtx.Json.Marshal(v)
 		if err == nil {
 			cmdtyPrepared[v.Id] = data
 			continue
@@ -93,7 +91,7 @@ func (l *Cmdty2RedisLogic) WantCmdty2Redis() {
 	}
 	// 序列化
 	for _, v := range wantCmdty {
-		data, _ := json.Marshal(v)
+		data, _ := l.svcCtx.Json.Marshal(v)
 		if err == nil {
 			cmdtyPrepared[v.Id] = data
 			continue

@@ -26,21 +26,15 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
+func (l *LoginLogic) Login(req *types.LoginReq) (string, error) {
 	ui := l.svcCtx.UserInfo.QueryInfoByUsername(req.Username)
-	if err = bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password)); err != nil {
-		return nil, errors.New("账号或密码错误！🥲")
+	err := bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password))
+	if err != nil {
+		return "", errors.New("账号或密码错误！🥲")
 	}
 	token, err := utils.GenToken(ui)
 	if err != nil {
-		return nil, errors.New("登录错误！请稍后🥲")
+		return "", errors.New("登录错误！请稍后🥲")
 	}
-	resp = &types.LoginResp{
-		BaseResp: types.BaseResp{
-			Code: 1,
-			Msg:  "登录成功😊",
-		},
-		Token: token,
-	}
-	return
+	return token, nil
 }

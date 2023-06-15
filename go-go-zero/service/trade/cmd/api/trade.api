@@ -1,16 +1,59 @@
 syntax = "v1"
 
 @server(
-    group: collect
-    prefix: /cmdty/collect
+	group: tinfo
+	prefix: /trade
 )
-service cmdty-api {
-    @handler collect
-    get /:id returns ()
-
-    @handler uncollect
-    delete /:id returns ()
-
-    @handler list
-    get /list returns ([]CollectResp)
+service trade-api {
+	@handler getByIdAndDone
+	get / (IdDoneReq) returns ()
+	
+	@handler listByType
+	delete / (TypeReq) returns ()
 }
+
+@server(
+	group: cmt
+	prefix: /trade/cmt
+)
+service trade-api {
+	@handler cmt
+	post / (CmtReq) returns ()
+	
+	@handler listByToUserId
+	get /:userId (UserIdReq) returns ()
+	
+	@handler listByTradeId
+	get /:tradeId (TradeIdReq) returns ()
+}
+
+type (
+	IdReq {
+		Id int64 `json:"id" path:"id" form:"id"`
+	}
+
+	TradeIdReq {
+		TradeId int64 `json:"tradeId" path:"tradeId"`
+	}
+
+	UserIdReq {
+		UserId int64 `form:"userId"`
+	}
+
+	IdDoneReq {
+		Id   int64 `form:"id"`
+		Done int   `form:"done"`
+	}
+
+	TypeReq {
+		Type int `path:"type"`
+	}
+
+	CmtReq {
+		TradeId  int64  `json:"tradeId"`
+		UserId   int64  `json:"userId"`
+		ToUserId int64  `json:"toUserId"`
+		Type     int    `json:"type"`
+		Content  string `json:"content"`
+	}
+)

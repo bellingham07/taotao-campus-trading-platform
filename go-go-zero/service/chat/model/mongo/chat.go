@@ -2,7 +2,7 @@ package mongo
 
 import "time"
 
-// ChatMessage mongo
+// ChatMessage mongodb
 type ChatMessage struct {
 	Id      int64     `json:"id" bson:"_id"` // bigint自增
 	Content string    `json:"content" bson:"content"`

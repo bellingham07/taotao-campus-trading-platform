@@ -3,9 +3,9 @@ package utils
 const (
 
 	// user
-	UserLogin = "user:login:"
-	UserInfo  = "user:info:"
-	UserDorm  = "user:dorm:"
+	UserLogin    = "user:login:"
+	UserInfo     = "user:info:"
+	UserLocation = "user:location"
 
 	// commodity
 	CmdtySellingPrepared = "cmdty:selling:prepared"

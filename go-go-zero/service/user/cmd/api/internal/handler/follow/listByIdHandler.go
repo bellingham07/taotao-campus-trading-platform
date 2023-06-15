@@ -1,28 +1,29 @@
 package follow
 
 import (
+	"github.com/zeromicro/go-zero/rest/httpx"
+	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/service/user/cmd/api/internal/types"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"go-go-zero/service/user/cmd/api/internal/logic/follow"
 	"go-go-zero/service/user/cmd/api/internal/svc"
-	"go-go-zero/service/user/cmd/api/internal/types"
 )
 
 func ListByIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.IdReq
+		var req types.PageReq
 		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
 			return
 		}
 
 		l := follow.NewListByIdLogic(r.Context(), svcCtx)
 		resp, err := l.ListById(&req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }

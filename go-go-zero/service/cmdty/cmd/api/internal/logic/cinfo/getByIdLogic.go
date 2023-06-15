@@ -32,12 +32,12 @@ func (l *GetByIdLogic) GetById(req *types.IdTypeReq) (interface{}, error) {
 		id    = req.Id
 		IdStr = strconv.FormatInt(id, 10)
 		key   = utils.CmdtySellingPrepared
+		ci    = new(model.CmdtyInfo)
 	)
 	if req.Type == 2 {
 		key = utils.CmdtyWantPrepared
 	}
 	// 1 先检查是不是前100条已缓存的数据
-	ci := new(model.CmdtyInfo)
 	result, err := l.svcCtx.Redis.HGet(l.ctx, key, IdStr).Result()
 	if result != "" && err == nil {
 		err = l.svcCtx.Json.Unmarshal([]byte(result), ci)
@@ -64,7 +64,7 @@ func (l *GetByIdLogic) GetById(req *types.IdTypeReq) (interface{}, error) {
 	ci.Id = id
 	has, err := l.svcCtx.Xorm.Table("cmdty_info").Get(ci)
 	if !has && err == nil {
-		l.svcCtx.Redis.HSet(l.ctx, key, map[string]string{"nil": ""})
+		go l.svcCtx.Redis.HSet(l.ctx, key, map[string]string{"nil": ""})
 		return nil, errors.New("没有这个物品！😶‍🌫️")
 	}
 	data := map[string]interface{}{

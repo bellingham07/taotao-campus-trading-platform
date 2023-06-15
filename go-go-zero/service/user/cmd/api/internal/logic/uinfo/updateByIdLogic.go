@@ -2,6 +2,8 @@ package uinfo
 
 import (
 	"context"
+	"errors"
+	"go-go-zero/service/user/model"
 
 	"go-go-zero/service/user/cmd/api/internal/svc"
 	"go-go-zero/service/user/cmd/api/internal/types"
@@ -23,8 +25,18 @@ func NewUpdateByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 	}
 }
 
-func (l *UpdateByIdLogic) UpdateById(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *UpdateByIdLogic) UpdateById(req *types.UserInfoReq) error {
+	var ui = &model.UserInfo{
+		Id:       req.Id,
+		Name:     req.Name,
+		Gender:   req.Gender,
+		Phone:    req.Phone,
+		Intro:    req.Intro,
+		Location: req.Location,
+	}
+	_, err := l.svcCtx.UserInfo.Update(ui)
+	if err != nil {
+		return errors.New("出错啦！😭")
+	}
+	return nil
 }

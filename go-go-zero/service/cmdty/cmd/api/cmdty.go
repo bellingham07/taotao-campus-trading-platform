@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"go-go-zero/service/cmdty/cmd/api/internal/logic"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/cinfo"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
@@ -29,7 +29,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	cmdty2RedisLogic := logic.NewCmdty2RedisLogic(context.Background(), ctx)
+	cmdty2RedisLogic := cinfo.NewCmdty2RedisLogic(context.Background(), ctx)
 	go cmdty2RedisLogic.Cmdty2Redis()
 
 	mq.InitRabbitMQ(ctx)

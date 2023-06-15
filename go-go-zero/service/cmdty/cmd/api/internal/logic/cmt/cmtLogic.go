@@ -3,7 +3,7 @@ package cmt
 import (
 	"context"
 	"errors"
-	"go-go-zero/service/cmdty/model"
+	"go-go-zero/service/cmdty/model/mongodb"
 	"time"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
@@ -27,21 +27,20 @@ func NewCmtLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CmtLogic {
 }
 
 func (l *CmtLogic) Cmt(req *types.CmtReq) error {
-	// todo: add your logic here and delete this line
 	if length := len(req.Content); length > 100 {
 		return errors.New("评论太长了😭")
 	}
-	cc := &model.CmdtyCmt{
+	cc := &mongodb.CmdtyCmt{
 		CmdtyId:  req.CmdtyId,
 		UserId:   req.UserId,
 		Content:  req.Content,
 		RootId:   req.RootId,
 		ToUserId: req.ToUserId,
-		CreateAt: time.Now(),
+		CreateAt: time.Now().Local(),
 	}
-	_, err := l.svcCtx.CmdtyCmt.Insert(l.ctx, cc)
+	_, err := l.svcCtx.CmdtyCmt.InsertOne(l.ctx, cc)
 	if err != nil {
-		logx.Debugf("[DB ERROR] Cmt 评论插入数据库失败 " + err.Error())
+		logx.Debugf("[MONGO ERROR] Cmt 评论插入mongodb失败 " + err.Error())
 		return errors.New("评论失败😭")
 	}
 	return nil

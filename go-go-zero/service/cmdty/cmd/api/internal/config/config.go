@@ -18,5 +18,9 @@ type Config struct {
 		Db       int
 	}
 
+	Mongo struct {
+		Url string
+	}
+
 	RabbitMQ utils.RabbitMQConf
 }

@@ -59,7 +59,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/list/:id",
+				Path:    "/",
 				Handler: follow.ListByIdHandler(serverCtx),
 			},
 		},

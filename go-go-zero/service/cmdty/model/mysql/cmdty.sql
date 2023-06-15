@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `cmdty_info`
     `price`      DOUBLE       NOT NULL DEFAULT 0 COMMENT '商品价格',
     `brand`      VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '品牌',
     `model`      VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '型号',
-    `intro`      VARCHAR(100) NOT NULL DEFAULT '' COMMENT '商品介绍',
+    `intro`      VARCHAR(200) NOT NULL DEFAULT '' COMMENT '商品介绍',
     `old`        VARCHAR(10)  NOT NULL DEFAULT '轻微使用痕迹' COMMENT '新旧程度',
     `status`     TINYINT      NOT NULL DEFAULT 1 COMMENT '商品状态，默认1为草稿，2为发布，0为下架，-1为审核未通过需修改',
     `create_at`  DATETIME     NOT NULL DEFAULT NOW() COMMENT '创建时间',
@@ -16,6 +16,24 @@ CREATE TABLE IF NOT EXISTS `cmdty_info`
     `collect`    BIGINT       NOT NULL DEFAULT 0 COMMENT '收藏数',
     `type`       TINYINT      NOT NULL COMMENT '1为售卖商品，2为收商品',
     `like`       BIGINT       NOT NULL DEFAULT 0 COMMENT '点赞数',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `cmdty_done`
+(
+    `id`         BIGINT           NOT NULL COMMENT 'id',
+    `user_id`    BIGINT           NOT NULL COMMENT '用户id',
+    `cover`      VARCHAR(255)     NOT NULL COMMENT '封面图片',
+    `tag`        VARCHAR(255)     NOT NULL COMMENT '分类名',
+    `price`      DOUBLE PRECISION NOT NULL COMMENT '商品价格',
+    `brand`      VARCHAR(20)      NOT NULL COMMENT '品牌',
+    `model`      VARCHAR(20)      NOT NULL COMMENT '型号',
+    `intro`      VARCHAR(200)     NOT NULL COMMENT '商品介绍',
+    `publish_at` DATETIME         NOT NULL COMMENT '发布时间',
+    `view`       BIGINT           NOT NULL COMMENT '查看数量',
+    `collect`    BIGINT           NOT NULL COMMENT '收藏数',
+    `type`       TINYINT          NOT NULL COMMENT '1为售卖商品，2为收商品',
+    `like`       BIGINT           NOT NULL COMMENT '点赞数',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

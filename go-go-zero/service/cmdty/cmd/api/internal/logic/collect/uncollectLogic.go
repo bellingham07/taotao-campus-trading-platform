@@ -28,7 +28,7 @@ func NewUncollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uncolle
 	}
 }
 
-func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *errorsx.CodeMsg, err error) {
+func (l *UncollectLogic) Uncollect(req *types.IdReq) (*errorsx.CodeMsg, error) {
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
 	userIdStr := "408301323265285"
 	var userId int64 = 408301323265285
@@ -36,11 +36,11 @@ func (l *UncollectLogic) Uncollect(req *types.IdReq) (resp *errorsx.CodeMsg, err
 	if isMember {
 		mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
 		go mq.CollectUpdatePublisher(key, userId, false, mqLogic)
-		resp = &errorsx.CodeMsg{
+		resp := &errorsx.CodeMsg{
 			Code: 1,
 			Msg:  "取消成功😊",
 		}
-		return
+		return resp, nil
 	}
 	return nil, errors.New("你本来就没收藏人家嘛！😫")
 }

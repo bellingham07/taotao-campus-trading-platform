@@ -2,11 +2,12 @@ package location
 
 import (
 	"context"
-
-	"go-go-zero/service/user/cmd/api/internal/svc"
-	"go-go-zero/service/user/cmd/api/internal/types"
+	"errors"
+	"go-go-zero/common/utils"
+	"go-go-zero/service/user/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"go-go-zero/service/user/cmd/api/internal/svc"
 )
 
 type ListLogic struct {
@@ -23,8 +24,20 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-func (l *ListLogic) List() (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *ListLogic) List() ([]*model.UserLocation, error) {
+	var uls = make([]*model.UserLocation, 0)
+	result, err := l.svcCtx.Redis.Get(l.ctx, utils.UserLocation).Result()
+	if err == nil {
+		err = l.svcCtx.Json.Unmarshal([]byte(result), uls)
+		if err == nil {
+			return uls, nil
+		}
+		goto searchDB
+	}
+searchDB:
+	err = l.svcCtx.UserLocation.Find(uls)
+	if err != nil {
+		return nil, errors.New("出错啦！😭")
+	}
+	return uls, nil
 }

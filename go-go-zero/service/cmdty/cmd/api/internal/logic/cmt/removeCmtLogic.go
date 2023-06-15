@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
@@ -24,7 +25,7 @@ func NewRemoveCmtLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveC
 }
 
 func (l *RemoveCmtLogic) RemoveCmt(req *types.IdReq) error {
-	err := l.svcCtx.CmdtyCmt.Delete(l.ctx, req.Id)
+	_, err := l.svcCtx.CmdtyCmt.DeleteOne(l.ctx, bson.M{"_id": req.Id})
 	if err != nil {
 		return errors.New("操作失败😢")
 	}

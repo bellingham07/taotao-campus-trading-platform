@@ -37,6 +37,6 @@ func (l *CollectLogic) Collect(req *types.IdReq) error {
 		return errors.New("好啦好啦，知道你喜欢了！但不能再次收藏哦😚")
 	}
 	mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)
-	mq.CollectUpdatePublisher(key, userId, true, mqLogic)
+	go mq.CollectUpdatePublisher(key, userId, true, mqLogic)
 	return nil
 }
