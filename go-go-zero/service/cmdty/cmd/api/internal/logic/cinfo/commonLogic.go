@@ -28,7 +28,7 @@ func NewInfoCommonLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoCo
 func (l *InfoCommonLogic) UpdateInfo(ci *model.CmdtyInfo, isPublish bool) error {
 	// 不是发布，即只更新内容
 	if !isPublish {
-		if err := l.svcCtx.CmdtyInfo.Update(l.ctx, ci); err != nil {
+		if _, err := l.svcCtx.CmdtyInfo.Update(ci); err != nil {
 			return errors.New("操作失败，请重试！😢")
 		}
 		return nil
@@ -36,7 +36,7 @@ func (l *InfoCommonLogic) UpdateInfo(ci *model.CmdtyInfo, isPublish bool) error 
 	// 是发布，就更新状态和内容
 	ci.Status = 2
 	ci.PublishAt = time.Now()
-	if err := l.svcCtx.CmdtyInfo.Update(l.ctx, ci); err != nil {
+	if _, err := l.svcCtx.CmdtyInfo.Update(ci); err != nil {
 		return errors.New("操作失败，请重试！😢")
 	}
 	return nil

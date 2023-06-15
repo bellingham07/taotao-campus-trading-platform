@@ -32,12 +32,15 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 }
 
 func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
-	atclId := req.AtclId
-	var userId int64 = 408301323265285
-	userIdStr := "408301323265285"
+	var (
+		atclId          = req.AtclId
+		userId    int64 = 408301323265285
+		userIdStr       = "408301323265285"
+		files           = make([]*multipart.FileHeader, 0)
+		orders          = make([]int64, 0)
+		code      *atclservice.CodeResp
+	)
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
-	files := make([]*multipart.FileHeader, 0)
-	orders := make([]int64, 0)
 	for _, file := range req.Pics {
 		files = append(files, &file.Pic)
 		orders = append(orders, file.Order)
@@ -47,7 +50,7 @@ func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
 		return nil, errors.New("上传图片失败！😥")
 	}
 	var wg sync.WaitGroup
-	var code *atclservice.CodeResp
+
 	wg.Add(1)
 	fas := make([]*model.FileAtcl, 0)
 	resp := make([]*types.PicResp, 0)

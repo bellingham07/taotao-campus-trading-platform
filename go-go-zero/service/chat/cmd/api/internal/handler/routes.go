@@ -13,29 +13,35 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: room.CreateRoomHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: room.ChatHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: room.CreateRoomHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: room.ChatHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/chat/room"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: msg.ListHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: msg.ListHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/chat/msg"),
 	)
 }

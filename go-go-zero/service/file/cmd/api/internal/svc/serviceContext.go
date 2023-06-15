@@ -2,12 +2,10 @@ package svc
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/service/atcl/cmd/rpc/atclservice"
 	"go-go-zero/service/cmdty/cmd/rpc/cmdtyservice"
 	"go-go-zero/service/file/cmd/api/internal/config"
-	"go-go-zero/service/file/model"
 	"go-go-zero/service/user/cmd/rpc/userservice"
 	"xorm.io/xorm"
 )
@@ -19,16 +17,12 @@ type ServiceContext struct {
 	CmdtyRpc cmdtyservice.CmdtyService
 	AtclRpc  atclservice.AtclService
 
-	Xorm *xorm.Engine
+	Xorm       *xorm.Engine
+	FileAtcl   *xorm.Session
+	FileCmdty  *xorm.Session
+	FileAvatar *xorm.Session
 
-	Models *Models
-	Oss    *Oss
-}
-
-type Models struct {
-	FileAtcl   model.FileAtclModel
-	FileCmdty  model.FileCmdtyModel
-	FileAvatar model.FileAvatarModel
+	Oss *Oss
 }
 
 type Oss struct {
@@ -38,8 +32,6 @@ type Oss struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	conn := sqlx.NewSqlConn("mysql", c.Mysql.Dsn)
-
 	engine, err := xorm.NewEngine("mysql", c.Mysql.Dsn)
 	if err != nil {
 		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误 " + err.Error())
@@ -60,16 +52,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:   c,
-		UserRpc:  userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
-		CmdtyRpc: cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.CmdtyRpc)),
-		AtclRpc:  atclservice.NewAtclService(zrpc.MustNewClient(c.AtclRpc)),
-		Xorm:     engine,
-		Models: &Models{
-			FileAtcl:   model.NewFileAtclModel(conn),
-			FileCmdty:  model.NewFileCmdtyModel(conn),
-			FileAvatar: model.NewFileAvatarModel(conn),
-		},
+		Config:     c,
+		UserRpc:    userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
+		CmdtyRpc:   cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.CmdtyRpc)),
+		AtclRpc:    atclservice.NewAtclService(zrpc.MustNewClient(c.AtclRpc)),
+		Xorm:       engine,
+		FileAtcl:   engine.Table("file_atcl"),
+		FileCmdty:  engine.Table("file_cmdty"),
+		FileAvatar: engine.Table("file_avatar"),
 		Oss: &Oss{
 			Client:     client,
 			BaseUrl:    "https://" + bucketName + "." + endPoint + "/",

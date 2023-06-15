@@ -5,10 +5,8 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/streadway/amqp"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
-	"go-go-zero/service/cmdty/model"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"xorm.io/xorm"
@@ -18,10 +16,10 @@ type ServiceContext struct {
 	Config config.Config
 
 	// mysql
-	CmdtyInfo    model.CmdtyInfoModel
-	CmdtyCollect model.CmdtyCollectModel
-	CmdtyTag     model.CmdtyTagModel
 	Xorm         *xorm.Engine
+	CmdtyInfo    *xorm.Session
+	CmdtyCollect *xorm.Session
+	CmdtyTag     *xorm.Session
 
 	// redis
 	Redis *redis.Client
@@ -36,8 +34,6 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	c1 := sqlx.NewMysql(c.Mysql.Dsn)
-
 	engine, err := xorm.NewEngine("mysql", c.Mysql.Dsn)
 	if err != nil {
 		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误 " + err.Error())
@@ -66,22 +62,23 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		panic("[RABBITMQ ERROR] NewServiceContext 获取rabbitmq通道失败")
 	}
+
 	return &ServiceContext{
 		Config:       c,
-		CmdtyInfo:    model.NewCmdtyInfoModel(c1),
-		CmdtyCollect: model.NewCmdtyCollectModel(c1),
-		CmdtyTag:     model.NewCmdtyTagModel(c1),
 		Xorm:         engine,
+		CmdtyInfo:    engine.Table("cmdty_info"),
+		CmdtyCollect: engine.Table("cmdty_info"),
+		CmdtyTag:     engine.Table("cmdty_info"),
+		CmdtyCmt:     ccCollection,
+		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
 		Redis: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,
 			DB:       c.Redis.Db,
 		}),
-		CmdtyCmt: ccCollection,
 		RmqCore: &utils.RabbitmqCore{
 			Conn:    c2,
 			Channel: channel,
 		},
-		Json: jsoniter.ConfigCompatibleWithStandardLibrary,
 	}
 }

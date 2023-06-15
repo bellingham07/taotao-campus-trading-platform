@@ -29,9 +29,11 @@ func NewUncollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uncolle
 }
 
 func (l *UncollectLogic) Uncollect(req *types.IdReq) (*errorsx.CodeMsg, error) {
-	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
-	userIdStr := "408301323265285"
-	var userId int64 = 408301323265285
+	var (
+		key             = utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
+		userIdStr       = "408301323265285"
+		userId    int64 = 408301323265285
+	)
 	isMember, _ := l.svcCtx.Redis.SIsMember(l.ctx, key, userIdStr).Result()
 	if isMember {
 		mqLogic := mq.NewRabbitMQLogic(l.ctx, l.svcCtx)

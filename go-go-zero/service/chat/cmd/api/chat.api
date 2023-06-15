@@ -3,6 +3,7 @@ syntax = "v1"
 @server(
 	group: room
 	prefix: /chat/room
+	middleware: JwtAuth
 )
 service chat-api {
 	@handler createRoom
@@ -15,6 +16,7 @@ service chat-api {
 @server(
 	group: msg
 	prefix: /chat/msg
+	middleware: JwtAuth
 )
 service chat-api {
 	@handler list

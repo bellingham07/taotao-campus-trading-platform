@@ -9,20 +9,19 @@ import (
 const SECRET_KEY = "xpdj"
 
 type Claims struct {
-	Id     int64  `json:"id"`
-	Name   string `json:"name"`
-	Avatar string `json:"avatar"`
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
 	jwt.RegisteredClaims
 }
 
 func GenToken(user *model.UserInfo) (string, error) {
-	claim := &Claims{
-		Id:     user.Id,
-		Name:   user.Name,
-		Avatar: user.Avatar,
+	var now = time.Now().Local()
+	var claim = &Claims{
+		Id:   user.Id,
+		Name: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(7 * 24 * time.Hour)),
 		},
 	}
 	// 使用指定的签名方法和声明创建一个新token
@@ -36,8 +35,8 @@ func ParseToken(token string) (*Claims, error) {
 	tokenClaim, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRET_KEY), nil
 	})
-	if tokenClaim != nil {
-		if claim, ok := tokenClaim.Claims.(*Claims); ok && tokenClaim.Valid {
+	if tokenClaim.Valid {
+		if claim, ok := tokenClaim.Claims.(*Claims); ok {
 			return claim, nil
 		}
 	}

@@ -3,7 +3,6 @@ package tag
 import (
 	"context"
 	"errors"
-
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
 
@@ -25,9 +24,9 @@ func NewRemoveTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveT
 }
 
 func (l *RemoveTagLogic) RemoveTag(req *types.IdsReq) error {
-	err := l.svcCtx.CmdtyTag.DeleteByIds(req.Ids)
+	_, err := l.svcCtx.CmdtyTag.In("id", req.Ids).Delete()
 	if err != nil {
-		return errors.New("操作失败！😢")
+		return errors.New("删除失败！")
 	}
 	return nil
 }

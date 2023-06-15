@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"go-go-zero/service/chat/cmd/api/internal/config"
 	"go-go-zero/service/chat/cmd/api/internal/handler"
 	"go-go-zero/service/chat/cmd/api/internal/svc"

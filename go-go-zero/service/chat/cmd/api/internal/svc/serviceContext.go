@@ -3,13 +3,18 @@ package svc
 import (
 	"context"
 	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 	"github.com/yitter/idgenerator-go/idgen"
+	"github.com/zeromicro/go-zero/rest"
 	"go-go-zero/service/chat/cmd/api/internal/config"
+	"go-go-zero/service/chat/cmd/api/internal/middleware"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"sync"
 	"xorm.io/xorm"
 )
+
+var Redis *redis.Client
 
 type ServiceContext struct {
 	Config config.Config
@@ -19,8 +24,9 @@ type ServiceContext struct {
 	ChatMessage *mongo.Collection
 
 	Upgrader websocket.Upgrader
+	Conn     *Conn
 
-	Conn *Conn
+	JwtAuth rest.Middleware
 }
 
 type Conn struct {
@@ -52,10 +58,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	cmCollection := client.Database("taotao_trading_chat").Collection("chat_message")
 
+	jwtAuth := middleware.NewJwtAuthMiddleware()
 	return &ServiceContext{
 		Config:      c,
 		Xorm:        engine,
 		ChatMessage: cmCollection,
+		JwtAuth:     jwtAuth.Handle,
 		Conn: &Conn{
 			ConnPool: make(map[string]*websocket.Conn),
 		},

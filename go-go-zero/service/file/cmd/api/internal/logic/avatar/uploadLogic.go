@@ -51,7 +51,7 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader) (*types.AvatarResp, e
 		wg.Done()
 	}()
 	// 2.1 OSS上传成功，就先更新file中的头像
-	err = l.svcCtx.Models.FileAvatar.SaveOrUpdateByUserId(url, objectName, userId)
+	err = l.SaveOrUpdateByUserId(url, objectName, userId)
 	if err != nil {
 		commonLogic.Delete(objectName)
 		return nil, errors.New("图片上传失败！😥")
@@ -59,9 +59,14 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader) (*types.AvatarResp, e
 	wg.Wait()
 	if code.GetCode() != 0 {
 		commonLogic.Delete(objectName)
-		go l.svcCtx.Models.FileAvatar.DeleteByUserId(userId)
+		go l.svcCtx.FileAvatar.Where("user_id = ?", userId).Delete()
 		return nil, errors.New("图片上传失败！😥")
 	}
 	resp := &types.AvatarResp{Url: url}
 	return resp, nil
+}
+
+// SaveOrUpdateByUserId TODO
+func (l *UploadLogic) SaveOrUpdateByUserId(url string, name string, id int64) error {
+	return nil
 }

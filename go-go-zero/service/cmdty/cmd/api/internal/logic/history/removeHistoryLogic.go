@@ -23,8 +23,8 @@ func NewRemoveHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Rem
 	}
 }
 
-func (l *RemoveHistoryLogic) RemoveHistory(req *types.IdsReq) (resp *types.BaseResp, err error) {
+func (l *RemoveHistoryLogic) RemoveHistory(req *types.IdsReq) error {
 	// todo: add your logic here and delete this line
 
-	return
+	return nil
 }

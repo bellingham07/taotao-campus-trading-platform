@@ -23,10 +23,13 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 }
 
 func (l *ListLogic) List() ([]*model.CmdtyCollect, error) {
-	var userId int64 = 408301323265285
-	ccList := l.svcCtx.CmdtyCollect.ListByUserId(userId)
-	if ccList == nil {
+	var (
+		userId int64 = 408301323265285
+		ccs          = make([]*model.CmdtyCollect, 0)
+	)
+	err := l.svcCtx.CmdtyCollect.Where("user_id = ?", userId).Find(ccs)
+	if err != nil {
 		return nil, errors.New("出错啦😫")
 	}
-	return ccList, nil
+	return ccs, nil
 }

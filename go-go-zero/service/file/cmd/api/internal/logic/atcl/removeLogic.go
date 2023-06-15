@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"go-go-zero/service/file/cmd/api/internal/types"
+	"go-go-zero/service/file/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go-go-zero/service/file/cmd/api/internal/svc"
@@ -24,11 +25,10 @@ func NewRemoveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveLogi
 }
 
 func (l *RemoveLogic) Remove(req *types.IdReq) error {
-	err := l.svcCtx.Models.FileAtcl.Delete(l.ctx, req.Id)
+	_, err := l.svcCtx.FileAtcl.Delete(&model.FileAtcl{Id: req.Id})
 	if err != nil {
-		logx.Debugf("[DB ERROR] Remove 删除文章图片失败 " + err.Error())
+		logx.Debugf("[DB ERROR] Remove 删除文章图片失败 %v\n", err)
 		return errors.New("操作失败！😥")
 	}
-
 	return nil
 }
