@@ -26,3 +26,8 @@ func (s *CmdtyServiceServer) UpdateCover(ctx context.Context, in *__.CoverReq) (
 	l := logic.NewUpdateCoverLogic(ctx, s.svcCtx)
 	return l.UpdateCover(in)
 }
+
+func (s *CmdtyServiceServer) GetCoverInfoById(ctx context.Context, in *__.IdReq) (*__.CoverInfoResp, error) {
+	l := logic.NewGetCoverInfoByIdLogic(ctx, s.svcCtx)
+	return l.GetCoverInfoById(in)
+}

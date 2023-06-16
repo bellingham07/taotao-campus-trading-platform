@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	cmt "go-go-zero/service/trade/cmd/api/internal/handler/cmt"
-	tinfo "go-go-zero/service/trade/cmd/api/internal/handler/tinfo"
+	trade "go-go-zero/service/trade/cmd/api/internal/handler/trade"
 	"go-go-zero/service/trade/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -17,12 +17,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/",
-				Handler: tinfo.GetByIdAndDoneHandler(serverCtx),
+				Handler: trade.GetByIdAndDoneHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodDelete,
 				Path:    "/",
-				Handler: tinfo.ListByTypeHandler(serverCtx),
+				Handler: trade.ListByTypeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/buy",
+				Handler: trade.BuyHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/sell",
+				Handler: trade.SellHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/trade"),

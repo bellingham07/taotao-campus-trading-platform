@@ -13,11 +13,14 @@ import (
 )
 
 type (
-	AvatarReq = __.AvatarReq
-	CodeResp  = __.CodeResp
+	AvatarReq      = __.AvatarReq
+	CodeResp       = __.CodeResp
+	IdReq          = __.IdReq
+	NameAvatarResp = __.NameAvatarResp
 
 	UserService interface {
 		UpdateAvatar(ctx context.Context, in *AvatarReq, opts ...grpc.CallOption) (*CodeResp, error)
+		RetrieveNameAndAvatar(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*NameAvatarResp, error)
 	}
 
 	defaultUserService struct {
@@ -34,4 +37,9 @@ func NewUserService(cli zrpc.Client) UserService {
 func (m *defaultUserService) UpdateAvatar(ctx context.Context, in *AvatarReq, opts ...grpc.CallOption) (*CodeResp, error) {
 	client := __.NewUserServiceClient(m.cli.Conn())
 	return client.UpdateAvatar(ctx, in, opts...)
+}
+
+func (m *defaultUserService) RetrieveNameAndAvatar(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*NameAvatarResp, error) {
+	client := __.NewUserServiceClient(m.cli.Conn())
+	return client.RetrieveNameAndAvatar(ctx, in, opts...)
 }

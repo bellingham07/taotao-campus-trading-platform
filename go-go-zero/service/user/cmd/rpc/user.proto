@@ -6,6 +6,7 @@ option go_package = ".";
 
 service UserService{
   rpc UpdateAvatar (AvatarReq) returns (CodeResp);
+  rpc RetrieveNameAndAvatar (IdReq) returns (NameAvatarResp);
 }
 
 message AvatarReq {
@@ -15,4 +16,14 @@ message AvatarReq {
 
 message CodeResp {
   int64 Code = 1;
+}
+
+message IdReq {
+  int64 Id = 1;
+}
+
+message NameAvatarResp {
+  int64 Code = 1;
+  string Name = 2;
+  string Avatar = 3;
 }

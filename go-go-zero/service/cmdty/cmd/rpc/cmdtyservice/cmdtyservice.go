@@ -13,11 +13,14 @@ import (
 )
 
 type (
-	CodeResp = __.CodeResp
-	CoverReq = __.CoverReq
+	CodeResp      = __.CodeResp
+	CoverInfoResp = __.CoverInfoResp
+	CoverReq      = __.CoverReq
+	IdReq         = __.IdReq
 
 	CmdtyService interface {
 		UpdateCover(ctx context.Context, in *CoverReq, opts ...grpc.CallOption) (*CodeResp, error)
+		GetCoverInfoById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CoverInfoResp, error)
 	}
 
 	defaultCmdtyService struct {
@@ -34,4 +37,9 @@ func NewCmdtyService(cli zrpc.Client) CmdtyService {
 func (m *defaultCmdtyService) UpdateCover(ctx context.Context, in *CoverReq, opts ...grpc.CallOption) (*CodeResp, error) {
 	client := __.NewCmdtyServiceClient(m.cli.Conn())
 	return client.UpdateCover(ctx, in, opts...)
+}
+
+func (m *defaultCmdtyService) GetCoverInfoById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CoverInfoResp, error) {
+	client := __.NewCmdtyServiceClient(m.cli.Conn())
+	return client.GetCoverInfoById(ctx, in, opts...)
 }

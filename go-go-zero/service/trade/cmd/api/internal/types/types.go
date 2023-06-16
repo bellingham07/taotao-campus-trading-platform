@@ -25,7 +25,22 @@ type TypeReq struct {
 type CmtReq struct {
 	TradeId  int64  `json:"tradeId"`
 	UserId   int64  `json:"userId"`
+	Name     string `json:"name"`
 	ToUserId int64  `json:"toUserId"`
 	Type     int    `json:"type"`
 	Content  string `json:"content"`
+}
+
+type BuyReq struct {
+	BuyerId int64   `json:"buyerId"`
+	Buyer   string  `json:"buyer"`
+	CmdtyId int64   `json:"cmdtyId"`
+	Payment float64 `json:"payment"`
+}
+
+type SellReq struct {
+	SellerId int64   `json:"buyerId"`
+	Seller   string  `json:"buyer"`
+	CmdtyId  int64   `json:"cmdtyId"`
+	Payment  float64 `json:"payment"`
 }

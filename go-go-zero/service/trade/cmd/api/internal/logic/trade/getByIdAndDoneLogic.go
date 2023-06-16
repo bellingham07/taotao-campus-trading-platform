@@ -1,4 +1,4 @@
-package tinfo
+package trade
 
 import (
 	"context"

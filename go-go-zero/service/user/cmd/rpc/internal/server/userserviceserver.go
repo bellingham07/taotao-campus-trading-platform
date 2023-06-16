@@ -26,3 +26,8 @@ func (s *UserServiceServer) UpdateAvatar(ctx context.Context, in *__.AvatarReq) 
 	l := logic.NewUpdateAvatarLogic(ctx, s.svcCtx)
 	return l.UpdateAvatar(in)
 }
+
+func (s *UserServiceServer) RetrieveNameAndAvatar(ctx context.Context, in *__.IdReq) (*__.NameAvatarResp, error) {
+	l := logic.NewRetrieveNameAndAvatarLogic(ctx, s.svcCtx)
+	return l.RetrieveNameAndAvatar(in)
+}

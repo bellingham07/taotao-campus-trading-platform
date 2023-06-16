@@ -1,7 +1,7 @@
 syntax = "v1"
 
 @server(
-	group: tinfo
+	group: trade
 	prefix: /trade
 )
 service trade-api {
@@ -10,6 +10,12 @@ service trade-api {
 	
 	@handler listByType
 	delete / (TypeReq) returns ()
+	
+	@handler buy
+	post /buy (BuyReq) returns ()
+	
+	@handler sell
+	post /sell (BuyReq) returns ()
 }
 
 @server(
@@ -52,8 +58,23 @@ type (
 	CmtReq {
 		TradeId  int64  `json:"tradeId"`
 		UserId   int64  `json:"userId"`
+		Name     string `json:"name"`
 		ToUserId int64  `json:"toUserId"`
 		Type     int    `json:"type"`
 		Content  string `json:"content"`
+	}
+
+	BuyReq {
+		BuyerId int64   `json:"buyerId"`
+		Buyer   string  `json:"buyer"`
+		CmdtyId int64   `json:"cmdtyId"`
+		Payment float64 `json:"payment"`
+	}
+
+	SellReq {
+		SellerId int64   `json:"buyerId"`
+		Seller   string  `json:"buyer"`
+		CmdtyId  int64   `json:"cmdtyId"`
+		Payment  float64 `json:"payment"`
 	}
 )

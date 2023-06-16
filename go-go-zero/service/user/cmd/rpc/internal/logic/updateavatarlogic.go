@@ -25,12 +25,12 @@ func NewUpdateAvatarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upda
 }
 
 func (l *UpdateAvatarLogic) UpdateAvatar(in *__.AvatarReq) (*__.CodeResp, error) {
-	ui := &model.UserInfo{
+	var ui = &model.UserInfo{
 		Id:     in.Id,
 		Avatar: in.Avatar,
 	}
-	if err := l.svcCtx.UserInfo.Update(l.ctx, ui); err != nil {
-		logx.Debugf("[DB ERROR] UpdateAvatar 更新头像失败 " + err.Error())
+	if _, err := l.svcCtx.UserInfo.Update(ui); err != nil {
+		logx.Infof("[DB ERROR] UpdateAvatar 更新头像失败 %v\n", err)
 		return &__.CodeResp{Code: -1}, nil
 	}
 	return &__.CodeResp{Code: 0}, nil

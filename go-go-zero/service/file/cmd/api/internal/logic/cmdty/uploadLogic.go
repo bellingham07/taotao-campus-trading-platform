@@ -34,10 +34,10 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 func (l *UploadLogic) Upload(req *cmdty.CmdtyPicsReq) ([]*types.PicResp, error) {
 	var (
 		cmdtyId         = req.CmdtyId
-		userId    int64 = 408301323265285
 		userIdStr       = "408301323265285"
 		files           = make([]*multipart.FileHeader, 0)
 		orders          = make([]int64, 0)
+		userId    int64 = 408301323265285
 		code      *cmdtyservice.CodeResp
 	)
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
@@ -59,7 +59,7 @@ func (l *UploadLogic) Upload(req *cmdty.CmdtyPicsReq) ([]*types.PicResp, error) 
 			CmdtyId:    cmdtyId,
 			UserId:     userId,
 			Url:        url,
-			ObjectName: objectnames[idx],
+			Objectname: objectnames[idx],
 			UploadAt:   t,
 			Order:      orders[idx],
 		}

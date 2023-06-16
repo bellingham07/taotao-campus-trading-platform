@@ -6,6 +6,7 @@ option go_package = ".";
 
 service CmdtyService{
   rpc UpdateCover (CoverReq) returns (CodeResp);
+  rpc GetCoverInfoById (IdReq) returns (CoverInfoResp);
 }
 
 message CoverReq {
@@ -15,4 +16,14 @@ message CoverReq {
 
 message CodeResp {
   int64 Code = 1;
+}
+
+message IdReq {
+  int64 Id = 1;
+}
+
+message CoverInfoResp {
+  int64 Code = 1;
+  string Cover = 2;
+  string Info = 3;
 }

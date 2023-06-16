@@ -1,6 +1,7 @@
 package cmt
 
 import (
+	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -13,16 +14,16 @@ func ListByToUserIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UserIdReq
 		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
 			return
 		}
 
 		l := cmt.NewListByToUserIdLogic(r.Context(), svcCtx)
-		err := l.ListByToUserId(&req)
+		resp, err := l.ListByToUserId(&req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }
