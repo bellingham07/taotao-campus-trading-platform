@@ -15,7 +15,6 @@ func UpdateByIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		var req types.UserInfoReq
 		if err := httpx.Parse(r, &req); err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
-			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 

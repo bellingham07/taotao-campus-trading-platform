@@ -60,7 +60,7 @@ func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
 			AtclId:     atclId,
 			UserId:     userId,
 			Url:        url,
-			ObjectName: objectnames[idx],
+			Objectname: objectnames[idx],
 			UploadAt:   t,
 			Order:      orders[idx],
 		}

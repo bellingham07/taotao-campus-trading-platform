@@ -2,8 +2,8 @@ package svc
 
 import (
 	"context"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/websocket"
-	"github.com/redis/go-redis/v9"
 	"github.com/yitter/idgenerator-go/idgen"
 	"github.com/zeromicro/go-zero/rest"
 	"go-go-zero/service/chat/cmd/api/internal/config"
@@ -13,8 +13,6 @@ import (
 	"sync"
 	"xorm.io/xorm"
 )
-
-var Redis *redis.Client
 
 type ServiceContext struct {
 	Config config.Config

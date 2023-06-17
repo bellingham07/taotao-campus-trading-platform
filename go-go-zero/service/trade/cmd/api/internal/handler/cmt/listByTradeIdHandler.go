@@ -1,6 +1,8 @@
 package cmt
 
 import (
+	"errors"
+	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -13,16 +15,17 @@ func ListByTradeIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.TradeIdReq
 		if err := httpx.Parse(r, &req); err != nil {
+			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！"))
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
 		l := cmt.NewListByTradeIdLogic(r.Context(), svcCtx)
-		err := l.ListByTradeId(&req)
+		resp, err := l.ListByTradeId(&req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, nil)
 		} else {
-			httpx.Ok(w)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }

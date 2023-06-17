@@ -1,6 +1,7 @@
 package svc
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	"go-go-zero/service/user/cmd/rpc/internal/config"
 	"xorm.io/xorm"
 )

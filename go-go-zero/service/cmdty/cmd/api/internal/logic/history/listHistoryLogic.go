@@ -2,8 +2,10 @@ package history
 
 import (
 	"context"
+	"errors"
 	"github.com/redis/go-redis/v9"
 	"go-go-zero/common/utils"
+	"go-go-zero/service/cmdty/model"
 	"strconv"
 	"time"
 
@@ -29,49 +31,54 @@ func NewListHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListH
 
 func (l *ListHistoryLogic) ListHistory() ([]*types.HistoryResp, error) {
 	var (
+		zqualified []redis.Z
 		resp       = make([]*types.HistoryResp, 0)
 		key        = utils.CmdtyHistory + "408301323265285"
-		zqualified []redis.Z
 	)
+	// 1 先从redis中取出浏览记录的id
 	zs, err := l.svcCtx.Redis.ZRevRangeWithScores(l.ctx, key, 0, -1).Result()
-	if err == nil {
-		l.findQualifiedZs(zqualified, zs, key)
-		// 从redis中获取，缓存中没有，就去mysql取
-		for _, z := range zqualified {
-			id := z.Member.(int64)
-			cidb, err := l.svcCtx.CmdtyInfo.Get()
-			if err != nil {
-				logx.Debugf("[DB ERROR] ListHistory mysql 获取 cmdtyInfo 错误 %v\n", err)
-			} else {
-				resp = append(resp, &types.HistoryResp{
-					Id:    cidb.Id,
-					Cover: cidb.Cover,
-					Price: cidb.Price,
-				})
-			}
-
-			id, _ := strconv.ParseInt(cir["Id"], 10, 64)
-			price, _ := strconv.ParseFloat(cir["Price"], 64)
+	if err != nil || zs == nil {
+		return nil, errors.New("出错啦，请刷新😊")
+	}
+	// 2 筛选出符合时间的记录
+	l.findQualifiedZs(&zqualified, &zs, key)
+	// 3 先从redis中获取，没有，就去mysql取
+	for _, z := range zqualified {
+		id := z.Member.(int64)
+		key = utils.CmdtyInfo + strconv.FormatInt(id, 10)
+		ciMap, err := l.svcCtx.Redis.HGetAll(l.ctx, key).Result()
+		if err == nil {
+			price, _ := strconv.ParseFloat(ciMap["price"], 64)
 			hr := &types.HistoryResp{
 				Id:    id,
-				Cover: cir["Cover"],
+				Cover: ciMap["cover"],
 				Price: price,
 			}
 			resp = append(resp, hr)
-
 		}
+		ci := &model.CmdtyInfo{Id: id}
+		has, err := l.svcCtx.CmdtyInfo.Cols("price", "cover").Get(ci)
+		if !has || err != nil {
+			logx.Infof("[DB ERROR] ListHistory 获取商品信息失败 %v\n", err)
+			continue
+		}
+		hr := &types.HistoryResp{
+			Id:    id,
+			Cover: ci.Cover,
+			Price: ci.Price,
+		}
+		resp = append(resp, hr)
 	}
-
 	return resp, nil
 }
 
-func (l *ListHistoryLogic) findQualifiedZs(zqualified, zs []redis.Z, key string) {
+func (l *ListHistoryLogic) findQualifiedZs(zqualified, zs *[]redis.Z, key string) {
 	var thirtyDaysBefore = time.Now().Local().AddDate(0, 0, -30)
-	for idx, z := range zs {
+	for idx, z := range *zs {
 		createTime := time.Unix(int64(z.Score), 0).Local()
 		if createTime.Before(thirtyDaysBefore) {
-			zqualified = zs[:idx]
-			go l.removeExpiredRecords(zs[idx:], key)
+			*zqualified = (*zs)[:idx]
+			go l.removeExpiredRecords((*zs)[idx:], key)
 			break
 		}
 	}

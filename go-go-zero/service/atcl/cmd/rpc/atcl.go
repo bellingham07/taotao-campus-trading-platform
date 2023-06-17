@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/atcl.yaml", "the config file")
+var configFile = flag.String("f", "service/atcl/cmd/rpc/etc/atcl.yaml", "the config file")
 
 func main() {
 	flag.Parse()

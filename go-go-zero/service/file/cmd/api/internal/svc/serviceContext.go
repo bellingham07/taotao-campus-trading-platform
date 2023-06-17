@@ -2,6 +2,7 @@ package svc
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/service/atcl/cmd/rpc/atclservice"
 	"go-go-zero/service/cmdty/cmd/rpc/cmdtyservice"

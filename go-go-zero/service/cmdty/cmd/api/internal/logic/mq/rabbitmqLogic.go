@@ -42,7 +42,10 @@ func (l *RabbitMQLogic) CollectCheck(ccMessage *utils.CcMessage) {
 			CreateAt: ccMessage.Time,
 			Status:   1,
 		}
-		_, _ = model.CmdtyCollectModel.Insert(l.svcCtx.CmdtyCollect, l.ctx, collect)
+		_, err := l.svcCtx.CmdtyCollect.Insert(collect)
+		if err != nil {
+			logx.Infof("[DB ERROR] CollectCheck 插入收藏记录失败 %v\n", err)
+		}
 	}
 }
 
@@ -52,7 +55,14 @@ func (l *RabbitMQLogic) UncollectCheck(ccMessage *utils.CcMessage) {
 	isMember, _ := l.svcCtx.Redis.SIsMember(l.ctx, redisKey, strconv.FormatInt(userId, 10)).Result()
 	if !isMember {
 		cmdtyId := getIdByRedisKey(redisKey)
-		_ = l.svcCtx.CmdtyCollect.DeleteByCmdtyIdAndUserId(cmdtyId, userId)
+		cc := &model.CmdtyCollect{
+			CmdtyId: cmdtyId,
+			UserId:  userId,
+		}
+		_, err := l.svcCtx.CmdtyCollect.Delete(cc)
+		if err != nil {
+			logx.Infof("[DB ERROR] UncollectCheck 删除收藏记录失败 %v\n", err)
+		}
 	}
 }
 

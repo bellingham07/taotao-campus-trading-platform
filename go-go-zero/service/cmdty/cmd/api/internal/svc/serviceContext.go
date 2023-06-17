@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	_ "github.com/go-sql-driver/mysql"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/streadway/amqp"

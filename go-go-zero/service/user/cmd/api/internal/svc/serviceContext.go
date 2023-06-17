@@ -1,6 +1,7 @@
 package svc
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/yitter/idgenerator-go/idgen"

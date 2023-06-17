@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"go-go-zero/common/utils"
+	"go-go-zero/service/user/model"
 	"golang.org/x/crypto/bcrypt"
 
 	"go-go-zero/service/user/cmd/api/internal/svc"
@@ -27,8 +28,13 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (string, error) {
-	ui := l.svcCtx.UserInfo.QueryInfoByUsername(req.Username)
-	err := bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password))
+	var ui *model.UserInfo
+	has, err := l.svcCtx.UserInfo.Cols("username", "password").
+		Where("username = ?", req.Username).Get(ui)
+	if !has || err != nil {
+		return "", errors.New("账号或密码错误！🥲")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password))
 	if err != nil {
 		return "", errors.New("账号或密码错误！🥲")
 	}

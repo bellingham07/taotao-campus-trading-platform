@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/service/cmdty/cmd/rpc/cmdtyservice"
 	"go-go-zero/service/trade/cmd/api/internal/config"
