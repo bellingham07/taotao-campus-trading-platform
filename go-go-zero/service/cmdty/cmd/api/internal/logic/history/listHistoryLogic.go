@@ -73,7 +73,13 @@ func (l *ListHistoryLogic) ListHistory() ([]*types.HistoryResp, error) {
 }
 
 func (l *ListHistoryLogic) findQualifiedZs(zqualified, zs *[]redis.Z, key string) {
-	var thirtyDaysBefore = time.Now().Local().AddDate(0, 0, -30)
+	var (
+		length           = len(*zs)
+		thirtyDaysBefore = time.Now().Local().AddDate(0, 0, -30)
+	)
+	if length > 300 {
+		*zs = (*zs)[:301]
+	}
 	for idx, z := range *zs {
 		createTime := time.Unix(int64(z.Score), 0).Local()
 		if createTime.Before(thirtyDaysBefore) {

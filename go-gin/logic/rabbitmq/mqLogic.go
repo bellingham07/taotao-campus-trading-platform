@@ -45,11 +45,13 @@ func getIdByRedisKey(redisKey string) int64 {
 }
 
 func ViewCheckUpdate(vMessage *VMessage) {
-	redisKey := vMessage.RedisKey
-	isCommodity := vMessage.IsCommodity
-	viewCountMap := cache.RedisUtil.HGETALL(redisKey)
-	countStr, ok := viewCountMap["count"]
-	now := time.Now()
+	var (
+		redisKey     = vMessage.RedisKey
+		isCommodity  = vMessage.IsCommodity
+		viewCountMap = cache.RedisUtil.HGETALL(redisKey)
+		countStr, ok = viewCountMap["count"]
+		now          = time.Now().Local()
+	)
 	// 如果取不到就丢弃该次更改
 	if !ok {
 		return
@@ -65,17 +67,18 @@ func ViewCheckUpdate(vMessage *VMessage) {
 	id := getIdByRedisKey(redisKey)
 	// 如果已经累计了50个浏览量了，或者过去了1分钟，那我们就更新库
 	if count >= 50 || viewTime.Before(now.Add(-time.Minute)) {
+		now = time.Now().Local()
 		// 更新商品的浏览量
 		if isCommodity {
 			_ = commodityRepository.CommodityInfo.UpdateViewById(id, count)
-			_ = cache.RedisUtil.HSET1(redisKey, "time", time.Now())
+			_ = cache.RedisUtil.HSET1(redisKey, "time", now)
 			// 更新redis
 			_ = cache.RedisUtil.HINCRBY(cache.CommodityInfo+strconv.FormatInt(id, 10), "view", count)
 			_ = cache.RedisUtil.HDEL(redisKey, "count")
 		} else {
 			// 更新文章的浏览量，同理
 			_ = articleRepository.ArticleContent.UpdateViewById(id, count)
-			_ = cache.RedisUtil.HSET1(redisKey, "time", time.Now())
+			_ = cache.RedisUtil.HSET1(redisKey, "time", now)
 			_ = cache.RedisUtil.HINCRBY(cache.ArticleContent+strconv.FormatInt(id, 10), "view", count)
 			_ = cache.RedisUtil.HDEL(redisKey, "count")
 		}

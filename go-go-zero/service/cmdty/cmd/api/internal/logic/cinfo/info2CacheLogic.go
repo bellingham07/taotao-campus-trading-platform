@@ -52,8 +52,7 @@ func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
 	cmdtyPrepared := make(map[int64][]byte)
 	sellingCmdty := make([]*model.CmdtyInfo, 0)
 	// 查库
-	err := l.svcCtx.Xorm.Table("cmdty_info").
-		Where("status = ? AND type = ?", 2, 1).
+	err := l.svcCtx.CmdtyInfo.Where("status = ? AND type = ?", 2, 1).
 		Desc("publish_at").Limit(100, 0).Find(sellingCmdty)
 	if err != nil {
 		logx.Infof("[DB ERROR] SellingCmdty2Redis 数据库查询错误 %v\n", err)
@@ -82,8 +81,7 @@ func (l *Cmdty2RedisLogic) WantCmdty2Redis() {
 	cmdtyPrepared := make(map[int64][]byte)
 	wantCmdty := make([]*model.CmdtyInfo, 0)
 	// 查库
-	err := l.svcCtx.Xorm.Table("cmdty_info").
-		Where("status = ? AND type = ?", 2, 2).
+	err := l.svcCtx.CmdtyInfo.Where("status = ? AND type = ?", 2, 2).
 		Desc("publish_at").Limit(100, 0).Find(wantCmdty)
 	if err != nil {
 		logx.Infof("[DB ERROR] SellingCmdty2Redis 数据库查询错误 %v\n", err)
