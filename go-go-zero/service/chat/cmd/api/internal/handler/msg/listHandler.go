@@ -1,6 +1,7 @@
 package msg
 
 import (
+	"errors"
 	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 
@@ -14,7 +15,7 @@ func ListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.ListMessageReq
 		if err := httpx.Parse(r, &req); err != nil {
-			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
+			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！🤡"))
 			return
 		}
 

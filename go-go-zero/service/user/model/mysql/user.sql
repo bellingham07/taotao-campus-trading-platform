@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS `user_info`
     `negative` BIGINT       NOT NULL DEFAULT 0 COMMENT '差评次数',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+CREATE INDEX 'username_password_idx' ON `user_info` (`username`, `password`);
+
 
 CREATE TABLE IF NOT EXISTS `user_call`
 (

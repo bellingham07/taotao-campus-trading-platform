@@ -17,8 +17,8 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	Xorm *xorm.Engine
-
+	Xorm        *xorm.Engine
+	ChatRoom    *xorm.Session
 	ChatMessage *mongo.Collection
 
 	Upgrader websocket.Upgrader
@@ -60,6 +60,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:      c,
 		Xorm:        engine,
+		ChatRoom:    engine.Table("chat_room"),
 		ChatMessage: cmCollection,
 		JwtAuth:     jwtAuth.Handle,
 		Conn: &Conn{

@@ -27,11 +27,13 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 }
 
 func (l *ListLogic) List(req *types.ListMessageReq) ([]*types.ChatMessageResp, error) {
-	filter := bson.M{"room_id": req.Id}
-	page := req.Page - 1
-	var pageSize int64 = 20
-	skip := (page - 1) * pageSize
-	sort := bson.M{"time": -1} // 按消息发出倒序排序
+	var (
+		filter         = bson.M{"room_id": req.Id}
+		page           = req.Page - 1
+		pageSize int64 = 20
+		skip           = (page - 1) * pageSize
+		sort           = bson.M{"time": -1} // 按消息发出倒序排序
+	)
 	// 执行查询
 	cursor, err := l.svcCtx.ChatMessage.Find(l.ctx, filter,
 		options.Find().SetSkip(skip).SetLimit(pageSize).SetSort(sort))

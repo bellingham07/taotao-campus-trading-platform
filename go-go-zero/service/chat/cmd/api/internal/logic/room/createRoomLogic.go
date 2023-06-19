@@ -39,14 +39,14 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (*types.IdResp, e
 		CreateAt: time.Now(),
 		Status:   req.CmdtyId,
 	}
-	_, err := l.svcCtx.Xorm.Table("chat_room").Insert(cr)
+	_, err := l.svcCtx.ChatRoom.Insert(cr)
 	resp := &types.IdResp{Id: cr.Id}
 	if err == nil {
 		return resp, nil
 	}
 	logx.Infof("[DB ERROR] CreateRoom 聊天室插入数据库错误 %v\n", err)
 
-	has, err := l.svcCtx.Xorm.Table("chat_room").
+	has, err := l.svcCtx.ChatRoom.
 		Where("`cmdty_id` = ? AND `seller_id` = ? AND `buyer_id` = ?",
 			req.CmdtyId, req.SellerId, req.BuyerId).Get(cr)
 	if has && err == nil {

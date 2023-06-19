@@ -6,10 +6,12 @@ import (
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/cmd/api/internal/svc"
 	utypes "go-go-zero/service/file/cmd/api/internal/types"
+	"go-go-zero/service/file/model"
 	"go-go-zero/service/user/cmd/rpc/userservice"
 	"mime/multipart"
 	"strconv"
 	"sync"
+	"xorm.io/xorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -67,6 +69,28 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader) (*utypes.AvatarResp, 
 }
 
 // SaveOrUpdateByUserId TODO
-func (l *UploadLogic) SaveOrUpdateByUserId(url string, name string, id int64) error {
-	return nil
+func (l *UploadLogic) SaveOrUpdateByUserId(url string, objectName string, userId int64) error {
+	var fa = new(model.FileAvatar)
+	_, err := l.svcCtx.Xorm.Transaction(func(session *xorm.Session) (interface{}, error) {
+		s := session.Table("file_avatar")
+		has, err := s.Where("`user_id` = ?", userId).Get(fa)
+		if !has {
+			fa.Id = userId
+			fa.Url = url
+			fa.Objectname = objectName
+			_, err = s.Insert(fa)
+			if err != nil {
+				return nil, err
+			}
+			return nil, nil
+		}
+		fa.Url = url
+		fa.Objectname = objectName
+		_, err = s.Where("`user_id` = ?", userId).Update(fa)
+		if err != nil {
+			return nil, err
+		}
+		return nil, nil
+	})
+	return err
 }
