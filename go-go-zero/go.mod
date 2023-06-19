@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c
 	github.com/json-iterator/go v1.1.12
@@ -16,6 +17,7 @@ require (
 	golang.org/x/crypto v0.9.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
+	k8s.io/apimachinery v0.27.0-alpha.3
 	xorm.io/xorm v1.3.2
 )
 
@@ -36,7 +38,6 @@ require (
 	github.com/go-openapi/jsonreference v0.20.1 // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -101,7 +102,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.26.3 // indirect
-	k8s.io/apimachinery v0.27.0-alpha.3 // indirect
 	k8s.io/client-go v0.26.3 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230307230338-69ee2d25a840 // indirect

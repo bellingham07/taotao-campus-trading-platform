@@ -13,7 +13,7 @@ import (
 )
 
 func Initializer() {
-	yamlFile, err := os.ReadFile("./config/config.yaml")
+	yamlFile, err := os.ReadFile("config/config.yaml")
 	if err != nil {
 		panic("配置文件读取错误：" + err.Error())
 	}
