@@ -6,6 +6,7 @@ import (
 	"com.xpdj/go-gin/logic/rabbitmq"
 	"com.xpdj/go-gin/repository"
 	"com.xpdj/go-gin/utils/cache"
+	"fmt"
 	"github.com/yitter/idgenerator-go/idgen"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -22,6 +23,7 @@ func Initializer() {
 		panic("配置文件解析错误：" + err.Error())
 	}
 	var options = idgen.NewIdGeneratorOptions(20)
+	fmt.Println("_config.MysqlConfig", _config.MysqlConfig)
 	{
 		go repository.InitMysql(_config.MysqlConfig)
 		go cache.InitRedis(_config.RedisConfig)

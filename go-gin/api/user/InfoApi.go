@@ -6,14 +6,66 @@ import (
 	"com.xpdj/go-gin/model/request"
 	"com.xpdj/go-gin/model/response"
 	"com.xpdj/go-gin/router/middleware"
+	"com.xpdj/go-gin/utils"
+	"com.xpdj/go-gin/utils/assist"
 	"com.xpdj/go-gin/utils/cache"
+	"context"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type InfoApi struct {
+}
+
+// GenerateLoginCode 生成验证码
+// 用户点击发送验证码 将验证码存入到redis 过期时间为5min
+func (*InfoApi) GenerateLoginCode(c *gin.Context) {
+	rds := cache.RedisUtil
+	rctx := context.Background()
+	// 1 获取用户信息
+	var loginUser = new(request.LoginUser)
+	_ = c.ShouldBind(loginUser)
+
+	if loginUser.Username == "" {
+		c.JSON(500, gin.H{"msg": "用户名为空"})
+		return
+	}
+	// 2 生成验证码
+	code := assist.GenerateCode()
+	// 3 存入redis 设置过期时间
+	key := cache.UserLoginCode + loginUser.Username
+	rds.Client.Set(rctx, key, code, 5*time.Minute)
+}
+
+// UserLoginWithCode 验证码登录
+func (*InfoApi) UserLoginWithCode(c *gin.Context) {
+	rds := cache.RedisUtil
+	rctx := context.Background()
+	// 1 获取用户信息
+	var loginUser = new(request.LoginUser)
+	_ = c.ShouldBind(loginUser)
+	if loginUser.Username == "" {
+		response.ErrorMsg("用户名为空")
+	}
+	// 2 校验验证码
+	key := cache.UserLoginCode + loginUser.Username
+	if loginUser.ValidCode != rds.Client.Get(rctx, key).Val() {
+		response.ErrorMsg("验证码错误")
+	}
+	// 3 生成token
+	userInfo := model.UserInfo{
+		Username: loginUser.Username,
+		Password: loginUser.Password,
+	}
+	token, err := utils.GenerateToken(&userInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func (*InfoApi) UserLogin(c *gin.Context) {
