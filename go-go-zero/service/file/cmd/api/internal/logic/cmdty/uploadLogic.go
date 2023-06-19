@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"go-go-zero/service/cmdty/cmd/rpc/cmdtyservice"
-	"go-go-zero/service/file/cmd/api/internal/handler/cmdty"
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/model"
 	"mime/multipart"
@@ -12,7 +11,7 @@ import (
 	"time"
 
 	"go-go-zero/service/file/cmd/api/internal/svc"
-	"go-go-zero/service/file/cmd/api/internal/types"
+	ctypes "go-go-zero/service/file/cmd/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +30,7 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(req *cmdty.CmdtyPicsReq) ([]*types.PicResp, error) {
+func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq) ([]*ctypes.PicResp, error) {
 	var (
 		cmdtyId         = req.CmdtyId
 		userIdStr       = "408301323265285"
@@ -52,7 +51,7 @@ func (l *UploadLogic) Upload(req *cmdty.CmdtyPicsReq) ([]*types.PicResp, error) 
 	var wg sync.WaitGroup
 	wg.Add(1)
 	fas := make([]*model.FileCmdty, 0)
-	resp := make([]*types.PicResp, 0)
+	resp := make([]*ctypes.PicResp, 0)
 	t := time.Now()
 	for idx, url := range urls {
 		fa := &model.FileCmdty{
@@ -63,7 +62,7 @@ func (l *UploadLogic) Upload(req *cmdty.CmdtyPicsReq) ([]*types.PicResp, error) 
 			UploadAt:   t,
 			Order:      orders[idx],
 		}
-		pr := &types.PicResp{
+		pr := &ctypes.PicResp{
 			Url:   url,
 			Order: orders[idx],
 		}

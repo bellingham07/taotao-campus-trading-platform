@@ -5,7 +5,7 @@ import (
 	"errors"
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/cmd/api/internal/svc"
-	"go-go-zero/service/file/cmd/api/internal/types"
+	utypes "go-go-zero/service/file/cmd/api/internal/types"
 	"go-go-zero/service/user/cmd/rpc/userservice"
 	"mime/multipart"
 	"strconv"
@@ -28,7 +28,7 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(header *multipart.FileHeader) (*types.AvatarResp, error) {
+func (l *UploadLogic) Upload(header *multipart.FileHeader) (*utypes.AvatarResp, error) {
 	userIdStr := "408301323265285"
 	// 1 先存到OSS
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
@@ -62,7 +62,7 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader) (*types.AvatarResp, e
 		go l.svcCtx.FileAvatar.Where("user_id = ?", userId).Delete()
 		return nil, errors.New("图片上传失败！😥")
 	}
-	resp := &types.AvatarResp{Url: url}
+	resp := &utypes.AvatarResp{Url: url}
 	return resp, nil
 }
 

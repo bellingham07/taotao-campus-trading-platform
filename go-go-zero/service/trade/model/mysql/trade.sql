@@ -1,3 +1,5 @@
+USE taotao_trading_trade;
+
 CREATE TABLE IF NOT EXISTS `trade_info`
 (
     `id`                  BIGINT           NOT NULL COMMENT 'id',

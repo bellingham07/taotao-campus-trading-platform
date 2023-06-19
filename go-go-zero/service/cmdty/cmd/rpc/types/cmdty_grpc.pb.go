@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CmdtyService_UpdateCover_FullMethodName      = "/user.CmdtyService/UpdateCover"
-	CmdtyService_GetCoverInfoById_FullMethodName = "/user.CmdtyService/GetCoverInfoById"
+	CmdtyService_UpdateCover_FullMethodName      = "/cmdty.CmdtyService/UpdateCover"
+	CmdtyService_GetCoverInfoById_FullMethodName = "/cmdty.CmdtyService/GetCoverInfoById"
 )
 
 // CmdtyServiceClient is the client API for CmdtyService service.
@@ -129,7 +129,7 @@ func _CmdtyService_GetCoverInfoById_Handler(srv interface{}, ctx context.Context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CmdtyService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.CmdtyService",
+	ServiceName: "cmdty.CmdtyService",
 	HandlerType: (*CmdtyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

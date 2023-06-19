@@ -13,21 +13,6 @@ type AvatarReq struct {
 	Avatar []byte `json:"avatar"`
 }
 
-type PicReq struct {
-	Pic   []byte `json:"pic"`
-	Order int64  `json:"order"`
-}
-
-type CmdtyPicsReq struct {
-	CmdtyId int64    `json:"cmdtyId"`
-	Pics    []PicReq `json:"pics"`
-}
-
-type AtclPicsReq struct {
-	AtclId int64    `json:"atclId"`
-	Pics   []PicReq `json:"pics"`
-}
-
 type AvatarResp struct {
 	Url string `json:"url"`
 }

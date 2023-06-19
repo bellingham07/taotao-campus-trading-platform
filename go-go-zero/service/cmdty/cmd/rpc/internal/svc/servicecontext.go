@@ -9,10 +9,10 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	Xorm      *xorm.Engine
-	CmdtyInfo *xorm.Session
-	//FileCmdty  *xorm.Session
-	//FileAvatar *xorm.Session
+	Xorm         *xorm.Engine
+	CmdtyInfo    *xorm.Session
+	CmdtyCollect *xorm.Session
+	CmdtyDone    *xorm.Session
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -27,8 +27,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:    c,
-		Xorm:      engine,
-		CmdtyInfo: engine.Table("cmdty_info"),
+		Config:       c,
+		Xorm:         engine,
+		CmdtyInfo:    engine.Table("cmdty_info"),
+		CmdtyCollect: engine.Table("cmdty_collect"),
+		CmdtyDone:    engine.Table("cmdty_done"),
 	}
 }

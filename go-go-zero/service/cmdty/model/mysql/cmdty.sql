@@ -1,3 +1,5 @@
+USE taotao_trading_cmdty;
+
 CREATE TABLE IF NOT EXISTS `cmdty_info`
 (
     `id`         BIGINT       NOT NULL AUTO_INCREMENT COMMENT 'id',

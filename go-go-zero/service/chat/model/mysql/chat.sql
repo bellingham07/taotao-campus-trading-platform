@@ -1,3 +1,5 @@
+USE taotao_trading_chat;
+
 CREATE TABLE IF NOT EXISTS `chat_room`
 (
     `id`        BIGINT       NOT NULL COMMENT 'id',

@@ -18,7 +18,7 @@ service file-api {
 )
 service file-api {
 	@handler upload
-	post / (AtclPicsReq) returns ([]PicResp)
+	post / () returns ([]PicResp)
 	
 	@handler remove
 	delete /:id returns ()
@@ -33,7 +33,7 @@ service file-api {
 )
 service file-api {
 	@handler upload
-	post / (CmdtyPicsReq) returns ([]PicResp)
+	post / () returns ([]PicResp)
 	
 	@handler remove
 	delete /:id returns ()
@@ -54,21 +54,6 @@ type (
 
 	AvatarReq {
 		Avatar []byte `json:"avatar"`
-	}
-
-	PicReq {
-		Pic   []byte `json:"pic"`
-		Order int64  `json:"order"`
-	}
-
-	CmdtyPicsReq {
-		CmdtyId int64    `json:"cmdtyId"`
-		Pics    []PicReq `json:"pics"`
-	}
-
-	AtclPicsReq {
-		AtclId int64    `json:"atclId"`
-		Pics   []PicReq `json:"pics"`
 	}
 )
 

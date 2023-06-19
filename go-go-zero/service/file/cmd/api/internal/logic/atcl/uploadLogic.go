@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"go-go-zero/service/atcl/cmd/rpc/atclservice"
-	"go-go-zero/service/file/cmd/api/internal/handler/atcl"
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/model"
 	"mime/multipart"
@@ -12,7 +11,7 @@ import (
 	"time"
 
 	"go-go-zero/service/file/cmd/api/internal/svc"
-	"go-go-zero/service/file/cmd/api/internal/types"
+	atypers "go-go-zero/service/file/cmd/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +30,7 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
+func (l *UploadLogic) Upload(req *atypers.AtclPicsReq) ([]*atypers.PicResp, error) {
 	var (
 		atclId          = req.AtclId
 		userId    int64 = 408301323265285
@@ -53,7 +52,7 @@ func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
 
 	wg.Add(1)
 	fas := make([]*model.FileAtcl, 0)
-	resp := make([]*types.PicResp, 0)
+	resp := make([]*atypers.PicResp, 0)
 	t := time.Now()
 	for idx, url := range urls {
 		fa := &model.FileAtcl{
@@ -64,7 +63,7 @@ func (l *UploadLogic) Upload(req *atcl.AtclPicsReq) ([]*types.PicResp, error) {
 			UploadAt:   t,
 			Order:      orders[idx],
 		}
-		pr := &types.PicResp{
+		pr := &atypers.PicResp{
 			Url:   url,
 			Order: orders[idx],
 		}
