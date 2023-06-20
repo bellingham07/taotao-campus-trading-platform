@@ -57,4 +57,15 @@ type (
 		UpdateBy int64     `xorm:"update_by" json:"updateBy"` // 管理员的id
 		UpdateAt time.Time `xorm:"update_at" json:"updateAt"` // 更新时间
 	}
+
+	CmdtyCmt struct {
+		Id       int64      `bson:"_id" json:"id"`              // id
+		CmdtyId  int64      `bson:"cmdty_id" json:"cmdtyId"`    // 对应的商品id
+		UserId   int64      `bson:"user_id" json:"userId"`      // 留言的用户id
+		Content  string     `bson:"content" json:"content"`     // 留言内容
+		RootId   int64      `bson:"root_id" json:"rootId"`      // 根留言
+		ToUserId int64      `bson:"to_user_id" json:"toUserId"` // 回复给到用户
+		CreateAt time.Time  `bson:"create_at" json:"createAt"`  // 评论时间
+		SubCmt   []CmdtyCmt `bson:"sub_cmt, -" json:"subCmt"`
+	}
 )

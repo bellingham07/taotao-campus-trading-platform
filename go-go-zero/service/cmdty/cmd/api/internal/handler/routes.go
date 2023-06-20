@@ -8,6 +8,7 @@ import (
 	cmt "go-go-zero/service/cmdty/cmd/api/internal/handler/cmt"
 	collect "go-go-zero/service/cmdty/cmd/api/internal/handler/collect"
 	history "go-go-zero/service/cmdty/cmd/api/internal/handler/history"
+	noauth "go-go-zero/service/cmdty/cmd/api/internal/handler/noauth"
 	tag "go-go-zero/service/cmdty/cmd/api/internal/handler/tag"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 
@@ -18,10 +19,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: cinfo.GetByIdHandler(serverCtx),
+				Method:  http.MethodPost,
+				Path:    "/cache",
+				Handler: noauth.ListCacheByTypeHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:id/:done/:type",
+				Handler: noauth.GetByIdDoneTypeHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/cmdty"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodGet,
 				Path:    "/",
@@ -46,11 +58,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/wantpublish",
 				Handler: cinfo.WantpublishHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/cache",
-				Handler: cinfo.ListCacheByTypeHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/cmdty"),

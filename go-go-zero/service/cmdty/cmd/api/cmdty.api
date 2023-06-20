@@ -1,13 +1,22 @@
 syntax = "v1"
 
 @server(
+	group: noauth
+	prefix: /cmdty
+)
+service cmdty-api {
+	@handler listCacheByType
+	post /cache (TypeReq) returns ()
+	
+	@handler getByIdDoneType
+	get /:id/:done/:type (IdDoneTypeReq) returns ()
+}
+
+@server(
 	group: cinfo
 	prefix: /cmdty
 )
 service cmdty-api {
-	@handler getById
-	get /:id (IdTypeReq) returns (InfoResp)
-	
 	@handler listByUidAndOption
 	get / returns ([]InfoLiteResp)
 	
@@ -22,9 +31,6 @@ service cmdty-api {
 	
 	@handler wantpublish
 	post /wantpublish (InfoReq) returns ()
-	
-	@handler listCacheByType
-	post /cache (TypeReq) returns ()
 }
 
 @server(
@@ -91,9 +97,10 @@ type (
 		Type int64 `path:"type" json:"type"`
 	}
 
-	IdTypeReq {
-		Id   int64 `path:"id" json:"id"`
-		Type int64 `path:"type" json:"type"`
+	IdDoneTypeReq {
+		Id   int64 `form:"id" path:"id" json:"id"`
+		Done int64 `form:"done" path:"done" json:"done"`
+		Type int64 `form:"type" json:"type" path:"type"`
 	}
 
 	CmdtyIdReq {

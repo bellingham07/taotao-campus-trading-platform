@@ -9,9 +9,10 @@ type TypeReq struct {
 	Type int64 `path:"type" json:"type"`
 }
 
-type IdTypeReq struct {
-	Id   int64 `path:"id" json:"id"`
-	Type int64 `path:"type" json:"type"`
+type IdDoneTypeReq struct {
+	Id   int64 `form:"id" path:"id" json:"id"`
+	Done int64 `form:"done" path:"done" json:"done"`
+	Type int64 `form:"type" json:"type" path:"type"`
 }
 
 type CmdtyIdReq struct {

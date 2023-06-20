@@ -19,6 +19,7 @@ type ServiceContext struct {
 	// mysql
 	Xorm         *xorm.Engine
 	CmdtyInfo    *xorm.Session
+	CmdtyDone    *xorm.Session
 	CmdtyCollect *xorm.Session
 	CmdtyTag     *xorm.Session
 	CmdtyCmt     *mongo.Collection
@@ -66,6 +67,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		Xorm:         engine,
 		CmdtyInfo:    engine.Table("cmdty_info"),
+		CmdtyDone:    engine.Table("cmdty_done"),
 		CmdtyCollect: engine.Table("cmdty_info"),
 		CmdtyTag:     engine.Table("cmdty_info"),
 		CmdtyCmt:     ccCollection,

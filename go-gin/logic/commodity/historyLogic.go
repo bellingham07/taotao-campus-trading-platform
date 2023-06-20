@@ -52,7 +52,7 @@ func (*CommodityHistoryLogic) ListByUserId(userId string) gin.H {
 	return gin.H{"code": response.OK, "msg": response.SUCCESS, "data": infos}
 }
 
-func (*CommodityHistoryLogic) UpdateHistory(id int64, userId int64) {
+func (*CommodityHistoryLogic) UpdateHistory(id, userId int64) {
 	key := cache.CommodityHistory + strconv.FormatInt(userId, 10)
 	member := redis.Z{
 		Score:  float64(time.Now().Unix()),
