@@ -23,8 +23,8 @@ func NewUpdateCoverLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Updat
 	}
 }
 
-func (l *UpdateCoverLogic) UpdateCover(in *__.CoverReq) (*__.Cod1EResp, error) {
+func (l *UpdateCoverLogic) UpdateCover(in *__.CoverReq) (*__.CodeResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &__.Cod1EResp{}, nil
+	return &__.CodeResp{}, nil
 }
