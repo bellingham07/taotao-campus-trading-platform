@@ -67,18 +67,6 @@ service cmdty-api {
 }
 
 @server(
-	group: like
-	prefix: /cmdty/like
-)
-service cmdty-api {
-	@handler like
-	get /:id returns ()
-	
-	@handler unlike
-	delete /id returns ()
-}
-
-@server(
 	group: cmt
 	prefix: /cmdty/cmt
 )

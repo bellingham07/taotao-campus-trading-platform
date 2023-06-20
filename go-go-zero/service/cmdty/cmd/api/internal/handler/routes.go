@@ -8,7 +8,6 @@ import (
 	cmt "go-go-zero/service/cmdty/cmd/api/internal/handler/cmt"
 	collect "go-go-zero/service/cmdty/cmd/api/internal/handler/collect"
 	history "go-go-zero/service/cmdty/cmd/api/internal/handler/history"
-	like "go-go-zero/service/cmdty/cmd/api/internal/handler/like"
 	tag "go-go-zero/service/cmdty/cmd/api/internal/handler/tag"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 
@@ -108,22 +107,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/cmdty/history"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: like.LikeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/id",
-				Handler: like.UnlikeHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/cmdty/like"),
 	)
 
 	server.AddRoutes(

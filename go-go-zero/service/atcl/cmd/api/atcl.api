@@ -1,0 +1,19 @@
+syntax = "v1"
+
+@server(
+	group: like
+	prefix: /atcl/like
+)
+service atcl-api {
+	@handler like
+	get /:id returns ()
+	
+	@handler unlike
+	delete /id returns ()
+}
+
+type (
+	IdReq {
+		Id int64 `path:"id" json:"id"`
+	}
+)

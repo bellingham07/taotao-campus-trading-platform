@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	UserService_UpdateAvatar_FullMethodName          = "/user.UserService/UpdateAvatar"
 	UserService_RetrieveNameAndAvatar_FullMethodName = "/user.UserService/RetrieveNameAndAvatar"
+	UserService_IncrLike_FullMethodName              = "/user.UserService/IncrLike"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -29,6 +30,7 @@ const (
 type UserServiceClient interface {
 	UpdateAvatar(ctx context.Context, in *AvatarReq, opts ...grpc.CallOption) (*CodeResp, error)
 	RetrieveNameAndAvatar(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*NameAvatarResp, error)
+	IncrLike(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CodeResp, error)
 }
 
 type userServiceClient struct {
@@ -57,12 +59,22 @@ func (c *userServiceClient) RetrieveNameAndAvatar(ctx context.Context, in *IdReq
 	return out, nil
 }
 
+func (c *userServiceClient) IncrLike(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CodeResp, error) {
+	out := new(CodeResp)
+	err := c.cc.Invoke(ctx, UserService_IncrLike_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
 	UpdateAvatar(context.Context, *AvatarReq) (*CodeResp, error)
 	RetrieveNameAndAvatar(context.Context, *IdReq) (*NameAvatarResp, error)
+	IncrLike(context.Context, *IdReq) (*CodeResp, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedUserServiceServer) UpdateAvatar(context.Context, *AvatarReq) 
 }
 func (UnimplementedUserServiceServer) RetrieveNameAndAvatar(context.Context, *IdReq) (*NameAvatarResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RetrieveNameAndAvatar not implemented")
+}
+func (UnimplementedUserServiceServer) IncrLike(context.Context, *IdReq) (*CodeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrLike not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -125,6 +140,24 @@ func _UserService_RetrieveNameAndAvatar_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_IncrLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).IncrLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_IncrLike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).IncrLike(ctx, req.(*IdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RetrieveNameAndAvatar",
 			Handler:    _UserService_RetrieveNameAndAvatar_Handler,
+		},
+		{
+			MethodName: "IncrLike",
+			Handler:    _UserService_IncrLike_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

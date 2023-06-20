@@ -21,6 +21,7 @@ type (
 	UserService interface {
 		UpdateAvatar(ctx context.Context, in *AvatarReq, opts ...grpc.CallOption) (*CodeResp, error)
 		RetrieveNameAndAvatar(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*NameAvatarResp, error)
+		IncrLike(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CodeResp, error)
 	}
 
 	defaultUserService struct {
@@ -42,4 +43,9 @@ func (m *defaultUserService) UpdateAvatar(ctx context.Context, in *AvatarReq, op
 func (m *defaultUserService) RetrieveNameAndAvatar(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*NameAvatarResp, error) {
 	client := __.NewUserServiceClient(m.cli.Conn())
 	return client.RetrieveNameAndAvatar(ctx, in, opts...)
+}
+
+func (m *defaultUserService) IncrLike(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*CodeResp, error) {
+	client := __.NewUserServiceClient(m.cli.Conn())
+	return client.IncrLike(ctx, in, opts...)
 }

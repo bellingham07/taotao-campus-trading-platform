@@ -2,8 +2,8 @@ package mq
 
 import (
 	"github.com/streadway/amqp"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go-go-zero/common/utils"
-	"log"
 )
 
 func StartCcConsumer(conn *amqp.Connection) {
@@ -39,11 +39,11 @@ func StartCcConsumer(conn *amqp.Connection) {
 
 	forever := make(chan int, 0)
 	for msg := range msgs {
-		log.Println("接受成功咕咕咕咕咕咕过过过过过过过过过过过")
+		logx.Infof("接受成功咕咕咕咕咕咕过过过过过过过过过过过")
 		ccMessage := new(utils.CcMessage)
 		err = Json.Unmarshal(msg.Body, ccMessage)
 		if err != nil {
-			log.Printf("[RABBITMQ ERROR] Failed to unmarshal message: %v\n", err)
+			logx.Infof("[RABBITMQ ERROR] Failed to unmarshal message: %v\n", err)
 			msg.Nack(false, false)
 			continue
 		}

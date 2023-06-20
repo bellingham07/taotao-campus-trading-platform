@@ -15,7 +15,6 @@ const (
 	CmdtyCategory        = "cmdty:category:"
 	CmdtyCollect         = "cmdty:collect:"
 	CmdtyView            = "cmdty:view:"
-	CmdtyLike            = "cmdty:like:"
 	CmdtyTag             = "cmdty:tag"
 
 	// article

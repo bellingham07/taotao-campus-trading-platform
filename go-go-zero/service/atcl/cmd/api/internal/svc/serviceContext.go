@@ -6,8 +6,10 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/streadway/amqp"
+	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/common/utils"
-	"go-go-zero/service/cmdty/cmd/api/internal/config"
+	"go-go-zero/service/atcl/cmd/api/internal/config"
+	"go-go-zero/service/user/cmd/rpc/userservice"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"xorm.io/xorm"
@@ -18,10 +20,10 @@ type ServiceContext struct {
 
 	// mysql
 	Xorm         *xorm.Engine
-	CmdtyInfo    *xorm.Session
-	CmdtyCollect *xorm.Session
-	CmdtyTag     *xorm.Session
-	CmdtyCmt     *mongo.Collection
+	AtclContent  *xorm.Session
+	AtclBulletin *xorm.Session
+	AtclCollect  *xorm.Session
+	AtclCmt      *mongo.Collection
 
 	// redis
 	Redis *redis.Client
@@ -30,6 +32,8 @@ type ServiceContext struct {
 	RmqCore *utils.RabbitmqCore
 
 	Json jsoniter.API
+
+	UserRpc userservice.UserService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -51,7 +55,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		panic("[MONGO ERROR] NewServiceContext mongodb 连接失败" + err.Error())
 	}
-	ccCollection := client.Database("taotao_trading_cmdty").Collection("cmdty_cmt")
+	acCollection := client.Database("taotao_trading_chat").Collection("atcl_cmt")
 
 	c2, err := amqp.Dial(c.RabbitMQ.RmqUrl)
 	if err != nil {
@@ -65,11 +69,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:       c,
 		Xorm:         engine,
-		CmdtyInfo:    engine.Table("cmdty_info"),
-		CmdtyCollect: engine.Table("cmdty_info"),
-		CmdtyTag:     engine.Table("cmdty_info"),
-		CmdtyCmt:     ccCollection,
+		AtclContent:  engine.Table("cmdty_info"),
+		AtclBulletin: engine.Table("cmdty_info"),
+		AtclCollect:  engine.Table("cmdty_info"),
+		AtclCmt:      acCollection,
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
+		UserRpc:      userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
 		Redis: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,

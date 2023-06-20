@@ -2,13 +2,13 @@ package like
 
 import (
 	"errors"
-	"github.com/zeromicro/go-zero/rest/httpx"
 	xhttp "github.com/zeromicro/x/http"
-	"go-go-zero/service/cmdty/cmd/api/internal/types"
+	"go-go-zero/service/atcl/cmd/api/internal/types"
 	"net/http"
 
-	"go-go-zero/service/cmdty/cmd/api/internal/logic/like"
-	"go-go-zero/service/cmdty/cmd/api/internal/svc"
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"go-go-zero/service/atcl/cmd/api/internal/logic/like"
+	"go-go-zero/service/atcl/cmd/api/internal/svc"
 )
 
 func LikeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

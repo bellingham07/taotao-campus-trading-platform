@@ -32,7 +32,30 @@ func CollectUpdatePublisher(redisKey string, member int64, isCollect bool, mqLog
 			} else {
 				go mqLogic.UncollectCheck(msg)
 			}
-			return
+		}
+	}
+}
+
+func LikeCheckUpdate(redisKey string, member int64, mqLogic *RabbitMQLogic) {
+	ticker := time.NewTicker(time.Second * 30)
+	msg := &utils.LMessage{
+		RedisKey: redisKey,
+		Time:     time.Now().Local(),
+		UserId:   member,
+	}
+	body, _ := Json.Marshal(msg)
+	publisher := utils.NewRabbitMQ(utils.AtclLikeQueue, utils.AtclLikeExchange, "cl", mqLogic.svcCtx.RmqCore.Conn, mqLogic.svcCtx.RmqCore.Channel)
+	err := publisher.Channel.Publish(publisher.Exchange, publisher.Key, false, false,
+		amqp.Publishing{
+			DeliveryMode: amqp.Persistent,
+			ContentType:  "application/json",
+			Body:         body,
+		})
+	if err != nil {
+		logx.Infof("[RABBITMQ ERROR] LikeCheckUpdate 发送收藏消息失败 %v\n", err)
+		select {
+		case <-ticker.C:
+			go mqLogic.LikeCheckUpdate(msg)
 		}
 	}
 }

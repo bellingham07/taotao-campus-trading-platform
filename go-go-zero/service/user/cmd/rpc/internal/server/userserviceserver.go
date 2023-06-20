@@ -31,3 +31,8 @@ func (s *UserServiceServer) RetrieveNameAndAvatar(ctx context.Context, in *__.Id
 	l := logic.NewRetrieveNameAndAvatarLogic(ctx, s.svcCtx)
 	return l.RetrieveNameAndAvatar(in)
 }
+
+func (s *UserServiceServer) IncrLike(ctx context.Context, in *__.IdReq) (*__.CodeResp, error) {
+	l := logic.NewIncrLikeLogic(ctx, s.svcCtx)
+	return l.IncrLike(in)
+}

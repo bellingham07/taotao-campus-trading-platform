@@ -56,10 +56,10 @@ func (r *RabbitMQ) PublishTopic(message string) error {
 
 const (
 	// 商品收藏相关
-	CmdtyCollectExchange     = "taotao_commodity_collect_exchange"
-	CmdtyCollectDeadExchange = "taotao_commodity_collect_exchange_dead"
-	CmdtyCollectQueue        = "taotao_commodity_collect"
-	CmdtyCollectDeadQueue    = "taotao_commodity_collect_dead"
+	CmdtyCollectExchange     = "taotao_cmdty_collect_exchange"
+	CmdtyCollectDeadExchange = "taotao_cmdty_collect_exchange_dead"
+	CmdtyCollectQueue        = "taotao_cmdty_collect"
+	CmdtyCollectDeadQueue    = "taotao_cmdty_collect_dead"
 
 	// 浏览数相关（商品和文章）
 	ViewExchange     = "taotao_view_exchange"
@@ -74,10 +74,14 @@ const (
 	UserCollectDeadQueue    = "taotao_user_collect_dead"
 
 	// 点赞相关（商品和文章）
-	LikeExchange     = "taotao_like_exchange"
-	LikeDeadExchange = "taotao_like_exchange_dead"
-	LikeQueue        = "taotao_like"
-	LikeDeadQueue    = "taotao_like_dead"
+	AtclCollectExchange     = "taotao_atcl_collect_exchange"
+	AtclCollectDeadExchange = "taotao_atcl_collect_exchange_dead"
+	AtclCollectQueue        = "taotao_atcl_collect"
+	AtclCollectDeadQueue    = "taotao_atcl_collect_dead"
+	AtclLikeExchange        = "taotao_atcl_like_exchange"
+	AtclLikeDeadExchange    = "taotao_atcl_like_exchange_dead"
+	AtclLikeQueue           = "taotao_atcl_like"
+	AtclLikeDeadQueue       = "taotao_atcl_like_dead"
 )
 
 type CcMessage struct {
@@ -94,8 +98,7 @@ type VMessage struct {
 }
 
 type LMessage struct {
-	RedisKey  string
-	Time      time.Time
-	UserId    int64
-	IsArticle bool
+	RedisKey string
+	Time     time.Time
+	UserId   int64
 }

@@ -2,7 +2,7 @@ package mq
 
 import (
 	"context"
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
@@ -64,6 +64,10 @@ func (l *RabbitMQLogic) UncollectCheck(ccMessage *utils.CcMessage) {
 			logx.Infof("[DB ERROR] UncollectCheck 删除收藏记录失败 %v\n", err)
 		}
 	}
+}
+
+func (l *RabbitMQLogic) LikeCheckUpdate(lMessage *utils.LMessage) {
+
 }
 
 func getIdByRedisKey(redisKey string) int64 {
