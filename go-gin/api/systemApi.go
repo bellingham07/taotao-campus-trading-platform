@@ -10,6 +10,7 @@ import (
 	userApi "com.xpdj/go-gin/api/user"
 )
 
+// SystemApi collection
 type SystemApi struct {
 	UserApi
 	CommodityApi
