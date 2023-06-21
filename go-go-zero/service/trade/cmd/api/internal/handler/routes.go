@@ -22,7 +22,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodDelete,
 				Path:    "/",
-				Handler: trade.ListByTypeHandler(serverCtx),
+				Handler: trade.ListByRoleHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -33,6 +33,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPut,
 				Path:    "/:id/:stage",
 				Handler: trade.ConfirmHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/:id",
+				Handler: trade.CancelHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/trade"),

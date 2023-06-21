@@ -23,8 +23,8 @@ type IdDoneReq struct {
 	Done int   `form:"done"`
 }
 
-type TypeReq struct {
-	Type int `path:"type"`
+type RoleReq struct {
+	Role int `path:"role"`
 }
 
 type CmtReq struct {

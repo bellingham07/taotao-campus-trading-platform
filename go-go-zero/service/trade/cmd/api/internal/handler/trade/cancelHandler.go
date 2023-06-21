@@ -11,7 +11,7 @@ import (
 	"go-go-zero/service/trade/cmd/api/internal/types"
 )
 
-func DoneConfirmHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CancelHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.IdReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -19,8 +19,8 @@ func DoneConfirmHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := trade.NewDoneConfirmLogic(r.Context(), svcCtx)
-		err := l.DoneConfirm(&req)
+		l := trade.NewCancelLogic(r.Context(), svcCtx)
+		err := l.Cancel(&req)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

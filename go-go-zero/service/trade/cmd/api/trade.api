@@ -8,14 +8,17 @@ service trade-api {
 	@handler getByIdAndStatus
 	get / (IdStatusReq) returns ()
 	
-	@handler listByType
-	delete / (TypeReq) returns ()
+	@handler listByRole
+	delete / (RoleReq) returns ()
 	
 	@handler beginTrade
 	post / (TradeReq) returns ()
 	
 	@handler confirm
 	put /:id/:stage (IdStatusReq) returns ()
+	
+	@handler cancel
+	put /:id (IdReq) returns ()
 }
 
 @server(
@@ -56,8 +59,8 @@ type (
 		Done int   `form:"done"`
 	}
 
-	TypeReq {
-		Type int `path:"type"`
+	RoleReq {
+		Role int `path:"role"`
 	}
 
 	CmtReq {
