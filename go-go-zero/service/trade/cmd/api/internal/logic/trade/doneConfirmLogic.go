@@ -9,21 +9,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SellLogic struct {
+type DoneConfirmLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSellLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SellLogic {
-	return &SellLogic{
+func NewDoneConfirmLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DoneConfirmLogic {
+	return &DoneConfirmLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SellLogic) Sell(req *types.BuyReq) error {
+func (l *DoneConfirmLogic) DoneConfirm(req *types.IdReq) error {
 	// todo: add your logic here and delete this line
 
 	return nil

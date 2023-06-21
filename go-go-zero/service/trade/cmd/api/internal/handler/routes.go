@@ -17,7 +17,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/",
-				Handler: trade.GetByIdAndDoneHandler(serverCtx),
+				Handler: trade.GetByIdAndStatusHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodDelete,
@@ -26,13 +26,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/buy",
-				Handler: trade.BuyHandler(serverCtx),
+				Path:    "/",
+				Handler: trade.BeginTradeHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
-				Path:    "/sell",
-				Handler: trade.SellHandler(serverCtx),
+				Method:  http.MethodPut,
+				Path:    "/:id/:stage",
+				Handler: trade.ConfirmHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/trade"),

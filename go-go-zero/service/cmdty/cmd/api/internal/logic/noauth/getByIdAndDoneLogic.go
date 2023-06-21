@@ -37,14 +37,14 @@ func (l *GetByIdAndDoneLogic) GetByIdDoneTypeLogic(req *types.IdDoneTypeReq, use
 		key1  = utils.CmdtySellingPrepared
 		key2  = utils.CmdtyInfo + IdStr
 		ci    = new(model.CmdtyInfo)
-		resp  = make(map[string]interface{})
+		resp  = map[string]interface{}{"isCollected": 0}
 	)
 	if done == 1 {
 		data, err := l.getByIdAndDone(key2, id, done)
 		if userId != 0 {
-			resp = l.isCollected(id, userId, utils.CmdtyCollect+IdStr)
+			resp["isCollected"] = l.isCollected(id, userId, utils.CmdtyCollect+IdStr)
 		}
-		resp["data"] = data
+		resp["cmdty"] = data
 		return resp, err
 	}
 	if req.Type == 2 {
@@ -62,10 +62,10 @@ func (l *GetByIdAndDoneLogic) GetByIdDoneTypeLogic(req *types.IdDoneTypeReq, use
 	// 2 不是，先从redis中查hash再查mysql
 	data, err := l.getByIdAndDone(key2, id, 0)
 	if userId != 0 {
-		l.updateHistory(id, userId)
-		resp = l.isCollected(id, userId, utils.CmdtyCollect+IdStr)
+		go l.updateHistory(id, userId)
+		resp["isCollected"] = l.isCollected(id, userId, utils.CmdtyCollect+IdStr)
 	}
-	resp["data"] = data
+	resp["cmdty"] = data
 	return resp, err
 }
 
@@ -148,17 +148,14 @@ func (l *GetByIdAndDoneLogic) getFromCmdtyInfo(key string, id int64) (interface{
 	return data, nil
 }
 
-func (l *GetByIdAndDoneLogic) isCollected(id, userId int64, collectKey string) map[string]interface{} {
-	var resp = make(map[string]interface{})
+func (l *GetByIdAndDoneLogic) isCollected(id, userId int64, collectKey string) int8 {
 
 	// 如果是别人的商品，就需要判断有没有收藏过
 	isMember, err := l.svcCtx.Redis.SIsMember(l.ctx, collectKey, userId).Result()
 	if isMember && err == nil {
-		resp["isCollected"] = 1
-		return resp
+		return 1
 	}
-	resp["isCollected"] = 0
-	return resp
+	return 0
 }
 
 func (l *GetByIdAndDoneLogic) updateHistory(id, userId int64) {

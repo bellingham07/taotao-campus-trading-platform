@@ -5,6 +5,11 @@ type IdReq struct {
 	Id int64 `json:"id" path:"id" form:"id"`
 }
 
+type IdStatusReq struct {
+	Id     int64 `json:"id" path:"id" form:"id"`
+	Status int8  `json:"status" path:"status" form:"status"`
+}
+
 type TradeIdReq struct {
 	TradeId int64 `json:"tradeId" path:"tradeId"`
 }
@@ -31,16 +36,12 @@ type CmtReq struct {
 	Content  string `json:"content"`
 }
 
-type BuyReq struct {
-	BuyerId int64   `json:"buyerId"`
-	Buyer   string  `json:"buyer"`
+type TradeReq struct {
+	OwnerId int64   `json:"ownerId"`
+	Owner   string  `json:"owner"`
+	OtherId int64   `json:"otherId"`
+	Other   string  `json:"other"`
 	CmdtyId int64   `json:"cmdtyId"`
 	Payment float64 `json:"payment"`
-}
-
-type SellReq struct {
-	SellerId int64   `json:"buyerId"`
-	Seller   string  `json:"buyer"`
-	CmdtyId  int64   `json:"cmdtyId"`
-	Payment  float64 `json:"payment"`
+	Type    int8    `json:"type"`
 }

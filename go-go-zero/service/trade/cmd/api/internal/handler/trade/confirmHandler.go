@@ -11,7 +11,7 @@ import (
 	"go-go-zero/service/trade/cmd/api/internal/types"
 )
 
-func GetByIdAndDoneHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ConfirmHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.IdStatusReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -19,12 +19,12 @@ func GetByIdAndDoneHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := trade.NewGetByIdAndStatusLogic(r.Context(), svcCtx)
-		err := l.GetByIdAndStatus(&req)
+		l := trade.NewConfirmLogic(r.Context(), svcCtx)
+		resp, err := l.Confirm(&req)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			xhttp.JsonBaseResponseCtx(r.Context(), w, nil)
+			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
 		}
 	}
 }

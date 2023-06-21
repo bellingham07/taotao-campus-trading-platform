@@ -5,17 +5,17 @@ syntax = "v1"
 	prefix: /trade
 )
 service trade-api {
-	@handler getByIdAndDone
-	get / (IdDoneReq) returns ()
+	@handler getByIdAndStatus
+	get / (IdStatusReq) returns ()
 	
 	@handler listByType
 	delete / (TypeReq) returns ()
 	
-	@handler buy
-	post /buy (BuyReq) returns ()
+	@handler beginTrade
+	post / (TradeReq) returns ()
 	
-	@handler sell
-	post /sell (BuyReq) returns ()
+	@handler confirm
+	put /:id/:stage (IdStatusReq) returns ()
 }
 
 @server(
@@ -36,6 +36,11 @@ service trade-api {
 type (
 	IdReq {
 		Id int64 `json:"id" path:"id" form:"id"`
+	}
+
+	IdStatusReq {
+		Id     int64 `json:"id" path:"id" form:"id"`
+		Status int8  `json:"status" path:"status" form:"status"`
 	}
 
 	TradeIdReq {
@@ -64,17 +69,13 @@ type (
 		Content  string `json:"content"`
 	}
 
-	BuyReq {
-		BuyerId int64   `json:"buyerId"`
-		Buyer   string  `json:"buyer"`
+	TradeReq {
+		OwnerId int64   `json:"ownerId"`
+		Owner   string  `json:"owner"`
+		OtherId int64   `json:"otherId"`
+		Other   string  `json:"other"`
 		CmdtyId int64   `json:"cmdtyId"`
 		Payment float64 `json:"payment"`
-	}
-
-	SellReq {
-		SellerId int64   `json:"buyerId"`
-		Seller   string  `json:"buyer"`
-		CmdtyId  int64   `json:"cmdtyId"`
-		Payment  float64 `json:"payment"`
+		Type    int8    `json:"type"`
 	}
 )

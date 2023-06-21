@@ -9,21 +9,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetByIdAndDoneLogic struct {
+type GetByIdAndStatusLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetByIdAndDoneLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByIdAndDoneLogic {
-	return &GetByIdAndDoneLogic{
+func NewGetByIdAndStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByIdAndStatusLogic {
+	return &GetByIdAndStatusLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *GetByIdAndDoneLogic) GetByIdAndDone(req *types.IdDoneReq) error {
+func (l *GetByIdAndStatusLogic) GetByIdAndStatus(req *types.IdStatusReq) error {
 	// todo: add your logic here and delete this line
 
 	return nil

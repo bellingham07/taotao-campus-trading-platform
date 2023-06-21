@@ -10,16 +10,16 @@ type (
 		SellerId          int64     `xorm:"seller_id" json:"sellerId"`     // 买家id
 		Seller            string    `xorm:"seller" json:"seller"`          // 买家名
 		CmdtyId           int64     `xorm:"cmdty_id" json:"cmdtyId"`       // 商品id
-		Type              int       `xorm:"type" json:"type"`              // 和商品type一样，1表示“出售商品”，2表示“求购商品”
+		Type              int8      `xorm:"type" json:"type"`              // 和商品type一样，1表示“出售商品”，2表示“求购商品”
 		BriefIntro        string    `xorm:"brief_intro" json:"briefIntro"` // 商品名
 		Cover             string    `xorm:"cover" json:"cover"`
 		Payment           float64   `xorm:"payment" json:"payment"`
-		Status            int64     `xorm:"status" json:"status"`
+		Status            int8      `xorm:"status" json:"status"`
 		CreateAt          time.Time `xorm:"create_at" json:"createAt"` // 创建时间
-		IsSellerConfirmed int       `xorm:"is_seller_confirmed" json:"isSellerConfirmed"`
-		IsBuyerConfirmed  int       `xorm:"is_buyer_confirmed" json:"isBuyerConfirmed"`
-		IsSellerDone      time.Time `xorm:"is_seller_done" json:"isSellerDone"` // 默认0，完成1
-		IsBuyerDone       time.Time `xorm:"is_buyer_done" json:"isBuyerDone"`   // 默认0，完成1
+		IsSellerConfirmed int8      `xorm:"is_seller_confirmed" json:"isSellerConfirmed"`
+		IsBuyerConfirmed  int8      `xorm:"is_buyer_confirmed" json:"isBuyerConfirmed"`
+		IsSellerDone      int8      `xorm:"is_seller_done" json:"isSellerDone"` // 默认0，完成1
+		IsBuyerDone       int8      `xorm:"is_buyer_done" json:"isBuyerDone"`   // 默认0，完成1
 		SellerDoneAt      time.Time `xorm:"seller_done_at" json:"sellerDoneAt"`
 		BuyerDoneAt       time.Time `xorm:"buyer_done_at" json:"buyerDoneAt"`
 	}
@@ -31,7 +31,7 @@ type (
 		SellerId     int64     `xorm:"seller_id" json:"sellerId"`     // 买家id
 		Seller       string    `xorm:"seller" json:"seller"`          // 买家名
 		CmdtyId      int64     `xorm:"cmdty_id" json:"cmdtyId"`       // 商品id
-		Type         int       `xorm:"type" json:"type"`              // 和商品type一样，1表示“出售商品”，2表示“求购商品”
+		Type         int8      `xorm:"type" json:"type"`              // 和商品type一样，1表示“出售商品”，2表示“求购商品”
 		BriefIntro   string    `xorm:"brief_intro" json:"briefIntro"` // 商品名
 		Cover        string    `xorm:"cover" json:"cover"`
 		Payment      float64   `xorm:"payment" json:"payment"`

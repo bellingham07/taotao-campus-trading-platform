@@ -26,7 +26,7 @@ func NewUpdateHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upd
 }
 
 func (l *UpdateHistoryLogic) UpdateHistory(id, userId int64) {
-	key := utils.CmdtyHistory + strconv.FormatInt(userId, 10)
+	var key = utils.CmdtyHistory + strconv.FormatInt(userId, 10)
 	member := redis.Z{
 		Score:  float64(time.Now().Unix()),
 		Member: id,
