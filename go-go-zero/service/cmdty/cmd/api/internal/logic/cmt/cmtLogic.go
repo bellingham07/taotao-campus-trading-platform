@@ -3,7 +3,7 @@ package cmt
 import (
 	"context"
 	"errors"
-	"go-go-zero/service/cmdty/model/mongodb"
+	"go-go-zero/service/cmdty/model"
 	"time"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
@@ -30,7 +30,7 @@ func (l *CmtLogic) Cmt(req *types.CmtReq) error {
 	if length := len(req.Content); length > 100 {
 		return errors.New("评论太长了😭")
 	}
-	cc := &mongodb.CmdtyCmt{
+	cc := &model.CmdtyCmt{
 		CmdtyId:  req.CmdtyId,
 		UserId:   req.UserId,
 		Content:  req.Content,

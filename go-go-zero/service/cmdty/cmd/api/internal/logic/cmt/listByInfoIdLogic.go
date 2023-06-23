@@ -3,7 +3,7 @@ package cmt
 import (
 	"context"
 	"errors"
-	"go-go-zero/service/cmdty/model/mongodb"
+	"go-go-zero/service/cmdty/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"k8s.io/apimachinery/pkg/util/rand"
 	"time"
@@ -28,7 +28,7 @@ func NewListByInfoIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *List
 	}
 }
 
-func (l *ListByInfoIdLogic) ListByInfoId(req *types.CmdtyIdReq) ([]mongodb.CmdtyCmt, error) {
+func (l *ListByInfoIdLogic) ListByInfoId(req *types.CmdtyIdReq) ([]model.CmdtyCmt, error) {
 	var cmdtyId = req.Id
 
 	pipeline1 := []bson.M{
@@ -49,7 +49,7 @@ func (l *ListByInfoIdLogic) ListByInfoId(req *types.CmdtyIdReq) ([]mongodb.Cmdty
 		logx.Infof("[MONGO ERROR] ListByInfoId 获取子评论错误 %v\n", err)
 		return nil, errors.New("加载评论错误！")
 	}
-	var cmts []mongodb.CmdtyCmt
+	var cmts []model.CmdtyCmt
 	if err = CmtsCursor.All(l.ctx, &cmts); err != nil {
 		logx.Infof("[MONGO ERROR] ListByInfoId 获取子评论错误 %v\n", err)
 		return nil, errors.New("加载评论错误！")
@@ -74,7 +74,7 @@ func (l *ListByInfoIdLogic) ListByInfoId(req *types.CmdtyIdReq) ([]mongodb.Cmdty
 			logx.Infof("[MONGO ERROR] ListByInfoId 获取子评论错误 %v\n", err)
 			continue
 		}
-		var subCmt []mongodb.CmdtyCmt
+		var subCmt []model.CmdtyCmt
 		if err = subCmtsCursor.All(l.ctx, &subCmt); err != nil {
 			logx.Infof("[MONGO ERROR] ListByInfoId 解析子评论错误 %v\n", err)
 			continue
@@ -85,7 +85,7 @@ func (l *ListByInfoIdLogic) ListByInfoId(req *types.CmdtyIdReq) ([]mongodb.Cmdty
 	return cmts, nil
 }
 
-func (l *ListByInfoIdLogic) deleteExpiredCmts(cmts []mongodb.CmdtyCmt) {
+func (l *ListByInfoIdLogic) deleteExpiredCmts(cmts []model.CmdtyCmt) {
 	var (
 		randNum = rand.Int63nRange(1, 99)
 		ids     = make([]int64, 0)

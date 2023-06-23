@@ -37,3 +37,9 @@ ENV GOPROXY https://goproxy.cn,direct
 RUN mkdir -p /go/src/app
 
 WORKDIR /go/src/app
+
+
+docker run -id --name taotao-container \
+-p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 -p 10005:10005 -p 10006:10006 -p 10007:10007 \
+-p 11001:11001 -p 11002:10002 -p 11003:11003 -p 11004:11004 -p 11005:10005 -p 11006:11006 -p 11007:11007 \
+my-golang-image
