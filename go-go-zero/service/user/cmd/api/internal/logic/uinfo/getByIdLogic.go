@@ -3,6 +3,7 @@ package uinfo
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/user/model"
 	"strconv"
@@ -28,13 +29,15 @@ func NewGetByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByIdLo
 	}
 }
 
-func (l *GetByIdLogic) GetById(req *types.IdReq) (interface{}, error) {
+func (l *GetByIdLogic) GetById(req *types.IdReq, userId int64) (interface{}, error) {
 	var (
 		id    = req.Id
 		idStr = strconv.FormatInt(req.Id, 10)
 		key   = utils.UserInfo + idStr
 		ui    = &model.UserInfo{Id: id}
 	)
+
+	fmt.Println(userId)
 
 	uiMap, err := l.svcCtx.Redis.HGetAll(l.ctx, key).Result()
 	if uiMap != nil && err == nil {

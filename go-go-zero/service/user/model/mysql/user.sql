@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `user_follow`
 
 CREATE TABLE IF NOT EXISTS `user_location`
 (
-    `id`        INT         NOT NULL COMMENT 'id',
+    `id`        INT         NOT NULL AUTO_INCREMENT COMMENT 'id',
     `name`      VARCHAR(20) NOT NULL COMMENT '地址名',
     `create_by` BIGINT      NOT NULL DEFAULT 1 COMMENT '管理员的id',
     `create_at` DATETIME    NOT NULL DEFAULT NOW() COMMENT '创建时间',

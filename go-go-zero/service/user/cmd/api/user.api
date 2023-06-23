@@ -1,6 +1,7 @@
 syntax = "v1"
 
 @server(
+	group: noauth
 	prefix: /user
 )
 service user-api {
@@ -14,6 +15,7 @@ service user-api {
 @server(
 	group: uinfo
 	prefix: /user/info
+	middleware: JwtAuth
 )
 service user-api {
 	@handler getById
@@ -26,6 +28,7 @@ service user-api {
 @server(
 	group: follow
 	prefix: /user/follow
+	middleware: JwtAuth
 )
 service user-api {
 	@handler follow
@@ -41,6 +44,7 @@ service user-api {
 @server(
 	group: location
 	prefix: /user/location
+	middleware: JwtAuth
 )
 service user-api {
 	@handler list

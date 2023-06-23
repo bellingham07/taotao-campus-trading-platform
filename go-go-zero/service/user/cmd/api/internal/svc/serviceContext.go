@@ -5,7 +5,9 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/yitter/idgenerator-go/idgen"
+	"github.com/zeromicro/go-zero/rest"
 	"go-go-zero/service/user/cmd/api/internal/config"
+	"go-go-zero/service/user/cmd/api/internal/middleware"
 	"xorm.io/xorm"
 )
 
@@ -25,6 +27,8 @@ type ServiceContext struct {
 	Redis *redis.Client
 
 	Json jsoniter.API
+
+	JwtAuth rest.Middleware
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -49,6 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserOpt:      engine.Table("user_opt"),
 		Xorm:         engine,
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
+		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
 		Redis: redis.NewClient(&redis.Options{
 			Addr:     c.Redis.Addr,
 			Password: c.Redis.Password,

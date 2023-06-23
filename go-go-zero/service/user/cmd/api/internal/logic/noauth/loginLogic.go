@@ -1,4 +1,4 @@
-package logic
+package noauth
 
 import (
 	"context"
@@ -28,16 +28,18 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (string, error) {
-	var ui *model.UserInfo
+	var ui = new(model.UserInfo)
 	has, err := l.svcCtx.UserInfo.Cols("username", "password").
 		Where("username = ?", req.Username).Get(ui)
 	if !has || err != nil {
-		return "", errors.New("账号或密码错误！🥲")
+		return "", errors.New("账号或密码错误1！🥲" + err.Error())
 	}
+
 	err = bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password))
 	if err != nil {
-		return "", errors.New("账号或密码错误！🥲")
+		return "", errors.New("账号或密码错误2！🥲")
 	}
+
 	token, err := utils.GenToken(ui)
 	if err != nil {
 		return "", errors.New("登录错误！请稍后🥲")

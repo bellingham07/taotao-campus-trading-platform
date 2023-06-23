@@ -6,6 +6,7 @@ import (
 
 	follow "go-go-zero/service/user/cmd/api/internal/handler/follow"
 	location "go-go-zero/service/user/cmd/api/internal/handler/location"
+	noauth "go-go-zero/service/user/cmd/api/internal/handler/noauth"
 	uinfo "go-go-zero/service/user/cmd/api/internal/handler/uinfo"
 	"go-go-zero/service/user/cmd/api/internal/svc"
 
@@ -18,62 +19,71 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/login",
-				Handler: loginHandler(serverCtx),
+				Handler: noauth.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/register",
-				Handler: registerHandler(serverCtx),
+				Handler: noauth.RegisterHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/user"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: uinfo.GetByIdHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: uinfo.UpdateByIdHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/:id",
+					Handler: uinfo.GetByIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: uinfo.UpdateByIdHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/user/info"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: follow.FollowHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/:id",
-				Handler: follow.UnfollowHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: follow.ListByIdHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/:id",
+					Handler: follow.FollowHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/:id",
+					Handler: follow.UnfollowHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: follow.ListByIdHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/user/follow"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: location.ListHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: location.ListHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/user/location"),
 	)
 }
