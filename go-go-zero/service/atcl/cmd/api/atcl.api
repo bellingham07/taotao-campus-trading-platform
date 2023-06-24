@@ -3,6 +3,7 @@ syntax = "v1"
 @server(
 	group: like
 	prefix: /atcl/like
+	middleware: JwtAuth
 )
 service atcl-api {
 	@handler like

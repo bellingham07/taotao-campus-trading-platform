@@ -12,18 +12,21 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: like.LikeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/id",
-				Handler: like.UnlikeHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/:id",
+					Handler: like.LikeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/id",
+					Handler: like.UnlikeHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/atcl/like"),
 	)
 }

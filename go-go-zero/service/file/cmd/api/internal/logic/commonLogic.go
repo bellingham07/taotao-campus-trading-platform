@@ -49,10 +49,10 @@ func (l *CommonLogic) Upload(fileHeader *multipart.FileHeader, userId string) (s
 	return l.svcCtx.Oss.BaseUrl + objectName, objectName, nil
 }
 
-func (l *CommonLogic) MultiUpload(fileHeaders []*multipart.FileHeader, userId string) ([]string, []string, error) {
+func (l *CommonLogic) MultiUpload(fileHeaders []multipart.FileHeader, userId string) ([]string, []string, error) {
 	var urls, objectNames []string
 	for _, fileHeader := range fileHeaders {
-		url, objectName, err := l.Upload(fileHeader, userId)
+		url, objectName, err := l.Upload(&fileHeader, userId)
 		if err != nil {
 			return nil, nil, err
 		}

@@ -2,6 +2,7 @@ package svc
 
 import (
 	_ "github.com/go-sql-driver/mysql"
+	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/rpc/internal/config"
 	"xorm.io/xorm"
 )
@@ -16,15 +17,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	engine, err := xorm.NewEngine("mysql", c.Mysql.Dsn)
-	if err != nil {
-		panic("[XORM ERROR] NewServiceContext 获取mysql连接错误 " + err.Error())
-	}
-	err = engine.Ping()
-	if err != nil {
-		panic("[XORM ERROR] NewServiceContext ping mysql 失败" + err.Error())
-
-	}
+	engine := utils.InitXorm("mysql", c.Mysql)
 
 	return &ServiceContext{
 		Config:       c,

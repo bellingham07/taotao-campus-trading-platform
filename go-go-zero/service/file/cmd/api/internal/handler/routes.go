@@ -14,60 +14,69 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: avatar.UploadHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/",
-				Handler: avatar.CheckHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: avatar.UploadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/",
+					Handler: avatar.CheckHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/file/avatar"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: atcl.UploadHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/:id",
-				Handler: atcl.RemoveHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPatch,
-				Path:    "/",
-				Handler: atcl.CheckHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: atcl.UploadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/:id",
+					Handler: atcl.RemoveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPatch,
+					Path:    "/",
+					Handler: atcl.CheckHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/file/atcl"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: cmdty.UploadHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/:id",
-				Handler: cmdty.RemoveHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPatch,
-				Path:    "/",
-				Handler: cmdty.CheckHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: cmdty.UploadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/:id",
+					Handler: cmdty.RemoveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPatch,
+					Path:    "/",
+					Handler: cmdty.CheckHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/file/cmdty"),
 	)
 }

@@ -7,6 +7,7 @@ import (
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/model"
 	"mime/multipart"
+	"strconv"
 	"sync"
 	"time"
 
@@ -30,32 +31,31 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(req *atypers.AtclPicsReq) ([]*atypers.PicResp, error) {
+func (l *UploadLogic) Upload(req *atypers.AtclPicsReq, userId int64) ([]atypers.PicResp, error) {
 	var (
-		atclId          = req.AtclId
-		userId    int64 = 408301323265285
-		userIdStr       = "408301323265285"
-		files           = make([]*multipart.FileHeader, 0)
-		orders          = make([]int64, 0)
+		atclId    = req.AtclId
+		userIdStr = strconv.FormatInt(userId, 10)
+		files     = make([]multipart.FileHeader, 0)
+		orders    = make([]int64, 0)
 		code      *atclservice.CodeResp
 	)
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
 	for _, file := range req.Pics {
-		files = append(files, &file.Pic)
+		files = append(files, file.Pic)
 		orders = append(orders, file.Order)
 	}
 	urls, objectnames, err := commonLogic.MultiUpload(files, userIdStr)
 	if err != nil {
 		return nil, errors.New("上传图片失败！😥")
 	}
-	var wg sync.WaitGroup
 
+	var wg sync.WaitGroup
 	wg.Add(1)
-	fas := make([]*model.FileAtcl, 0)
-	resp := make([]*atypers.PicResp, 0)
+	fas := make([]model.FileAtcl, 0)
+	resp := make([]atypers.PicResp, 0)
 	t := time.Now()
 	for idx, url := range urls {
-		fa := &model.FileAtcl{
+		fa := model.FileAtcl{
 			AtclId:     atclId,
 			UserId:     userId,
 			Url:        url,
@@ -63,7 +63,7 @@ func (l *UploadLogic) Upload(req *atypers.AtclPicsReq) ([]*atypers.PicResp, erro
 			UploadAt:   t,
 			Order:      orders[idx],
 		}
-		pr := &atypers.PicResp{
+		pr := atypers.PicResp{
 			Url:   url,
 			Order: orders[idx],
 		}

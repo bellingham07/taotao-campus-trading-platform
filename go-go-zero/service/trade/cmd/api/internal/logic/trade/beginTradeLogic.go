@@ -26,12 +26,8 @@ func NewBeginTradeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BeginT
 	}
 }
 
-func (l *BeginTradeLogic) BeginTrade(req *types.TradeReq) (int64, error) {
-	var (
-		cmdtyId       = req.CmdtyId
-		userId  int64 = 408301323265285
-		user          = "小胖"
-	)
+func (l *BeginTradeLogic) BeginTrade(req *types.TradeReq, userId int64, user string) (int64, error) {
+	var cmdtyId = req.CmdtyId
 	ti := &model.TradeInfo{
 		Id:       idgen.NextId(),
 		CmdtyId:  cmdtyId,
@@ -40,6 +36,7 @@ func (l *BeginTradeLogic) BeginTrade(req *types.TradeReq) (int64, error) {
 		Status:   0,
 		CreateAt: time.Now().Local(),
 	}
+
 	if req.Type == 1 {
 		if req.OwnerId != userId {
 			return 0, errors.New("交易信息错误！")

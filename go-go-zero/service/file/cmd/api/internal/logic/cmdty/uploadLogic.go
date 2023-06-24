@@ -7,6 +7,7 @@ import (
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/model"
 	"mime/multipart"
+	"strconv"
 	"sync"
 	"time"
 
@@ -30,18 +31,17 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq) ([]*ctypes.PicResp, error) {
+func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.PicResp, error) {
 	var (
-		cmdtyId         = req.CmdtyId
-		userIdStr       = "408301323265285"
-		files           = make([]*multipart.FileHeader, 0)
-		orders          = make([]int64, 0)
-		userId    int64 = 408301323265285
+		cmdtyId   = req.CmdtyId
+		userIdStr = strconv.FormatInt(userId, 10)
+		files     = make([]multipart.FileHeader, 0)
+		orders    = make([]int64, 0)
 		code      *cmdtyservice.CodeResp
 	)
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
 	for _, file := range req.Pics {
-		files = append(files, &file.Pic)
+		files = append(files, file.Pic)
 		orders = append(orders, file.Order)
 	}
 	urls, objectnames, err := commonLogic.MultiUpload(files, userIdStr)
@@ -50,11 +50,11 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq) ([]*ctypes.PicResp, error
 	}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	fas := make([]*model.FileCmdty, 0)
-	resp := make([]*ctypes.PicResp, 0)
+	fas := make([]model.FileCmdty, 0)
+	resp := make([]ctypes.PicResp, 0)
 	t := time.Now()
 	for idx, url := range urls {
-		fa := &model.FileCmdty{
+		fa := model.FileCmdty{
 			CmdtyId:    cmdtyId,
 			UserId:     userId,
 			Url:        url,
@@ -62,7 +62,7 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq) ([]*ctypes.PicResp, error
 			UploadAt:   t,
 			Order:      orders[idx],
 		}
-		pr := &ctypes.PicResp{
+		pr := ctypes.PicResp{
 			Url:   url,
 			Order: orders[idx],
 		}

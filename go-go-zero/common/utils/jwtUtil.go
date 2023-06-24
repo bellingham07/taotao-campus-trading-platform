@@ -7,7 +7,10 @@ import (
 	"time"
 )
 
-type JwtId string
+type (
+	JwtId   string
+	JwtName string
+)
 
 var secretKey = []byte("xpdj")
 
@@ -57,6 +60,14 @@ func GetUserId(r *http.Request) int64 {
 	return userId
 }
 
+func GetUserIdAndName(r *http.Request) (int64, string) {
+	userIdAny := r.Context().Value(JwtId("userId"))
+	nameAny := r.Context().Value(JwtName("name"))
+	userId := userIdAny.(int64)
+	name := nameAny.(string)
+	return userId, name
+}
+
 func GetUserIdWithNoAuth(r *http.Request) int64 {
 	headerToken := r.Header.Get("Authorization")
 	if headerToken == "" {
@@ -67,10 +78,5 @@ func GetUserIdWithNoAuth(r *http.Request) int64 {
 	if err != nil {
 		return 0
 	}
-
-	id := claim.Id
-	if id != 0 {
-		return id
-	}
-	return 0
+	return claim.Id
 }

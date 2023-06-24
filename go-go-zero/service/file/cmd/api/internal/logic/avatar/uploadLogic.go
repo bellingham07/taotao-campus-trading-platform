@@ -30,16 +30,16 @@ func NewUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadLogi
 	}
 }
 
-func (l *UploadLogic) Upload(header *multipart.FileHeader) (*utypes.AvatarResp, error) {
-	userIdStr := "408301323265285"
+func (l *UploadLogic) Upload(header *multipart.FileHeader, userId int64) (*utypes.AvatarResp, error) {
+	var userIdStr = strconv.FormatInt(userId, 10)
 	// 1 先存到OSS
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
 	url, objectName, err := commonLogic.Upload(header, userIdStr)
 	if err != nil {
 		return nil, errors.New("图片上传失败！😥")
 	}
+
 	// 2 存到数据库
-	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	// 2.1 开协程去更新user服务的头像
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -52,6 +52,7 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader) (*utypes.AvatarResp, 
 		code, _ = l.svcCtx.UserRpc.UpdateAvatar(l.ctx, ar)
 		wg.Done()
 	}()
+
 	// 2.1 OSS上传成功，就先更新file中的头像
 	err = l.SaveOrUpdateByUserId(url, objectName, userId)
 	if err != nil {
@@ -84,6 +85,7 @@ func (l *UploadLogic) SaveOrUpdateByUserId(url string, objectName string, userId
 			}
 			return nil, nil
 		}
+
 		fa.Url = url
 		fa.Objectname = objectName
 		_, err = s.Where("`user_id` = ?", userId).Update(fa)

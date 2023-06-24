@@ -3,6 +3,7 @@ package trade
 import (
 	"errors"
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -19,8 +20,10 @@ func BeginTradeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！"))
 		}
 
+		userId, name := utils.GetUserIdAndName(r)
+
 		l := trade.NewBeginTradeLogic(r.Context(), svcCtx)
-		id, err := l.BeginTrade(&req)
+		id, err := l.BeginTrade(&req, userId, name)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

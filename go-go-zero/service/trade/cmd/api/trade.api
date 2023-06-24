@@ -3,6 +3,7 @@ syntax = "v1"
 @server(
 	group: trade
 	prefix: /trade
+	middleware: JwtAuth
 )
 service trade-api {
 	@handler getByIdAndStatus
@@ -24,6 +25,7 @@ service trade-api {
 @server(
 	group: cmt
 	prefix: /trade/cmt
+	middleware: JwtAuth
 )
 service trade-api {
 	@handler cmt
