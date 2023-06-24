@@ -26,11 +26,9 @@ func NewFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FollowLogi
 	}
 }
 
-func (l *FollowLogic) Follow(req *types.IdReq) error {
-	var (
-		currentUser int64 = 408301323265285
-		userId            = req.Id
-	)
+func (l *FollowLogic) Follow(req *types.IdReq, currentUser int64) error {
+	var userId = req.Id
+
 	uf := &model.UserFollow{
 		UserId:       currentUser,
 		FollowUserId: userId,

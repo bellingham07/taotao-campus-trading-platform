@@ -3,7 +3,6 @@ package room
 import (
 	"context"
 	"errors"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/yitter/idgenerator-go/idgen"
 	"go-go-zero/service/chat/model"
 	"go-go-zero/service/chat/model/mongo"
@@ -33,9 +32,7 @@ func NewChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatLogic {
 
 const pongWait = 60 * time.Second
 
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
-
-func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Request) error {
+func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Request, userId int64) error {
 	var (
 		roomId    = req.RoomId
 		roomIdStr = strconv.FormatInt(roomId, 10)
@@ -54,9 +51,6 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 		return errors.New("无法连接到聊天室！😭")
 	}
 
-	// TODO 第一次连接，先验证身份，拿出userId，后面就不需要了
-	// 处理 TOKEN...
-	var userId int64 = 408301323265285
 	if userId != sellerId && userId != buyerId {
 		return errors.New("身份验证错误！")
 	}
@@ -103,7 +97,7 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 			logx.Debugf("[MONGO ERROR] Chat 插入聊天信息失败 %v\n", err.Error())
 			return errors.New("消息保存失败！")
 		}
-		msg, err := json.Marshal(cm)
+		msg, err := l.svcCtx.Json.Marshal(cm)
 		if err != nil {
 			go l.deleteConn(icon)
 			logx.Debugf("[JSON MARSHAL ERROR] Chat 序列化消息错误 %v\n", err.Error())

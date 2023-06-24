@@ -27,10 +27,9 @@ func NewCollectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CollectLo
 	}
 }
 
-func (l *CollectLogic) Collect(req *types.IdReq) error {
+func (l *CollectLogic) Collect(req *types.IdReq, userId int64) error {
 	key := utils.CmdtyCollect + strconv.FormatInt(req.Id, 10)
-	var userId int64 = 408301323265285
-	userIdStr := "408301323265285"
+	userIdStr := strconv.FormatInt(userId, 10)
 	r, err := l.svcCtx.Redis.SAdd(l.ctx, key, userIdStr).Result()
 	if r == 0 {
 		logx.Debugf("[REDIS ERROR] collect 收藏失败 " + err.Error())

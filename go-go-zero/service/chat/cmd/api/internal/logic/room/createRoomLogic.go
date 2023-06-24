@@ -28,7 +28,7 @@ func NewCreateRoomLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 }
 
 func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (*types.IdResp, error) {
-	cr := &model.ChatRoom{
+	var cr = &model.ChatRoom{
 		Id:       idgen.NextId(),
 		CmdtyId:  req.CmdtyId,
 		SellerId: req.SellerId,
@@ -36,7 +36,7 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (*types.IdResp, e
 		BuyerId:  req.BuyerId,
 		Buyer:    req.Buyer,
 		Cover:    req.Cover,
-		CreateAt: time.Now(),
+		CreateAt: time.Now().Local(),
 		Status:   req.CmdtyId,
 	}
 	_, err := l.svcCtx.ChatRoom.Insert(cr)

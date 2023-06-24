@@ -3,6 +3,7 @@ package room
 import (
 	"errors"
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -19,8 +20,10 @@ func ChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		userId := utils.GetUserId(r)
+
 		l := room.NewChatLogic(r.Context(), svcCtx)
-		err := l.Chat(&req, w, r)
+		err := l.Chat(&req, w, r, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

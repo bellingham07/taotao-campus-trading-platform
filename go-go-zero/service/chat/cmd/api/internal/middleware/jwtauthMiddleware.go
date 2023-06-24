@@ -1,8 +1,12 @@
 package middleware
 
 import (
+	"context"
+	"fmt"
+	"github.com/zeromicro/go-zero/rest/httpx"
 	"go-go-zero/common/utils"
 	"net/http"
+	"strconv"
 )
 
 type JwtAuthMiddleware struct {
@@ -15,20 +19,31 @@ func NewJwtAuthMiddleware() *JwtAuthMiddleware {
 func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("X-Middleware", "static-middleware")
-		authHeader := r.Header.Get("Authorization")
-		if authHeader == "" {
-			http.Error(w, "访问失败,请登录!😼", http.StatusUnauthorized)
+		headerToken := r.Header.Get("Authorization")
+
+		fmt.Println(headerToken)
+		if headerToken == "" {
+			httpx.WriteJson(w, http.StatusUnauthorized, "请先登录!😼")
 			return
 		}
-		_, err := utils.ParseToken(authHeader)
+
+		claim, err := utils.ParseToken(headerToken)
 		if err != nil {
-			http.Error(w, "身份认证错误或过期，请重新登录!", http.StatusUnauthorized)
+			httpx.WriteJson(w, http.StatusUnauthorized, "身份认证错误或过期，请重新登录!")
 			return
 		}
-		if err != nil {
-			http.Error(w, "身份认证过期，请重新登录!", http.StatusUnauthorized)
+
+		id := claim.Id
+		key := utils.UserLogin + strconv.FormatInt(id, 10)
+
+		redisToken, err := utils.UserServiceRedis.Get(r.Context(), key).Result()
+		if redisToken != headerToken {
+			httpx.WriteJson(w, http.StatusUnauthorized, "身份认证过期，请重新登录!")
 			return
 		}
-		next(w, r)
+
+		ctx := context.WithValue(r.Context(), utils.JwtId("userId"), id)
+		request := r.WithContext(ctx)
+		next(w, request)
 	}
 }

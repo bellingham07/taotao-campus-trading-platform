@@ -29,6 +29,18 @@ type (
 	}
 )
 
+func InitRabbitMQ(rc RabbitMQConf) (*amqp.Connection, *amqp.Channel) {
+	conn, err := amqp.Dial(rc.RmqUrl)
+	if err != nil {
+		panic("[RABBITMQ ERROR] NewServiceContext 连接不到rabbitmq" + err.Error())
+	}
+	channel, err := conn.Channel()
+	if err != nil {
+		panic("[RABBITMQ ERROR] NewServiceContext 获取rabbitmq通道失败")
+	}
+	return conn, channel
+}
+
 // NewRabbitMQ 创建结构体实例
 func NewRabbitMQ(queueName string, exchange string, key string, conn *amqp.Connection, channel *amqp.Channel) *RabbitMQ {
 	return &RabbitMQ{

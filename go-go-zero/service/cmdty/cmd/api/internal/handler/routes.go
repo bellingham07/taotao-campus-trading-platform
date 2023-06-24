@@ -26,114 +26,129 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/:id/:done/:type",
-				Handler: noauth.GetByIdDoneTypeHandler(serverCtx),
+				Handler: noauth.GetByIdTypeHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/cmdty"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: cinfo.ListByUidAndOptionHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sellsave",
-				Handler: cinfo.SellsaveHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sellpublish",
-				Handler: cinfo.SellpublishHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/wantsave",
-				Handler: cinfo.WantsaveHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/wantpublish",
-				Handler: cinfo.WantpublishHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: cinfo.ListByUidAndOptionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/sellsave",
+					Handler: cinfo.SellsaveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/sellpublish",
+					Handler: cinfo.SellpublishHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/wantsave",
+					Handler: cinfo.WantsaveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/wantpublish",
+					Handler: cinfo.WantpublishHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/cmdty"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/:id",
-				Handler: collect.CollectHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/:id",
-				Handler: collect.UncollectHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/list",
-				Handler: collect.ListHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/:id",
+					Handler: collect.CollectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/:id",
+					Handler: collect.UncollectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/list",
+					Handler: collect.ListHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/cmdty/collect"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: tag.ListTagHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/",
-				Handler: tag.RemoveTagHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: tag.ListTagHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/",
+					Handler: tag.RemoveTagHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/cmdty/tag"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/",
-				Handler: history.ListHistoryHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/",
-				Handler: history.RemoveHistoryHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: history.ListHistoryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/",
+					Handler: history.RemoveHistoryHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/cmdty/history"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/",
-				Handler: cmt.CmtHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/:cmdtyId",
-				Handler: cmt.ListByInfoIdHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodDelete,
-				Path:    "/:id",
-				Handler: cmt.RemoveCmtHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/",
+					Handler: cmt.CmtHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/:cmdtyId",
+					Handler: cmt.ListByInfoIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/:id",
+					Handler: cmt.RemoveCmtHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/cmdty/cmt"),
 	)
 }

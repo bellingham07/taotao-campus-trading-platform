@@ -3,6 +3,7 @@ package follow
 import (
 	"errors"
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -19,8 +20,10 @@ func FollowHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		userId := utils.GetUserId(r)
+
 		l := follow.NewFollowLogic(r.Context(), svcCtx)
-		err := l.Follow(&req)
+		err := l.Follow(&req, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

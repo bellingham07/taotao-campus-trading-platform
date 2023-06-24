@@ -8,13 +8,14 @@ service cmdty-api {
 	@handler listCacheByType
 	post /cache (TypeReq) returns ()
 	
-	@handler getByIdDoneType
-	get /:id/:done/:type (IdDoneTypeReq) returns ()
+	@handler getByIdType
+	get /:id/:done/:type (IdTypeReq) returns ()
 }
 
 @server(
 	group: cinfo
 	prefix: /cmdty
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listByUidAndOption
@@ -36,6 +37,7 @@ service cmdty-api {
 @server(
 	group: collect
 	prefix: /cmdty/collect
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler collect
@@ -51,6 +53,7 @@ service cmdty-api {
 @server(
 	group: tag
 	prefix: /cmdty/tag
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listTag
@@ -63,6 +66,7 @@ service cmdty-api {
 @server(
 	group: history
 	prefix: /cmdty/history
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listHistory
@@ -75,6 +79,7 @@ service cmdty-api {
 @server(
 	group: cmt
 	prefix: /cmdty/cmt
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler cmt
@@ -97,9 +102,8 @@ type (
 		Type int64 `path:"type" json:"type"`
 	}
 
-	IdDoneTypeReq {
+	IdTypeReq {
 		Id   int64 `form:"id" path:"id" json:"id"`
-		Done int64 `form:"done" path:"done" json:"done"`
 		Type int64 `form:"type" json:"type" path:"type"`
 	}
 

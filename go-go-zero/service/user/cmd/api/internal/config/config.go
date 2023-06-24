@@ -2,20 +2,15 @@ package config
 
 import (
 	"github.com/zeromicro/go-zero/rest"
+	"go-go-zero/common/utils"
 )
 
 type Config struct {
 	rest.RestConf
 
-	Mysql struct {
-		Dsn string
-	}
+	Mysql utils.Mysql
 
-	Redis struct {
-		Addr     string
-		Password string
-		Db       int
-	}
+	Redis utils.Redis
 
 	Idgen struct {
 		WorkerId uint16

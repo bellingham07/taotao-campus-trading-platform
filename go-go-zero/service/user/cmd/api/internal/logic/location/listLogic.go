@@ -35,7 +35,7 @@ func (l *ListLogic) List() ([]*model.UserLocation, error) {
 		goto searchDB
 	}
 searchDB:
-	err = l.svcCtx.UserLocation.Find(uls)
+	err = l.svcCtx.UserLocation.Find(&uls)
 	if err != nil {
 		return nil, errors.New("出错啦！😭")
 	}

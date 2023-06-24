@@ -1,17 +1,16 @@
 package config
 
-import "github.com/zeromicro/go-zero/rest"
+import (
+	"github.com/zeromicro/go-zero/rest"
+	"go-go-zero/common/utils"
+)
 
 type Config struct {
 	rest.RestConf
 
-	Mysql struct {
-		Dsn string
-	}
+	Mysql utils.Mysql
 
-	Mongo struct {
-		Url string
-	}
+	Mongo utils.Mongo
 
 	Idgen struct {
 		WorkerId uint16

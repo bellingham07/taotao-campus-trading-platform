@@ -2,6 +2,7 @@ package collect
 
 import (
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
 	"net/http"
 
@@ -17,8 +18,11 @@ func CollectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, "参数错误！🤡")
 		}
+
+		userId := utils.GetUserId(r)
+
 		l := collect.NewCollectLogic(r.Context(), svcCtx)
-		err = l.Collect(req)
+		err = l.Collect(req, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

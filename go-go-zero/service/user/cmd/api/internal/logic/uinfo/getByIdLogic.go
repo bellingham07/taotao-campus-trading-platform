@@ -3,7 +3,6 @@ package uinfo
 import (
 	"context"
 	"errors"
-	"fmt"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/user/model"
 	"strconv"
@@ -29,15 +28,13 @@ func NewGetByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByIdLo
 	}
 }
 
-func (l *GetByIdLogic) GetById(req *types.IdReq, userId int64) (interface{}, error) {
+func (l *GetByIdLogic) GetById(req *types.IdReq) (interface{}, error) {
 	var (
 		id    = req.Id
 		idStr = strconv.FormatInt(req.Id, 10)
 		key   = utils.UserInfo + idStr
 		ui    = &model.UserInfo{Id: id}
 	)
-
-	fmt.Println(userId)
 
 	uiMap, err := l.svcCtx.Redis.HGetAll(l.ctx, key).Result()
 	if uiMap != nil && err == nil {
@@ -51,7 +48,8 @@ func (l *GetByIdLogic) GetById(req *types.IdReq, userId int64) (interface{}, err
 		}
 	}
 
-	has, err := l.svcCtx.Xorm.Table("user_info").Get(ui)
+	has, err := l.svcCtx.Xorm.Table("user_info").
+		Omit("username", "password").Get(ui)
 	if !has && err != nil {
 		go l.svcCtx.Redis.HSet(l.ctx, key, map[string]string{"nil": ""})
 		return nil, errors.New("找不到这个用户！😶‍🌫️")
@@ -59,8 +57,6 @@ func (l *GetByIdLogic) GetById(req *types.IdReq, userId int64) (interface{}, err
 
 	data := map[string]interface{}{
 		"id":       ui.Id,
-		"username": ui.Username,
-		"password": ui.Password,
 		"name":     ui.Name,
 		"gender":   ui.Gender,
 		"phone":    ui.Phone,

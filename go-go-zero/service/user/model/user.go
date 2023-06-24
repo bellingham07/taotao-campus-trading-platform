@@ -31,7 +31,7 @@ type (
 	}
 
 	UserLocation struct {
-		Id       int64     `json:"id" xorm:"id"`              // id
+		Id       int       `json:"id" xorm:"id"`              // id
 		Name     string    `json:"name" xorm:"name"`          // 地址名
 		CreateBy int64     `json:"createBy" xorm:"create_by"` // 管理员的id
 		CreateAt time.Time `json:"createAt" xorm:"create_at"` // 创建时间

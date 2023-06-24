@@ -65,15 +65,16 @@ func (l *InfoCommonLogic) SaveOrPublishInfo(ci *model.CmdtyInfo, cmdtyType int64
 
 func (l *InfoCommonLogic) CopyPartial(req *types.InfoReq) *model.CmdtyInfo {
 	return &model.CmdtyInfo{
-		Id:     req.Id,
-		UserId: req.UserId,
-		Cover:  req.Cover,
-		Tag:    req.Cover,
-		Price:  req.Price,
-		Brand:  req.Cover,
-		Model:  req.Cover,
-		Intro:  req.Cover,
-		Old:    req.Cover,
-		Status: req.Status,
+		Id:         req.Id,
+		UserId:     req.UserId,
+		BriefIntro: req.Intro[:21],
+		Cover:      req.Cover,
+		Tag:        req.Cover,
+		Price:      req.Price,
+		Brand:      req.Cover,
+		Model:      req.Cover,
+		Intro:      req.Cover,
+		Old:        req.Cover,
+		Status:     req.Status,
 	}
 }

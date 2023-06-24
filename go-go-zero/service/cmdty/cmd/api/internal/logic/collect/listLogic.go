@@ -22,12 +22,9 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-func (l *ListLogic) List() ([]*model.CmdtyCollect, error) {
-	var (
-		userId int64 = 408301323265285
-		ccs          = make([]*model.CmdtyCollect, 0)
-	)
-	err := l.svcCtx.CmdtyCollect.Where("user_id = ?", userId).Find(ccs)
+func (l *ListLogic) List(userId int64) ([]model.CmdtyCollect, error) {
+	var ccs = make([]model.CmdtyCollect, 0)
+	err := l.svcCtx.CmdtyCollect.Where("user_id = ?", userId).Find(&ccs)
 	if err != nil {
 		return nil, errors.New("出错啦😫")
 	}

@@ -12,15 +12,9 @@ type Config struct {
 		Dsn string
 	}
 
-	Redis struct {
-		Addr     string
-		Password string
-		Db       int
-	}
+	Redis utils.Redis
 
-	Mongo struct {
-		Url string
-	}
+	Mongo utils.Mongo
 
 	RabbitMQ utils.RabbitMQConf
 }

@@ -14,26 +14,17 @@ import (
 
 func GetByIdDoneTypeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var (
-			req    types.IdDoneTypeReq
-			userId int64
-		)
+		var req types.IdTypeReq
 		if err := httpx.Parse(r, &req); err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！"))
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		token := r.Header.Get("Authorization")
-		claim, err := utils.ParseToken(token)
-		if err != nil {
-			userId = 0
-		} else {
-			userId = claim.Id
-		}
+		userId := utils.GetUserIdWithNoAuth(r)
 
-		l := noauth.NewGetByIdDoneTypeLogic(r.Context(), svcCtx)
-		resp, err := l.GetByIdDoneTypeLogic(&req, userId)
+		l := noauth.NewGetByIdTypeLogic(r.Context(), svcCtx)
+		resp, err := l.GetByIdTypeLogic(&req, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
