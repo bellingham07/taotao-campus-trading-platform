@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 
 	"go-go-zero/service/atcl/cmd/rpc/internal/config"
 	"go-go-zero/service/atcl/cmd/rpc/internal/server"
@@ -33,6 +34,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	_ = consul.RegisterService(c.ListenOn, c.Consul)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
