@@ -37,11 +37,13 @@ func (l *CmtLogic) Cmt(req *types.CmtReq) error {
 		Type:     req.Type,
 		CreateAt: time.Now().Local(),
 	}
+
 	result, err := l.svcCtx.TradeCmt.InsertOne(l.ctx, tc)
 	if result.InsertedID != 0 && err != nil {
 		logx.Infof("[MONGO ERROR] Cmt 插入评论失败 %v\n", err)
 		return errors.New("评论失败，请重试😢")
 	}
+
 	l.updateDoneCmt(req.TradeId, req.UserId)
 	go l.updateNameAndAvatar(result.InsertedID)
 	return nil
@@ -55,6 +57,7 @@ func (l *CmtLogic) updateNameAndAvatar(insertedID interface{}) {
 		logx.Infof("[RPC ERROR] updateNameAndAvatar 远程获取用户名称和头像错误，userId：%v %v\n", id, err)
 		return
 	}
+
 	// 2 再更新mongo中的记录
 	name := resp.Name
 	avatar := resp.Avatar
