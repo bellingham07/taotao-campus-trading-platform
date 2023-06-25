@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
+	sysConfig "go-go-zero/common/config"
 
 	"go-go-zero/service/atcl/cmd/rpc/internal/config"
 	"go-go-zero/service/atcl/cmd/rpc/internal/server"
 	"go-go-zero/service/atcl/cmd/rpc/internal/svc"
 	"go-go-zero/service/atcl/cmd/rpc/types"
 
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -22,18 +23,22 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	c.Consul = *sysConfig.LoadConsulConf("service/atcl/cmd/rpc/etc/atcl.yaml")
+	c.TaoTaoRpc = *sysConfig.LoadTaoTaoRpc(&c.Consul)
+
 	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := zrpc.MustNewServer(c.TaoTaoRpc.RpcServerConf, func(grpcServer *grpc.Server) {
 		__.RegisterAtclServiceServer(grpcServer, server.NewAtclServiceServer(ctx))
 
-		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+		if c.TaoTaoRpc.Mode == service.DevMode || c.TaoTaoRpc.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
 
-	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	_ = consul.RegisterService(c.TaoTaoRpc.ListenOn, c.TaoTaoRpc.Consul)
+
+	fmt.Printf("Starting rpc server at %s...\n", c.TaoTaoRpc.ListenOn)
 	s.Start()
 }

@@ -38,11 +38,11 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	engine := utils.InitXorm("mysql", c.Mysql)
+	engine := utils.InitXorm("mysql", c.AtclApi.Mysql)
 
-	mc := utils.InitMongo(c.Mongo)
+	mc := utils.InitMongo(c.AtclApi.Mongo)
 
-	rc, channel := utils.InitRabbitMQ(c.RabbitMQ)
+	rc, channel := utils.InitRabbitMQ(c.AtclApi.RabbitMQ)
 
 	return &ServiceContext{
 		Config:       c,
@@ -52,13 +52,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		AtclCollect:  engine.Table("cmdty_info"),
 		AtclCmt:      mc.Database("taotao_trading_chat").Collection("atcl_cmt"),
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
-		UserRpc:      userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
+		UserRpc:      userservice.NewUserService(zrpc.MustNewClient(c.AtclApi.UserRpc)),
 		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
-		Redis: redis.NewClient(&redis.Options{
-			Addr:     c.Redis.Addr,
-			Password: c.Redis.Password,
-			DB:       c.Redis.Db,
-		}),
+		Redis:        utils.InitRedis(c.AtclApi.Redis),
 		RmqCore: &utils.RabbitmqCore{
 			Conn:    rc,
 			Channel: channel,

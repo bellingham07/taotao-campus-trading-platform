@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/zeromicro/go-zero/rest"
@@ -38,16 +39,18 @@ type Oss struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	engine := utils.InitXorm("mysql", c.Mysql)
+	engine := utils.InitXorm("mysql", c.FileApi.Mysql)
 
-	endPoint := c.Oss.EndPoint
-	accessKeyId := c.Oss.AccessKeyId
-	accessKeySecret := c.Oss.AccessKeySecret
-	bucketName := c.Oss.BucketName
+	endPoint := c.FileApi.Oss.EndPoint
+	accessKeyId := c.FileApi.Oss.AccessKeyId
+	accessKeySecret := c.FileApi.Oss.AccessKeySecret
+	bucketName := c.FileApi.Oss.BucketName
 	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	if err != nil {
 		panic("[OSS ERROR] NewServiceContext 获取OSS连接错误" + err.Error())
 	}
+
+	fmt.Println("sadasdasdasdfoisfgvsdjklvhdvkldfhv")
 
 	return &ServiceContext{
 		Config:     c,
@@ -55,9 +58,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FileAtcl:   engine.Table("file_atcl"),
 		FileCmdty:  engine.Table("file_cmdty"),
 		FileAvatar: engine.Table("file_avatar"),
-		UserRpc:    userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
-		CmdtyRpc:   cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.CmdtyRpc)),
-		AtclRpc:    atclservice.NewAtclService(zrpc.MustNewClient(c.AtclRpc)),
+		UserRpc:    userservice.NewUserService(zrpc.MustNewClient(c.FileApi.UserRpc)),
+		CmdtyRpc:   cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.FileApi.CmdtyRpc)),
+		AtclRpc:    atclservice.NewAtclService(zrpc.MustNewClient(c.FileApi.AtclRpc)),
 		JwtAuth:    middleware.NewJwtAuthMiddleware().Handle,
 		Oss: &Oss{
 			Client:     client,

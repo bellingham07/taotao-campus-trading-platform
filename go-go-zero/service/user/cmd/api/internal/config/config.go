@@ -1,18 +1,10 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/rest"
-	"go-go-zero/common/utils"
+	"go-go-zero/common/config"
 )
 
 type Config struct {
-	rest.RestConf
-
-	Mysql utils.Mysql
-
-	Redis utils.Redis
-
-	Idgen struct {
-		WorkerId uint16
-	}
+	Consul  config.Consul `yaml:"Consul"`
+	UserApi config.UserApi
 }

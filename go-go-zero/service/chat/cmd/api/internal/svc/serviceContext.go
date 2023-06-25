@@ -35,12 +35,12 @@ type Conn struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	idgenops := idgen.NewIdGeneratorOptions(c.Idgen.WorkerId)
+	idgenops := idgen.NewIdGeneratorOptions(c.ChatApi.Idgen.WorkerId)
 	idgen.SetIdGenerator(idgenops)
 
-	engine := utils.InitXorm("mysql", c.Mysql)
+	engine := utils.InitXorm("mysql", c.ChatApi.Mysql)
 
-	mc := utils.InitMongo(c.Mongo)
+	mc := utils.InitMongo(c.ChatApi.Mongo)
 
 	return &ServiceContext{
 		Config:      c,

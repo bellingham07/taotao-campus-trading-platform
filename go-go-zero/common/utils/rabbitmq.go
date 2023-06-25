@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/streadway/amqp"
 	"time"
 )
@@ -31,6 +32,7 @@ type (
 
 func InitRabbitMQ(rc RabbitMQConf) (*amqp.Connection, *amqp.Channel) {
 	conn, err := amqp.Dial(rc.RmqUrl)
+	fmt.Printf("[RABBIT CONNECTING] InitRabbitMQ RmqUrl: %v\n", rc.RmqUrl)
 	if err != nil {
 		panic("[RABBITMQ ERROR] NewServiceContext 连接不到rabbitmq" + err.Error())
 	}

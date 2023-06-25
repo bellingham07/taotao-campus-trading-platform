@@ -1,7 +1,10 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"go-go-zero/common/config"
+)
 
 type Config struct {
-	zrpc.RpcServerConf
+	Consul    config.Consul `yaml:"Consul"`
+	TaoTaoRpc config.TaoTaoRpc
 }

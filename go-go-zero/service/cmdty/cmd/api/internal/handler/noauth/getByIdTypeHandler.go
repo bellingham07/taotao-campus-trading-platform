@@ -12,7 +12,7 @@ import (
 	"go-go-zero/service/cmdty/cmd/api/internal/types"
 )
 
-func GetByIdDoneTypeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetByIdTypeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.IdTypeReq
 		if err := httpx.Parse(r, &req); err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	sysConfig "go-go-zero/common/config"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/cinfo"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
 
@@ -11,7 +12,6 @@ import (
 	"go-go-zero/service/cmdty/cmd/api/internal/handler"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
@@ -21,9 +21,10 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	c.Consul = *sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/cmdty-api.yaml")
+	c.CmdtyApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.CmdtyApi).(*sysConfig.CmdtyApi)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.CmdtyApi.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
@@ -34,6 +35,6 @@ func main() {
 
 	mq.InitRabbitMQ(ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.CmdtyApi.Host, c.CmdtyApi.Port)
 	server.Start()
 }

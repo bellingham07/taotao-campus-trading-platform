@@ -1,25 +1,10 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/zrpc"
+	"go-go-zero/common/config"
 )
 
 type Config struct {
-	rest.RestConf
-
-	UserRpc  zrpc.RpcClientConf
-	CmdtyRpc zrpc.RpcClientConf
-	AtclRpc  zrpc.RpcClientConf
-
-	Mysql struct {
-		Dsn string
-	}
-
-	Oss struct {
-		AccessKeyId     string
-		AccessKeySecret string
-		EndPoint        string
-		BucketName      string
-	}
+	Consul  config.Consul `yaml:"Consul"`
+	FileApi config.FileApi
 }

@@ -1,20 +1,10 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/rest"
-	"go-go-zero/common/utils"
+	"go-go-zero/common/config"
 )
 
 type Config struct {
-	rest.RestConf
-
-	Mysql struct {
-		Dsn string
-	}
-
-	Redis utils.Redis
-
-	Mongo utils.Mongo
-
-	RabbitMQ utils.RabbitMQConf
+	Consul   config.Consul `yaml:"Consul"`
+	CmdtyApi config.CmdtyApi
 }

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -44,7 +45,7 @@ func UserServiceInit(ctx context.Context, client *redis.Client) {
 	UserServiceRedis = client
 	err := client.Ping(ctx).Err()
 	if err != nil {
-		panic("[REDIS ERROR] 连接redis失败 %v" + err.Error())
+		panic("[REDIS ERROR] 连接redis失败 " + err.Error())
 	}
 }
 
@@ -55,10 +56,11 @@ func InitRedis(rc Redis) *redis.Client {
 		Password: rc.Password,
 		DB:       rc.Db,
 	})
+	fmt.Printf("[REDIS CONNECTING] InitRedis client: %v\n", client)
 
 	err := client.Ping(ctx).Err()
 	if err != nil {
-		panic("[REDIS ERROR] 连接redis失败 %v" + err.Error())
+		panic("[REDIS ERROR] 连接redis失败 " + err.Error())
 	}
 	UserServiceInit(ctx, client)
 	return client

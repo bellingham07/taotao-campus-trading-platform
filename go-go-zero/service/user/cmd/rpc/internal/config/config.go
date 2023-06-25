@@ -1,15 +1,10 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/zrpc"
-	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
+	"go-go-zero/common/config"
 )
 
 type Config struct {
-	zrpc.RpcServerConf
-	Consul consul.Conf
-
-	Mysql struct {
-		Dsn string
-	}
+	Consul    config.Consul    `yaml:"Consul"`
+	TaoTaoRpc config.TaoTaoRpc `yaml:"TaoTaoRpc"`
 }

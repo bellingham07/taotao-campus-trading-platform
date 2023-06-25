@@ -20,7 +20,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	engine := utils.InitXorm("mysql", c.Mysql)
+	engine := utils.InitXorm("mysql", c.TaoTaoRpc.Mysql)
 
 	return &ServiceContext{
 		Config:       c,
