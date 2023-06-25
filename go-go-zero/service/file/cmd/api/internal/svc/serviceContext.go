@@ -18,14 +18,14 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	UserRpc  userservice.UserService
-	CmdtyRpc cmdtyservice.CmdtyService
-	AtclRpc  atclservice.AtclService
-
 	Xorm       *xorm.Engine
 	FileAtcl   *xorm.Session
 	FileCmdty  *xorm.Session
 	FileAvatar *xorm.Session
+
+	UserRpc  userservice.UserService
+	CmdtyRpc cmdtyservice.CmdtyService
+	AtclRpc  atclservice.AtclService
 
 	Oss *Oss
 
