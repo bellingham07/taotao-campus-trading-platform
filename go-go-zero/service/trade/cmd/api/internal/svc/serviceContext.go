@@ -28,9 +28,9 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	engine := utils.InitXorm("mysql", c.TradeApi.Mysql)
+	engine := utils.InitXorm("mysql", c.Mysql)
 
-	mc := utils.InitMongo(c.TradeApi.Mongo)
+	mc := utils.InitMongo(c.Mongo)
 
 	return &ServiceContext{
 		Config:    c,
@@ -38,8 +38,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		TradeInfo: engine.Table("trade_info"),
 		TradeDone: engine.Table("trade_done"),
 		TradeCmt:  mc.Database("taotao_trading_trade").Collection("trade_cmt"),
-		UserRpc:   userservice.NewUserService(zrpc.MustNewClient(c.TradeApi.UserRpc)),
-		CmdtyRpc:  cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.TradeApi.CmdtyRpc)),
+		UserRpc:   userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
+		CmdtyRpc:  cmdtyservice.NewCmdtyService(zrpc.MustNewClient(c.CmdtyRpc)),
 		JwtAuth:   middleware.NewJwtAuthMiddleware().Handle,
 	}
 }

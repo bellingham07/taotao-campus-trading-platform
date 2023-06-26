@@ -18,15 +18,15 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/chat/cmd/api/etc/chat-api.yaml")
-	c.ChatApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.ChatApi).(*sysConfig.ChatApi)
+	cc := sysConfig.LoadConsulConf("service/chat/cmd/api/etc/chat-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
-	server := rest.MustNewServer(c.ChatApi.RestConf)
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.ChatApi.Host, c.ChatApi.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

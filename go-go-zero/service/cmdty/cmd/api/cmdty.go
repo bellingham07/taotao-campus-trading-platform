@@ -21,10 +21,10 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/cmdty-api.yaml")
-	c.CmdtyApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.CmdtyApi).(*sysConfig.CmdtyApi)
+	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/cmdty-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
-	server := rest.MustNewServer(c.CmdtyApi.RestConf)
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
@@ -35,6 +35,6 @@ func main() {
 
 	mq.InitRabbitMQ(ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.CmdtyApi.Host, c.CmdtyApi.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

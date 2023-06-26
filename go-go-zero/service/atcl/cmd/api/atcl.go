@@ -13,21 +13,21 @@ import (
 	_ "github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
-var configFile = flag.String("f", "service/atcl/cmd/api/etc/atcl-api.yaml", "the config file")
+var configFile = flag.String("f", "service/atcl/cmd/api/etc/file-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/atcl/cmd/api/etc/atcl-api.yaml")
-	c.AtclApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.AtclApi).(*sysConfig.AtclApi)
+	cc := sysConfig.LoadConsulConf("service/atcl/cmd/api/etc/file-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
-	server := rest.MustNewServer(c.AtclApi.RestConf)
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.AtclApi.Host, c.AtclApi.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

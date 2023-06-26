@@ -1,10 +1,16 @@
 package config
 
 import (
-	"go-go-zero/common/config"
+	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
+	"go-go-zero/common/utils"
 )
 
 type Config struct {
-	Consul  config.Consul `yaml:"Consul"`
-	AtclApi config.AtclApi
+	rest.RestConf
+	Mysql    utils.Mysql
+	Redis    utils.Redis
+	Mongo    utils.Mongo
+	RabbitMQ utils.RabbitMQConf
+	UserRpc  zrpc.RpcClientConf
 }

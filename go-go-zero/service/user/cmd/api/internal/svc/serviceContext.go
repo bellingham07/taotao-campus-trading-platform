@@ -32,10 +32,10 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	options := idgen.NewIdGeneratorOptions(c.UserApi.Idgen.WorkerId)
+	options := idgen.NewIdGeneratorOptions(c.Idgen.WorkerId)
 	idgen.SetIdGenerator(options)
 
-	engine := utils.InitXorm("mysql", c.UserApi.Mysql)
+	engine := utils.InitXorm("mysql", c.Mysql)
 
 	return &ServiceContext{
 		Config:       c,
@@ -47,6 +47,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserOpt:      engine.Table("user_opt"),
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
 		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
-		Redis:        utils.InitRedis(c.UserApi.Redis),
+		Redis:        utils.InitRedis(c.Redis),
 	}
 }

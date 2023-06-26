@@ -17,28 +17,28 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "service/cmdty/cmd/rpc/etc/cmdty.yaml", "the config file")
+var configFile = flag.String("f", "service/cmdty/cmd/rpc/etc/file-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/cmdty/cmd/rpc/etc/cmdty.yaml")
-	c.TaoTaoRpc = *sysConfig.LoadTaoTaoRpc(&c.Consul)
+	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/rpc/etc/file-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
 	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(c.TaoTaoRpc.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		__.RegisterCmdtyServiceServer(grpcServer, server.NewCmdtyServiceServer(ctx))
 
-		if c.TaoTaoRpc.Mode == service.DevMode || c.TaoTaoRpc.Mode == service.TestMode {
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
 
-	_ = consul.RegisterService(c.TaoTaoRpc.ListenOn, c.TaoTaoRpc.Consul)
+	_ = consul.RegisterService(c.ListenOn, c.Consul)
 
-	fmt.Printf("Starting rpc server at %s...\n", c.TaoTaoRpc.ListenOn)
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

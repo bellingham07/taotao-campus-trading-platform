@@ -23,22 +23,22 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/atcl/cmd/rpc/etc/atcl.yaml")
-	c.TaoTaoRpc = *sysConfig.LoadTaoTaoRpc(&c.Consul)
+	cc := sysConfig.LoadConsulConf("service/atcl/cmd/rpc/etc/atcl.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
 	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(c.TaoTaoRpc.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		__.RegisterAtclServiceServer(grpcServer, server.NewAtclServiceServer(ctx))
 
-		if c.TaoTaoRpc.Mode == service.DevMode || c.TaoTaoRpc.Mode == service.TestMode {
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
 
-	_ = consul.RegisterService(c.TaoTaoRpc.ListenOn, c.TaoTaoRpc.Consul)
+	_ = consul.RegisterService(c.ListenOn, c.Consul)
 
-	fmt.Printf("Starting rpc server at %s...\n", c.TaoTaoRpc.ListenOn)
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

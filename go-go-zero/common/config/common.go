@@ -69,12 +69,10 @@ func LoadTaoTaoApi(cc *Consul, ac interface{}) interface{} {
 	return ac
 }
 
-func LoadTaoTaoRpc(cc *Consul) *TaoTaoRpc {
-	var ttr TaoTaoRpc
+func LoadTaoTaoRpc(cc *Consul, ttr interface{}) {
 	client, _ := api.NewClient(&api.Config{Address: cc.Addr})
 	kv := client.KV()
 	data, _, err := kv.Get(cc.Key, nil)
 	logx.Must(err)
-	_ = conf.LoadFromYamlBytes(data.Value, &ttr)
-	return &ttr
+	_ = conf.LoadFromYamlBytes(data.Value, ttr)
 }

@@ -19,15 +19,15 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/file/cmd/api/etc/file-api.yaml")
-	c.FileApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.FileApi).(*sysConfig.FileApi)
+	cc := sysConfig.LoadConsulConf("service/file/cmd/api/etc/file-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
-	server := rest.MustNewServer(c.FileApi.RestConf)
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.FileApi.Host, c.FileApi.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

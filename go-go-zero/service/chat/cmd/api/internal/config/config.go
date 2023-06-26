@@ -1,10 +1,15 @@
 package config
 
 import (
-	"go-go-zero/common/config"
+	"github.com/zeromicro/go-zero/rest"
+	"go-go-zero/common/utils"
 )
 
 type Config struct {
-	Consul  config.Consul `yaml:"Consul"`
-	ChatApi config.ChatApi
+	rest.RestConf
+	Mysql utils.Mysql
+	Mongo utils.Mongo
+	Idgen struct {
+		WorkerId uint16
+	}
 }

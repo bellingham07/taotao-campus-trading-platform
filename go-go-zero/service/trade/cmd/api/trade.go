@@ -19,15 +19,15 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	c.Consul = *sysConfig.LoadConsulConf("service/trade/cmd/api/etc/trade-api.yaml")
-	c.TradeApi = *sysConfig.LoadTaoTaoApi(&c.Consul, &c.TradeApi).(*sysConfig.TradeApi)
+	cc := sysConfig.LoadConsulConf("service/trade/cmd/api/etc/trade-api.yaml")
+	sysConfig.LoadTaoTaoRpc(cc, &c)
 
-	server := rest.MustNewServer(c.TradeApi.RestConf)
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.TradeApi.Host, c.TradeApi.Port)
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }
