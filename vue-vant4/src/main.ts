@@ -1,7 +1,7 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import router from './routers'
-import './style.css'
+// import './style.css'
 import vant from 'vant';
 import 'vant/lib/index.css';
 

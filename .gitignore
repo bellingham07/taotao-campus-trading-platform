@@ -19,3 +19,5 @@
 ./go-gin/config/config.yaml
 
 ./**/**.yaml
+
+./vue-vant4/node_modules/
