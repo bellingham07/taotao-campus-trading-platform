@@ -29,8 +29,8 @@
 
 <script setup lang="ts">
 
-import TopOption from "../components/TopOption.vue";
-import BottomMenu from "../components/BottomMenu.vue";
+import TopOption from "../components/Top.vue";
+import BottomMenu from "../components/Bottom.vue";
 </script>
 
 
