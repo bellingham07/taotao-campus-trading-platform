@@ -19,7 +19,7 @@ type (
 		PublishAt  time.Time `xorm:"publish_at" json:"publishAt"`    // 发布时间
 		View       int64     `xorm:"view" json:"view"`               // 查看数量
 		Collect    int64     `xorm:"collect" json:"collect"`         // 收藏数
-		Type       int64     `xorm:"type" json:"type"`               // 1为售卖商品，2为收商品
+		Type       int8      `xorm:"type" json:"type"`               // 1为售卖商品，2为收商品
 		Like       int64     `xorm:"like" json:"like"`               // 点赞数
 	}
 

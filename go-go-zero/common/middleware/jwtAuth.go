@@ -13,6 +13,7 @@ import (
 func JwtAuthentication(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("X-Middleware", "static-middleware")
+
 		headerToken := r.Header.Get("Authorization")
 
 		fmt.Println(headerToken)

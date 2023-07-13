@@ -40,9 +40,11 @@
   width: 100%;
   text-align: center;
 
-  .van-button {
+
+}
+
+.van-button {
     margin: 10px 1vw 0 1vw;
     width: 30%;
-  }
 }
 </style>

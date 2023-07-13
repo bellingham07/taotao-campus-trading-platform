@@ -43,7 +43,7 @@ func (l *InfoCommonLogic) UpdateInfo(ci *model.CmdtyInfo, isPublish bool) error 
 }
 
 // SaveOrPublishInfo 保存并发布商品信息，区分出售和购买
-func (l *InfoCommonLogic) SaveOrPublishInfo(ci *model.CmdtyInfo, cmdtyType int64, isPublish bool) error {
+func (l *InfoCommonLogic) SaveOrPublishInfo(ci *model.CmdtyInfo, cmdtyType int8, isPublish bool) error {
 	now := time.Now()
 	ci.CreateAt = now
 	ci.Type = cmdtyType
