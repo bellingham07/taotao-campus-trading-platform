@@ -1,5 +1,5 @@
 <template>
-  <van-row justify="center">
+  <van-row justify="space-around">
     <van-col class="cmdty-item" span="10">
       <van-image
           width="10rem"
@@ -38,19 +38,16 @@
     </van-col>
 
   </van-row>
-
 </template>
 
 <script setup lang="ts">
-import type {CmdtyInfo} from '../../models/cmdty.ts'
 
-let ci: CmdtyInfo
 </script>
 
 
 <style scoped>
 .cmdty-item {
-  margin: 10px;
+  margin: 10px 0 0 10px;
   font-weight: 700;
 }
 

@@ -1,6 +1,7 @@
 <template>
-  <van-row justify="center">
+  <van-row justify="space-around">
     <van-col class="cmdty-item" span="10">
+      <van-button class="type" plain disabled type="primary" size="mini">出售</van-button>
       <van-image
           width="10rem"
           height="10rem"
@@ -18,7 +19,9 @@
         <span class="collect gray">38人想要</span>
       </div>
     </van-col>
+
     <van-col class="cmdty-item" span="10">
+      <van-button class="type" plain disabled type="primary" size="mini">想要</van-button>
       <van-image
           width="10rem"
           height="10rem"
@@ -33,7 +36,7 @@
       </div>
       <div>
         <span class="price">￥1299</span>
-        <span class="collect gray">38人想要</span>
+        <span class="collect gray">38人收藏</span>
       </div>
     </van-col>
 
@@ -42,12 +45,19 @@
 </template>
 
 <script setup lang="ts">
+import {onMounted} from "vue";
+import {cmdtyService} from '../../api'
 
+onMounted(() => {
+  async function asd() {
+    await cmdtyService.get('/')
+  }
+})
 </script>
 
 <style scoped>
 .cmdty-item {
-  margin: 10px;
+  margin: 5px 0 0 10px;
   font-weight: 700;
 }
 
@@ -71,5 +81,10 @@
 .collect {
   margin: 20px;
   font-size: 0.5rem;
+}
+
+.type {
+  margin: 0 0 5px 0;
+  width: 10rem;
 }
 </style>

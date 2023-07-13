@@ -1,10 +1,20 @@
 <template>
   <van-tabbar v-model="active">
-    <van-tabbar-item icon="home-o">淘淘</van-tabbar-item>
-    <van-tabbar-item icon="search">圈子</van-tabbar-item>
-    <van-tabbar-item class="add">➕</van-tabbar-item>
-    <van-tabbar-item icon="setting-o">消息</van-tabbar-item>
-    <van-tabbar-item icon="setting-o">我的</van-tabbar-item>
+    <van-tabbar-item icon="home-o">
+      <router-link to="/home/new">淘淘</router-link>
+    </van-tabbar-item>
+    <van-tabbar-item icon="search">
+      <router-link to="/atcl">圈子</router-link>
+    </van-tabbar-item>
+    <van-tabbar-item class="add">➕
+      <router-link to="/cmdty"></router-link>
+    </van-tabbar-item>
+    <van-tabbar-item icon="setting-o">
+      <router-link to="/msg">消息</router-link>
+    </van-tabbar-item>
+    <van-tabbar-item icon="setting-o">
+      <router-link to="/user">我的</router-link>
+    </van-tabbar-item>
   </van-tabbar>
 </template>
 
@@ -13,7 +23,6 @@ import {ref} from "vue";
 
 const active = ref(0)
 </script>
-
 
 
 <style scoped>

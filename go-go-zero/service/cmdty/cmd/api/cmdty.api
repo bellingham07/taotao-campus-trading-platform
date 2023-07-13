@@ -5,8 +5,8 @@ syntax = "v1"
 	prefix: /cmdty
 )
 service cmdty-api {
-	@handler listCacheByType
-	post /cache (TypeReq) returns ()
+	@handler listCache
+	post /cache () returns ()
 	
 	@handler getByIdType
 	get /:id/:done/:type (IdTypeReq) returns ()
