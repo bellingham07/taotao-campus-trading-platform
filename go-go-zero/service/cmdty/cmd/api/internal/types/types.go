@@ -2,11 +2,16 @@
 package types
 
 type IdReq struct {
-	Id int64 `path:"id" json:"id"`
+	Id int64 `path:"id" json:"id" form:"id"`
+}
+
+type TypePageReq struct {
+	TypeReq
+	Page int `form:"page"`
 }
 
 type TypeReq struct {
-	Type int64 `path:"type" json:"type"`
+	Type int8 `path:"type" json:"type" form:"type"`
 }
 
 type IdTypeReq struct {

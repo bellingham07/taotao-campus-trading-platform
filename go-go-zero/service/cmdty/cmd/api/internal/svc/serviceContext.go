@@ -32,7 +32,6 @@ type ServiceContext struct {
 	Json jsoniter.API
 
 	JwtAuth rest.Middleware
-	Cors    rest.Middleware
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -52,7 +51,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CmdtyCmt:     mc.Database("taotao_trading_cmdty").Collection("cmdty_cmt"),
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
 		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
-		Cors:         middleware.NewCorsMiddleware().Handle,
 		Redis:        utils.InitRedis(c.Redis),
 		RmqCore: &utils.RabbitmqCore{
 			Conn:    rc,

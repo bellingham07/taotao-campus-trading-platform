@@ -9,8 +9,8 @@ import (
 	"strconv"
 )
 
-// JwtAuthentication jwt校验中间件
-func JwtAuthentication(next http.HandlerFunc) http.HandlerFunc {
+// JwtAuthenticate jwt校验中间件
+func JwtAuthenticate(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("X-Middleware", "static-middleware")
 

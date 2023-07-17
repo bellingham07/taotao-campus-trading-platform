@@ -6,6 +6,7 @@ import (
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/model"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -25,7 +26,7 @@ func NewCmdty2RedisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cmdty
 }
 
 var (
-	ticker = time.NewTicker(30 * time.Minute)
+	ticker = time.NewTicker(10 * time.Second)
 	wg     sync.WaitGroup
 )
 
@@ -49,7 +50,7 @@ func (l *Cmdty2RedisLogic) Cmdty2Redis() {
 }
 
 func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
-	cmdtyPrepared := make(map[int64][]byte)
+	cmdtyPrepared := make(map[string]interface{})
 	sellingCmdty := make([]model.CmdtyInfo, 0)
 	// 查库
 	err := l.svcCtx.CmdtyInfo.Where("`status` = ? AND `type` = ?", 2, 1).
@@ -62,15 +63,15 @@ func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
 	for _, v := range sellingCmdty {
 		data, err := l.svcCtx.Json.Marshal(v)
 		if err == nil {
-			cmdtyPrepared[v.Id] = data
+			cmdtyPrepared[strconv.FormatInt(v.Id, 10)] = data
 			continue
 		}
 		logx.Infof("[JSON MARSHAL ERROR] SellingCmdty2Redis 序列化数据错误 %v\n", err)
 	}
 	// 使用pipeline发给redis
 	pipeline := l.svcCtx.Redis.Pipeline()
-	pipeline.HSet(l.ctx, utils.CmdtySellingPrepared, cmdtyPrepared)
-	pipeline.Expire(l.ctx, utils.CmdtySellingPrepared, 31*time.Minute)
+	pipeline.HSet(l.ctx, utils.CmdtySellNewest, cmdtyPrepared)
+	pipeline.Expire(l.ctx, utils.CmdtySellNewest, 31*time.Minute)
 	_, err = pipeline.Exec(l.ctx)
 	if err != nil {
 		logx.Infof("[REDIS ERROR] SellingCmdty2Redis redis执行错误 %v\n", err)
@@ -78,7 +79,7 @@ func (l *Cmdty2RedisLogic) SellingCmdty2Redis() {
 }
 
 func (l *Cmdty2RedisLogic) WantCmdty2Redis() {
-	cmdtyPrepared := make(map[int64][]byte)
+	cmdtyPrepared := make(map[string]interface{})
 	wantCmdty := make([]model.CmdtyInfo, 0)
 	// 查库
 	err := l.svcCtx.CmdtyInfo.Where("`status` = ? AND `type` = ?", 2, 2).
@@ -91,15 +92,15 @@ func (l *Cmdty2RedisLogic) WantCmdty2Redis() {
 	for _, v := range wantCmdty {
 		data, _ := l.svcCtx.Json.Marshal(v)
 		if err == nil {
-			cmdtyPrepared[v.Id] = data
+			cmdtyPrepared[strconv.FormatInt(v.Id, 10)] = data
 			continue
 		}
 		logx.Infof("[JSON MARSHAL ERROR] SellingCmdty2Redis 序列化数据错误 %v\n", err)
 	}
 	// 使用pipeline发给redis
 	pipeline := l.svcCtx.Redis.Pipeline()
-	pipeline.HSet(l.ctx, utils.CmdtyWantPrepared, cmdtyPrepared)
-	pipeline.Expire(l.ctx, utils.CmdtyWantPrepared, 31*time.Minute)
+	pipeline.HSet(l.ctx, utils.CmdtyWantNewest, cmdtyPrepared)
+	pipeline.Expire(l.ctx, utils.CmdtyWantNewest, 31*time.Minute)
 	_, err = pipeline.Exec(l.ctx)
 	if err != nil {
 		logx.Infof("[REDIS ERROR] SellingCmdty2Redis redis执行错误 %v\n", err)

@@ -20,14 +20,14 @@ const (
 	UserLocation = "user:location"
 
 	// commodity
-	CmdtySellingPrepared = "cmdty:selling:prepared"
-	CmdtyWantPrepared    = "cmdty:selling:prepared"
-	CmdtyInfo            = "cmdty:info:"
-	CmdtyHistory         = "cmdty:history:"
-	CmdtyCategory        = "cmdty:category:"
-	CmdtyCollect         = "cmdty:collect:"
-	CmdtyView            = "cmdty:view:"
-	CmdtyTag             = "cmdty:tag"
+	CmdtySellNewest = "cmdty:sell:newest:"
+	CmdtyWantNewest = "cmdty:want:newest:"
+	CmdtyInfo       = "cmdty:info:"
+	CmdtyHistory    = "cmdty:history:"
+	CmdtyCategory   = "cmdty:category:"
+	CmdtyCollect    = "cmdty:collect:"
+	CmdtyView       = "cmdty:view:"
+	CmdtyTag        = "cmdty:tag"
 
 	// article
 	AtclContent = "atcl:content:"
