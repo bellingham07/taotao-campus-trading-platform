@@ -36,11 +36,11 @@ func (l *GetByIdTypeLogic) GetByIdTypeLogic(req *types.IdTypeReq, userId int64) 
 		ci               = new(model.CmdtyInfo)
 		resp             = map[string]interface{}{"isCollected": 0}
 		cmdtyInfoKey     = utils.CmdtyInfo + IdStr
-		preparedCacheKey = utils.CmdtySellingPrepared
+		preparedCacheKey = utils.CmdtySellNewest
 	)
 
 	if req.Type == 2 {
-		preparedCacheKey = utils.CmdtyWantPrepared
+		preparedCacheKey = utils.CmdtyWantNewest
 	}
 
 	// 1 先检查是不是前100条已缓存的数据

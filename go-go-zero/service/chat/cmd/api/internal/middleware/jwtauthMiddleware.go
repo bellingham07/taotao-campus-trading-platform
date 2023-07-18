@@ -13,5 +13,5 @@ func NewJwtAuthMiddleware() *JwtAuthMiddleware {
 }
 
 func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
-	return middleware.JwtAuthentication(next)
+	return middleware.JwtAuthenticate(next)
 }

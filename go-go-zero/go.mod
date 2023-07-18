@@ -10,6 +10,7 @@ require (
 	github.com/hashicorp/consul/api v1.20.0
 	github.com/json-iterator/go v1.1.12
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/robfig/cron v1.2.0
 	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.3.3
 	github.com/zeromicro/go-zero v1.5.2

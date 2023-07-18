@@ -60,7 +60,7 @@ func LoadConsulConf(filePath string) *Consul {
 }
 
 func LoadTaoTaoApi(cc *Consul, ac interface{}) interface{} {
-	client, _ := api.NewClient(&api.Config{Address: cc.Addr})
+	var client, _ = api.NewClient(&api.Config{Address: cc.Addr})
 	kv := client.KV()
 	data, _, err := kv.Get(cc.Key, nil)
 	logx.Must(err)
@@ -70,7 +70,7 @@ func LoadTaoTaoApi(cc *Consul, ac interface{}) interface{} {
 }
 
 func LoadTaoTaoRpc(cc *Consul, ttr interface{}) {
-	client, _ := api.NewClient(&api.Config{Address: cc.Addr})
+	var client, _ = api.NewClient(&api.Config{Address: cc.Addr})
 	kv := client.KV()
 	data, _, err := kv.Get(cc.Key, nil)
 	logx.Must(err)

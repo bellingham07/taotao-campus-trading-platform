@@ -3,11 +3,10 @@ syntax = "v1"
 @server(
 	group: noauth
 	prefix: /cmdty
-	middleware: Cors
 )
 service cmdty-api {
-	@handler listCache
-	get /cache () returns ()
+	@handler listByTypePage
+	get /cache (TypePageReq) returns ()
 	
 	@handler getByIdType
 	get /:id/:done/:type (IdTypeReq) returns ()
@@ -16,7 +15,7 @@ service cmdty-api {
 @server(
 	group: cinfo
 	prefix: /cmdty
-	middleware: JwtAuth, Cors
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listByUidAndOption
@@ -38,7 +37,7 @@ service cmdty-api {
 @server(
 	group: collect
 	prefix: /cmdty/collect
-	middleware: JwtAuth, Cors
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler collect
@@ -54,7 +53,7 @@ service cmdty-api {
 @server(
 	group: tag
 	prefix: /cmdty/tag
-	middleware: JwtAuth, Cors
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listTag
@@ -67,7 +66,7 @@ service cmdty-api {
 @server(
 	group: history
 	prefix: /cmdty/history
-	middleware: JwtAuth, Cors
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler listHistory
@@ -80,7 +79,7 @@ service cmdty-api {
 @server(
 	group: cmt
 	prefix: /cmdty/cmt
-	middleware: JwtAuth, Cors
+	middleware: JwtAuth
 )
 service cmdty-api {
 	@handler cmt
@@ -96,11 +95,16 @@ service cmdty-api {
 // request
 type (
 	IdReq {
-		Id int64 `path:"id" json:"id"`
+		Id int64 `path:"id" json:"id" form:"id"`
+	}
+
+	TypePageReq {
+		TypeReq
+		Page int `form:"page"`
 	}
 
 	TypeReq {
-		Type int64 `path:"type" json:"type"`
+		Type int8 `path:"type" json:"type" form:"type"`
 	}
 
 	IdTypeReq {

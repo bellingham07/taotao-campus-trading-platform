@@ -2,59 +2,47 @@ package noauth
 
 import (
 	"context"
+	"errors"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
+	"go-go-zero/service/cmdty/cmd/api/internal/types"
 	"go-go-zero/service/cmdty/model"
-	"sync"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ListCacheLogic struct {
+type ListByTypePageLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewListCacheLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListCacheLogic {
-	return &ListCacheLogic{
+func NewListByTypePageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListByTypePageLogic {
+	return &ListByTypePageLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ListCacheLogic) ListCache() map[string][]model.CmdtyInfo {
-	var (
-		wg      sync.WaitGroup
-		sellKey = utils.CmdtySellingPrepared
-		wantKey = utils.CmdtyWantPrepared
-		resp    = make(map[string][]model.CmdtyInfo)
-	)
+func (l *ListByTypePageLogic) ListByTypePage(req *types.TypePageReq) ([]model.CmdtyInfo, error) {
+	var key = utils.CmdtySellNewest
+	if req.Type == 2 {
+		key = utils.CmdtyWantNewest
+	}
 
-	wg.Add(2)
-	go func() {
-		var cisForSale = l.fetchCache(sellKey)
-		if cisForSale == nil {
-			cisForSale = l.queryFromDB(1)
+	cis := l.fetchCache(key + strconv.FormatInt(int64(req.Page), 10))
+	if len(cis) < 10 {
+		cis = l.queryFromDB(req.Page, req.Type)
+		if cis == nil {
+			return nil, errors.New("出错啦😥")
 		}
-		resp["sell"] = cisForSale
-		wg.Done()
-	}()
-	go func() {
-		var cisBeWanted = l.fetchCache(wantKey)
-		if cisBeWanted == nil {
-			cisBeWanted = l.queryFromDB(2)
-		}
-		resp["want"] = cisBeWanted
-		wg.Done()
-	}()
-	wg.Wait()
-
-	return resp
+	}
+	return cis, nil
 }
 
-func (l *ListCacheLogic) fetchCache(key string) []model.CmdtyInfo {
+func (l *ListByTypePageLogic) fetchCache(key string) []model.CmdtyInfo {
 	var cisMap, err = l.svcCtx.Redis.HGetAll(l.ctx, key).Result()
 	if cisMap == nil || len(cisMap) == 0 || err != nil {
 		logx.Infof("[REDIS ERROR] ListCache %v", err)
@@ -73,11 +61,11 @@ func (l *ListCacheLogic) fetchCache(key string) []model.CmdtyInfo {
 	return cis
 }
 
-func (l *ListCacheLogic) queryFromDB(ciType int8) []model.CmdtyInfo {
+func (l *ListByTypePageLogic) queryFromDB(page int, ciType int8) []model.CmdtyInfo {
 	var cis = make([]model.CmdtyInfo, 0)
 	err := l.svcCtx.CmdtyInfo.Desc("publish_at").
 		Where("`type` = ? AND `status` = ?", ciType, 2).
-		Limit(100, 0).Find(&cis)
+		Limit(20, page*20).Find(&cis)
 	if err != nil {
 		logx.Infof("[DB ERROR] queryFromDB %v", err)
 		return nil

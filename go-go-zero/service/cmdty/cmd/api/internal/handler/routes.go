@@ -17,27 +17,24 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Cors},
-			[]rest.Route{
-				{
-					Method:  http.MethodGet,
-					Path:    "/cache",
-					Handler: noauth.ListCacheHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodGet,
-					Path:    "/:id/:done/:type",
-					Handler: noauth.GetByIdTypeHandler(serverCtx),
-				},
-			}...,
-		),
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/cache",
+				Handler: noauth.ListByTypePageHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:id/:done/:type",
+				Handler: noauth.GetByIdTypeHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/cmdty"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.JwtAuth, serverCtx.Cors},
+			[]rest.Middleware{serverCtx.JwtAuth},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
@@ -71,7 +68,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.JwtAuth, serverCtx.Cors},
+			[]rest.Middleware{serverCtx.JwtAuth},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
@@ -95,7 +92,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.JwtAuth, serverCtx.Cors},
+			[]rest.Middleware{serverCtx.JwtAuth},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
@@ -114,7 +111,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.JwtAuth, serverCtx.Cors},
+			[]rest.Middleware{serverCtx.JwtAuth},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
@@ -133,7 +130,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.JwtAuth, serverCtx.Cors},
+			[]rest.Middleware{serverCtx.JwtAuth},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	sysConfig "go-go-zero/common/config"
-	"go-go-zero/service/cmdty/cmd/api/internal/logic/cinfo"
+	"go-go-zero/common/middleware"
+	"go-go-zero/service/cmdty/cmd/api/internal/logic/cron"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/mq"
 
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
@@ -26,14 +26,16 @@ func main() {
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
+	server.Use(middleware.HandleCors) // 全局中间件
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	cmdty2RedisLogic := cinfo.NewCmdty2RedisLogic(context.Background(), ctx)
-	go cmdty2RedisLogic.Cmdty2Redis()
+	//cmdty2RedisLogic := cinfo.NewCmdty2RedisLogic(context.Background(), ctx)
+	//go cmdty2RedisLogic.Cmdty2Redis()
 
 	mq.InitRabbitMQ(ctx)
+	cron.InitCronJob(ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

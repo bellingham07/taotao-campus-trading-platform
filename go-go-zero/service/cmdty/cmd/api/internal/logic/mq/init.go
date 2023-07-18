@@ -17,7 +17,7 @@ func InitRabbitMQ(svcCtx *svc.ServiceContext) {
 
 func InitCcPublisher(core *utils.RabbitmqCore) {
 	// 获取connection
-	r := utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", core.Conn, core.Channel)
+	var r = utils.NewRabbitMQ(utils.CmdtyCollectQueue, utils.CmdtyCollectExchange, "cc", core.Conn, core.Channel)
 	if r == nil {
 		panic("[RABBITMQ ERROR] InitCcPublisher 初始化 cmdty collect publisher 错误！")
 	}
