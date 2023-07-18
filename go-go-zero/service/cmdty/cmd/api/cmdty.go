@@ -22,7 +22,7 @@ func main() {
 
 	var c config.Config
 	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/cmdty-api.yaml")
-	sysConfig.LoadTaoTaoRpc(cc, &c)
+	sysConfig.LoadTaoTaoApi(cc, &c)
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

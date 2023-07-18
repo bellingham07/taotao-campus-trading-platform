@@ -47,6 +47,7 @@ func db2Cache(svcCtx *svc.ServiceContext) func() {
 		go exec(2)
 
 		wg.Wait()
+		fmt.Println("大三大四看到两个路口附近公司领导可根据")
 	}
 }
 

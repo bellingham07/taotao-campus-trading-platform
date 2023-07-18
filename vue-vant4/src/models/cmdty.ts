@@ -1,4 +1,4 @@
-export interface cmdtyInfo {
+export interface CmdtyInfo {
     id: number
     userId: number
     briefIntro: string

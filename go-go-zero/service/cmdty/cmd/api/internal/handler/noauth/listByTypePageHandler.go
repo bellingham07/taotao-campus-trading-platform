@@ -21,7 +21,7 @@ func ListByTypePageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := noauth.NewListByTypePageLogic(r.Context(), svcCtx)
 		resp, err := l.ListByTypePage(&req)
-		if resp != nil {
+		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)

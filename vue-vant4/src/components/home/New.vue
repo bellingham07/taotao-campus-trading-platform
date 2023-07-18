@@ -2,7 +2,7 @@
     <van-row justify="space-around">
         <van-col class="cmdty-item" span="10">
             <van-button class="type" plain disabled type="primary" size="mini">出售</van-button>
-            <div v-for="cs in data.sell" :key="cs.id">
+            <div v-for="cs of data.sell" :key="cs.id">
                 <van-image
                         width="10rem"
                         height="10rem"
@@ -50,21 +50,19 @@
 
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
-import {newestResp} from "../../api/cmdty/type.ts";
-import {cmdtyInfo} from "../../models/cmdty.ts";
+import {ListCisPageResp} from "../../api/cmdty/type.ts";
+import {CmdtyInfo} from "../../models/cmdty.ts";
 import {cmdtyService} from "../../api";
 
 let hasSell = true
 let hasWant = true
-const data = reactive({sell: [], want: []})
+const data = reactive({sell: []})
 
 onMounted(async () => {
 
-    await cmdtyService.get<any, newestResp>("/cache").then((resp) => {
+    await cmdtyService.get<any, ListCisPageResp>("/cache").then((resp) => {
         data.sell = resp.data.data.sell
         console.log(resp.data.data.sell)
-        data.want = resp.data.want
-        console.log(resp.data.data.want)
     })
     // if (resp.data.data.sell.length === 0) {
     //     hasSell = false

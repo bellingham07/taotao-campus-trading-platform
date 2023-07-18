@@ -94,13 +94,13 @@ func (l *ChatLogic) Chat(req *types.ChatReq, w http.ResponseWriter, r *http.Requ
 
 		if _, err = l.svcCtx.ChatMessage.InsertOne(l.ctx, cm); err != nil {
 			go l.deleteConn(icon)
-			logx.Debugf("[MONGO ERROR] Chat 插入聊天信息失败 %v\n", err.Error())
+			logx.Debugf("[MONGO ERROR] Chat 插入聊天信息失败 %v\n", err)
 			return errors.New("消息保存失败！")
 		}
 		msg, err := l.svcCtx.Json.Marshal(cm)
 		if err != nil {
 			go l.deleteConn(icon)
-			logx.Debugf("[JSON MARSHAL ERROR] Chat 序列化消息错误 %v\n", err.Error())
+			logx.Debugf("[JSON MARSHAL ERROR] Chat 序列化消息错误 %v\n", err)
 			return errors.New("未知错误！😭程序员大哭")
 		}
 

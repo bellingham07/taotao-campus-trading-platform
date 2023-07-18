@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, {AxiosError, AxiosResponse} from 'axios'
 
 export interface BaseResp {
     code: number
@@ -16,4 +16,18 @@ export const chatService = axios.create({
 export const cmdtyService = axios.create({
     baseURL: 'http://localhost:10003/cmdty'
 })
+
+const respInterceptor = (config: AxiosResponse) => {
+    const code = config.data['code'] || 200;
+    if (code == 200) {
+        return Promise.resolve(config.data)
+    }
+    return Promise.reject(config.data)
+}
+
+const error = (error: AxiosError) => {
+    console.log(error)
+}
+
+cmdtyService.interceptors.response.use(respInterceptor, error)
 

@@ -3,17 +3,13 @@ import {createRouter, createWebHashHistory, Router} from 'vue-router'
 const routes = [
     {
         path: '/',
-        redirect: '/home/new',
+        redirect: '/home/sell',
         component: () => import('../views/Main.vue'),
         children: [
             {
                 path: 'home',
                 component: () => import('../views/main/Home.vue'),
                 children: [
-                    {
-                        path: 'new',
-                        component: () => import('../components/home/New.vue')
-                    },
                     {
                         path: 'sell',
                         component: () => import('../components/home/Sell.vue')
