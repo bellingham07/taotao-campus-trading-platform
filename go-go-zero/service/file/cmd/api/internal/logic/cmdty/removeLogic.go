@@ -3,10 +3,10 @@ package cmdty
 import (
 	"context"
 	"errors"
+	__ "go-go-zero/service/cmdty/cmd/rpc/types"
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/cmd/api/internal/types"
 	"go-go-zero/service/file/model"
-	"sync"
 	"xorm.io/xorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -29,7 +29,6 @@ func NewRemoveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveLogi
 
 func (l *RemoveLogic) Remove(req *types.IdCmdtyIdReq) error {
 	var (
-		id    = req.IdReq.Id
 		order int64
 		flag  = false
 		fcs   = make([]model.FileCmdty, 0)
@@ -41,7 +40,7 @@ func (l *RemoveLogic) Remove(req *types.IdCmdtyIdReq) error {
 	}
 
 	for _, fc := range fcs {
-		if fc.Id == id {
+		if fc.Id == req.IdReq.Id {
 			flag = true
 			order = fc.Order
 			break
@@ -52,10 +51,8 @@ func (l *RemoveLogic) Remove(req *types.IdCmdtyIdReq) error {
 	}
 
 	_, err = l.svcCtx.Xorm.Transaction(func(s *xorm.Session) (interface{}, error) {
-		var wg sync.WaitGroup
-
-		tx := s.Table("file_cmdty")
-		if _, err = tx.Delete(&model.FileCmdty{Id: fcs[0].Id}); err != nil {
+		var tx = s.Table("file_cmdty")
+		if _, err = tx.Delete(&model.FileCmdty{Id: fcs[order-1].Id}); err != nil {
 			logx.Infof("[DB ERROR] Cmdty Remove %v", err)
 			return nil, errors.New("删除失败！")
 		}
@@ -81,14 +78,27 @@ func (l *RemoveLogic) Remove(req *types.IdCmdtyIdReq) error {
 			}
 		}
 
-		cmdtyservice.
+		coverReq := &__.CoverReq{
+			Id:    req.CmdtyId,
+			Cover: fcs[order-1].Url,
+		}
+		codeResp, err := l.svcCtx.CmdtyRpc.UpdateCover(l.ctx, coverReq)
+		if err != nil {
+			logx.Infof("[RPC ERROR] Cmdty Remove 调用rpc失败 %v", err)
+			codeResp, _ = l.svcCtx.CmdtyRpc.UpdateCover(l.ctx, coverReq) // 重试
+		}
+		if codeResp.Code != -1 {
+			return nil, errors.New("删除失败！")
+		}
+
 		if _, err = tx.Update(&newOrders); err != nil {
 			return nil, errors.New("删除失败！")
 		}
 
 		commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
-		commonLogic.Delete()
+		commonLogic.Delete(fcs[order-1].Objectname)
+		return nil, nil
 	})
 
-	return nil
+	return err
 }

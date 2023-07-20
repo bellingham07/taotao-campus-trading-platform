@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"go-go-zero/service/cmdty/model"
 
 	"go-go-zero/service/cmdty/cmd/rpc/internal/svc"
 	"go-go-zero/service/cmdty/cmd/rpc/types"
@@ -24,7 +25,10 @@ func NewUpdateCoverLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Updat
 }
 
 func (l *UpdateCoverLogic) UpdateCover(in *__.CoverReq) (*__.CodeResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &__.CodeResp{}, nil
+	var ci = &model.CmdtyInfo{Id: in.Id, Cover: in.Cover}
+	if _, err := l.svcCtx.CmdtyInfo.Update(ci); err != nil {
+		logx.Infof("[DB ERROR] RPC UpdateCover 更新商品封面失败 %v", err)
+		return &__.CodeResp{Code: -1}, err
+	}
+	return &__.CodeResp{Code: 0}, nil
 }

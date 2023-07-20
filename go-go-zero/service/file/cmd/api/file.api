@@ -1,79 +1,79 @@
 syntax = "v1"
 
 @server(
-    group: avatar
-    prefix: /file/avatar
-    middleware: JwtAuth
+	group: avatar
+	prefix: /file/avatar
+	middleware: JwtAuth
 )
 service file-api {
-    @handler upload
-    post / (AvatarReq) returns (AvatarResp)
-
-    @handler check
-    delete / (IdsReq) returns ()
+	@handler upload
+	post / (AvatarReq) returns (AvatarResp)
+	
+	@handler check
+	delete / (IdsReq) returns ()
 }
 
 @server(
-    group: atcl
-    prefix: /file/atcl
-    middleware: JwtAuth
+	group: atcl
+	prefix: /file/atcl
+	middleware: JwtAuth
 )
 service file-api {
-    @handler upload
-    post / () returns ([]PicResp)
-
-    @handler remove
-    delete /:id returns ()
-
-    @handler check
-    patch / (IdsReq) returns ()
+	@handler upload
+	post / () returns ([]PicResp)
+	
+	@handler remove
+	delete /:id returns ()
+	
+	@handler check
+	patch / (IdsReq) returns ()
 }
 
 @server(
-    group: cmdty
-    prefix: /file/cmdty
-    middleware: JwtAuth
+	group: cmdty
+	prefix: /file/cmdty
+	middleware: JwtAuth
 )
 service file-api {
-    @handler upload
-    post / () returns ([]PicResp)
-
-    @handler remove
-    delete /:id (IdReq) returns ()
-
-    @handler check
-    patch / (IdsReq) returns ()
+	@handler upload
+	post / () returns ([]PicResp)
+	
+	@handler remove
+	delete /:id (IdCmdtyIdReq) returns ()
+	
+	@handler check
+	patch / (IdsReq) returns ()
 }
 
 // request
 type (
-    IdReq {
-        Id int64 `json:"id" path:"id"`
-    }
+	IdReq {
+		Id int64 `json:"id" path:"id"`
+	}
 
-    IdReq {
-        IdReq
-        CmdtyId int64 `json:"cmdtyId" path:"cmdtyId"`
-    }
+	IdCmdtyIdReq {
+		IdReq
+		CmdtyId int64 `json:"cmdtyId" path:"cmdtyId"`
+	}
 
-    IdsReq {
-        Ids []int64 `json:"ids"`
-    }
+	IdsReq {
+		Ids []int64 `json:"ids"`
+	}
 
-    AvatarReq {
-        Avatar []byte `json:"avatar"`
-    }
+	AvatarReq {
+		Avatar []byte `json:"avatar"`
+	}
 )
 
 // response
 type (
-    AvatarResp {
-        Url string `json:"url"`
-    }
+	AvatarResp {
+		Url string `json:"url"`
+	}
 
-    PicResp {
-        Id int64 `json:"id"`
-        Url string `json:"url"`
-        Order int64 `json:"order"`
-    }
+	PicResp {
+		Id    int64  `json:"id"`
+		Url   string `json:"url"`
+		Order int64  `json:"order"`
+	}
 )

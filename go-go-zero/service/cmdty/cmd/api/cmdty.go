@@ -15,13 +15,13 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "service/cmdty/cmd/api/etc/file-api.yaml", "the config file")
+var configFile = flag.String("f", "service/cmdty/cmd/api/etc/cmdty-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/file-api.yaml")
+	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/api/etc/cmdty-api.yaml")
 	sysConfig.LoadTaoTaoApi(cc, &c)
 
 	server := rest.MustNewServer(c.RestConf)
