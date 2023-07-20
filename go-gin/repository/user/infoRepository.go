@@ -15,10 +15,8 @@ func user_info() string {
 	return "user_info"
 }
 
-func (*UserInfoRepository) QueryByUsername(username string) (userInfo *model.UserInfo, err error) {
-	userInfo = &model.UserInfo{
-		Username: username,
-	}
+func (*UserInfoRepository) QueryByUsername(username string) (*model.UserInfo, error) {
+	var userInfo = &model.UserInfo{Username: username}
 	if err := repository.GetDB().Table(user_info()).Find(&userInfo).Error; err != nil {
 		log.Println("[GORM ERROR] UserInfo QueryById NOT FOUND: " + err.Error())
 		return userInfo, err

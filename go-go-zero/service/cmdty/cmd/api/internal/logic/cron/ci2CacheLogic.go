@@ -43,8 +43,8 @@ func db2Cache(svcCtx *svc.ServiceContext) func() {
 		}
 
 		// 这里有问题
-		go exec(1)
-		go exec(2)
+		exec(1)
+		exec(2)
 
 		wg.Wait()
 		fmt.Println("大三大四看到两个路口附近公司领导可根据")
@@ -72,15 +72,15 @@ func queryFromDB(cmdtyInfo *xorm.Session, ciType int8) [][]model.CmdtyInfo {
 }
 
 func send2Cache(redis *redis.Client, json jsoniter.API, cisPaged [][]model.CmdtyInfo, ciType int8) {
-	var key = utils.CmdtySellNewest
+	var prefix = utils.CmdtySellNewest
 	if ciType == 2 {
-		key = utils.CmdtyWantNewest
+		prefix = utils.CmdtyWantNewest
 	}
 
 	pipeline := redis.Pipeline()
 	ctx := context.Background()
 	for page, cis := range cisPaged {
-		concreteKey := key + strconv.FormatInt(int64(page), 10)
+		key := prefix + strconv.FormatInt(int64(page), 10)
 		data := make(map[string]interface{})
 		for i, ci := range cis {
 			ciStr, err := json.Marshal(ci)
@@ -90,12 +90,11 @@ func send2Cache(redis *redis.Client, json jsoniter.API, cisPaged [][]model.Cmdty
 			no := strconv.FormatInt(int64(page*20+i), 10)
 			data[no] = ciStr
 		}
-		pipeline.HSet(ctx, concreteKey, data)
-		pipeline.Expire(ctx, concreteKey, 6*time.Minute)
+		pipeline.HSet(ctx, key, data)
+		pipeline.Expire(ctx, key, 6*time.Minute)
 	}
 	_, err := pipeline.Exec(ctx)
 	if err != nil {
 		logx.Info("[REDIS ERROR] CRON send2Cache 发送数据到redis失败 %v\n", err)
 	}
-	//fmt.Println(exec)
 }

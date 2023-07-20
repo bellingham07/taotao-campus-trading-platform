@@ -3,6 +3,7 @@ package svc
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/yitter/idgenerator-go/idgen"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/common/utils"
@@ -29,6 +30,8 @@ type ServiceContext struct {
 	Oss *Oss
 
 	JwtAuth rest.Middleware
+
+	idgen.DefaultIdGenerator
 }
 
 type Oss struct {
@@ -38,6 +41,9 @@ type Oss struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	options := idgen.NewIdGeneratorOptions(c.Idgen.WorkerId)
+	idgen.SetIdGenerator(options)
+
 	engine := utils.InitXorm("mysql", c.Mysql)
 
 	endPoint := c.Oss.EndPoint

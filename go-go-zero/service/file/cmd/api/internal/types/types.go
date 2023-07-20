@@ -5,6 +5,11 @@ type IdReq struct {
 	Id int64 `json:"id" path:"id"`
 }
 
+type IdCmdtyIdReq struct {
+	IdReq
+	CmdtyId int64 `json:"cmdtyId" path:"cmdtyId"`
+}
+
 type IdsReq struct {
 	Ids []int64 `json:"ids"`
 }

@@ -3,6 +3,7 @@ package cmdty
 import (
 	"context"
 	"errors"
+	"github.com/yitter/idgenerator-go/idgen"
 	"go-go-zero/service/cmdty/cmd/rpc/cmdtyservice"
 	"go-go-zero/service/file/cmd/api/internal/logic"
 	"go-go-zero/service/file/model"
@@ -37,8 +38,10 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.P
 		userIdStr = strconv.FormatInt(userId, 10)
 		files     = make([]multipart.FileHeader, 0)
 		orders    = make([]int64, 0)
+		resp      = make([]ctypes.PicResp, 0)
 		code      *cmdtyservice.CodeResp
 	)
+
 	commonLogic := logic.NewCommonLogic(l.ctx, l.svcCtx)
 	for _, file := range req.Pics {
 		files = append(files, file.Pic)
@@ -48,13 +51,15 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.P
 	if err != nil {
 		return nil, errors.New("上传图片失败！😥")
 	}
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	fas := make([]model.FileCmdty, 0)
-	resp := make([]ctypes.PicResp, 0)
-	t := time.Now()
+	t := time.Now().Local()
 	for idx, url := range urls {
+		id := idgen.NextId()
 		fa := model.FileCmdty{
+			Id:         id,
 			CmdtyId:    cmdtyId,
 			UserId:     userId,
 			Url:        url,
@@ -63,6 +68,7 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.P
 			Order:      orders[idx],
 		}
 		pr := ctypes.PicResp{
+			Id:    id,
 			Url:   url,
 			Order: orders[idx],
 		}
@@ -85,7 +91,7 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.P
 		commonLogic.MultiDelete(objectnames)
 		return nil, errors.New("上传图片失败！😥")
 	}
-	_, err = l.svcCtx.Xorm.Insert(fas)
+	_, err = l.svcCtx.FileCmdty.Insert(fas)
 	if err != nil {
 		commonLogic.MultiDelete(objectnames)
 		return nil, errors.New("运气不好，上传失败！😥")
