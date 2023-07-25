@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/hashicorp/consul/api"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -65,7 +64,7 @@ func LoadTaoTaoApi(cc *Consul, ac interface{}) interface{} {
 	data, _, err := kv.Get(cc.Key, nil)
 	logx.Must(err)
 	_ = conf.LoadFromYamlBytes(data.Value, ac)
-	fmt.Printf("%#v", ac)
+	//fmt.Printf("%#v", ac)
 	return ac
 }
 

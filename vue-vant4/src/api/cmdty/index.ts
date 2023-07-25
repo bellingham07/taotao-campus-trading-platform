@@ -1,5 +1,5 @@
 import {cmdtyService} from "../index.ts";
-import {ListCisPageResp} from "./type.ts";
+import {GetInfoResp, ListCisPageResp} from "./type.ts";
 
 export const listCisPageReq = (type: number, page: number) => {
     return cmdtyService.get<any, ListCisPageResp>("/cache", {
@@ -8,4 +8,8 @@ export const listCisPageReq = (type: number, page: number) => {
             page: page,
         }
     })
+}
+
+export const getInfoReq = (id: number) => {
+    return cmdtyService.get<any, GetInfoResp>(`/${id}`)
 }

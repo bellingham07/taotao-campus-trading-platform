@@ -6,3 +6,9 @@ export interface ListCisPageResp extends BaseResp {
         cis: CmdtyInfo[]
     }
 }
+
+export interface GetInfoResp extends BaseResp {
+    data: {
+        cmdtyInfo: CmdtyInfo
+    }
+}

@@ -32,7 +32,7 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 
 	mq.InitRabbitMQ(ctx)
-	cron.InitCronJob(ctx)
+	go cron.InitCronJob(ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

@@ -25,8 +25,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/:id/:done/:type",
-				Handler: noauth.GetByIdTypeHandler(serverCtx),
+				Path:    "/:id",
+				Handler: noauth.GetByIdHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/cmdty"),

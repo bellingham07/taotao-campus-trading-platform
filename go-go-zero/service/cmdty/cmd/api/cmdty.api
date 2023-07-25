@@ -8,8 +8,8 @@ service cmdty-api {
 	@handler listByTypePage
 	get /cache (TypePageReq) returns ()
 	
-	@handler getByIdType
-	get /:id/:done/:type (IdTypeReq) returns ()
+	@handler getById
+	get /:id (IdReq) returns ()
 }
 
 @server(

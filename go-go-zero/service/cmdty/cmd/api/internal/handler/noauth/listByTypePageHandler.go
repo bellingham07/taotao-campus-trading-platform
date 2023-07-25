@@ -14,7 +14,7 @@ import (
 func ListByTypePageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.TypePageReq
-		if err := httpx.Parse(r, &req); err != nil {
+		if err := httpx.ParseForm(r, &req); err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误"))
 			return
 		}

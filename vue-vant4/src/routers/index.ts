@@ -25,8 +25,15 @@ const routes = [
                 component: () => import('../views/main/Atcl.vue')
             },
             {
-                path: 'cmdty',
-                component: () => import('../views/main/Cmdty.vue')
+                path: 'cmdty/:id',
+                component: () => import('../views/cmdty/Info.vue'),
+                // children: [
+                //     {
+                //         path: 'info',
+                //         name: 'info',
+                //         component: () => import('../views/cmdty/Info.vue')
+                //     }
+                // ]
             },
             {
                 path: 'msg',

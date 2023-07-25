@@ -1,7 +1,7 @@
 <template>
   <van-tabbar v-model="active">
     <van-tabbar-item icon="home-o">
-      <router-link to="/home/new">淘淘</router-link>
+      <router-link to="/home/sell">淘淘</router-link>
     </van-tabbar-item>
     <van-tabbar-item icon="search">
       <router-link to="/atcl">圈子</router-link>

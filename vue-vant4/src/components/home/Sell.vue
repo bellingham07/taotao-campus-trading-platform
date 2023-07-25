@@ -23,7 +23,7 @@
         <div>头像</div>
       </div>
 
-      <div v-for="cs in cis.value" :key="cs.id">
+      <div v-for="cs of cis" :key="cs.id">
         <van-image
             width="10rem"
             height="10rem"
@@ -52,17 +52,14 @@ import {listCisPageReq} from "../../api/cmdty";
 import {CmdtyInfo} from "../../models/cmdty.ts";
 import router from "../../routers";
 
-// const data = reactive({
-//       cis: []
-//     })
 let page = 1
 
-const cis = ref<CmdtyInfo[]>([])
+const cis = ref([])
 
 const getCis = async () => {
   const listCisPageResp = await listCisPageReq(1, page);
   if (listCisPageResp.code === 0) {
-    cis.value = listCisPageResp.data.cis
+    cis.value.push(...listCisPageResp.data)
   }
   return null
 }

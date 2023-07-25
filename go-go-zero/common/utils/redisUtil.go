@@ -2,8 +2,8 @@ package utils
 
 import (
 	"context"
-	"fmt"
 	"github.com/redis/go-redis/v9"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type Redis struct {
@@ -56,7 +56,7 @@ func InitRedis(rc Redis) *redis.Client {
 		Password: rc.Password,
 		DB:       rc.Db,
 	})
-	fmt.Printf("[REDIS CONNECTING] InitRedis client: %v\n", client)
+	logx.Infof("[REDIS CONNECTING] InitRedis client: %v\n", client)
 
 	err := client.Ping(ctx).Err()
 	if err != nil {
