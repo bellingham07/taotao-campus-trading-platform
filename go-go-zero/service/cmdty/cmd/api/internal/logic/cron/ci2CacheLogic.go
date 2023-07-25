@@ -11,14 +11,13 @@ import (
 	"go-go-zero/service/cmdty/cmd/api/internal/svc"
 	"go-go-zero/service/cmdty/model"
 	"strconv"
-	"sync"
 	"time"
 	"xorm.io/xorm"
 )
 
 func ci2CacheLogic(svcCtx *svc.ServiceContext) {
 	var c = cron.New()
-	err := c.AddFunc("*/5 * * * *", db2Cache(svcCtx))
+	err := c.AddFunc("1 0,30 6-23 * *", exec(svcCtx))
 	if err != nil {
 		logx.Info("[CRON ERROR] ci2CacheLogic 任务执行失败 %v\n", err)
 		panic("[CRON ERROR] ci2CacheLogic 任务执行失败")
@@ -29,25 +28,25 @@ func ci2CacheLogic(svcCtx *svc.ServiceContext) {
 	select {}
 }
 
-func db2Cache(svcCtx *svc.ServiceContext) func() {
+func exec(svcCtx *svc.ServiceContext) func() {
 	return func() {
-		var wg sync.WaitGroup
-		wg.Add(2)
+		//var wg sync.WaitGroup
+		//wg.Add(2)
 
-		exec := func(ciType int8) {
+		db2Cache := func(ciType int8) {
 			var cis = queryFromDB(svcCtx.CmdtyInfo, ciType)
 			if cis != nil {
 				send2Cache(svcCtx.Redis, svcCtx.Json, cis, ciType)
 			}
-			wg.Done()
+			//wg.Done()
 		}
 
 		// 这里有问题
-		exec(1)
-		exec(2)
+		db2Cache(1)
+		db2Cache(2)
 
-		wg.Wait()
-		fmt.Println("大三大四看到两个路口附近公司领导可根据")
+		//wg.Wait()
+		logx.Infof("[CRON SUCCESS] %v 最新商品缓存成功", time.Now().Format("2006-01-02 03:04:05"))
 	}
 }
 
@@ -56,7 +55,7 @@ func queryFromDB(cmdtyInfo *xorm.Session, ciType int8) [][]model.CmdtyInfo {
 	err := cmdtyInfo.Where("`status` = ? AND `type` = ?", 2, ciType).
 		Desc("publish_at").Limit(200, 0).Find(&cis)
 	if err != nil {
-		logx.Info("[DB ERROR] CRON queryFromDB 查询最新数据失败 %v\n", err)
+		logx.Infof("[DB ERROR] CRON queryFromDB 查询最新数据失败 %v\n", err)
 		return nil
 	}
 
@@ -95,6 +94,6 @@ func send2Cache(redis *redis.Client, json jsoniter.API, cisPaged [][]model.Cmdty
 	}
 	_, err := pipeline.Exec(ctx)
 	if err != nil {
-		logx.Info("[REDIS ERROR] CRON send2Cache 发送数据到redis失败 %v\n", err)
+		logx.Infof("[REDIS ERROR] CRON send2Cache 发送数据到redis失败 %v\n", err)
 	}
 }

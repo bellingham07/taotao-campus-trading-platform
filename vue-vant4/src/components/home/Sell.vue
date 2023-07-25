@@ -1,6 +1,28 @@
 <template>
   <van-row justify="space-around">
     <van-col class="cmdty-item" span="10">
+      <div>
+        <div @click="toDetail(cs.id)">
+          <van-image
+              width="30vw"
+              height="30vw"
+              fit="cover"
+              :src="'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'"
+          />
+          <div class="font09">ask到付哈四道口附近哈数据库·1</div>
+          <div>
+            <span class="font07 gray">{ dasfasdf }}</span>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <span class="font07 gray">asdasd </span>
+          </div>
+          <div>
+            <span class="price">￥{ cs.price }}</span>
+            <span class="collect gray">{ cs.collect }}</span>
+          </div>
+        </div>
+        <div>头像</div>
+      </div>
+
       <div v-for="cs in cis.value" :key="cs.id">
         <van-image
             width="10rem"
@@ -28,6 +50,7 @@
 import {onMounted, reactive, ref} from "vue";
 import {listCisPageReq} from "../../api/cmdty";
 import {CmdtyInfo} from "../../models/cmdty.ts";
+import router from "../../routers";
 
 // const data = reactive({
 //       cis: []
@@ -42,6 +65,9 @@ const getCis = async () => {
     cis.value = listCisPageResp.data.cis
   }
   return null
+}
+const toDetail = (id: number) => {
+  router.push(`/cmdty/${id}`)
 }
 
 onMounted(() => {

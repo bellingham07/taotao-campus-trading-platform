@@ -34,7 +34,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (string, error) {
 	has, err := l.svcCtx.UserInfo.Cols("id", "name", "username", "password").
 		Where("username = ?", req.Username).Get(ui)
 	if !has || err != nil {
-		return "", errors.New("账号或密码错误1！🥲" + err.Error())
+		return "", errors.New("账号或密码错误！🥲")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(ui.Password), []byte(req.Password))
