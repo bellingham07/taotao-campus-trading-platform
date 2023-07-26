@@ -4,7 +4,7 @@ import "time"
 
 type (
 	CmdtyInfo struct {
-		Id         int64     `xorm:"id" json:"id"`                   // id
+		Id         int64     `xorm:"id" json:"id" redis:"id"`        // id
 		UserId     int64     `xorm:"user_id" json:"userId"`          // 用户id
 		BriefIntro string    `xorm:"brief_intro" json:"brief_intro"` // 名称
 		Cover      string    `xorm:"cover" json:"cover"`             // 封面图片

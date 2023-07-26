@@ -26,14 +26,15 @@ func NewRetrieveNameAndAvatarLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *RetrieveNameAndAvatarLogic) RetrieveNameAndAvatar(in *__.IdReq) (*__.NameAvatarResp, error) {
-	var (
-		ui   = &model.UserInfo{Id: in.Id}
-		resp = &__.NameAvatarResp{Code: -1}
-	)
-	has, err := l.svcCtx.UserInfo.Cols("name", "avatar").Get(ui)
+	var resp = &__.NameAvatarResp{Code: -1}
+
+	ui := model.UserInfo{Id: in.Id}
+	has, err := l.svcCtx.UserInfo.Cols("name", "avatar").Get(&ui)
 	if !has || err != nil {
+		logx.Errorf("[DB ERROR] RetrieveNameAndAvatar 查询昵称和头像失败 %v\n", err.Error())
 		return resp, errors.New("查询昵称和头像失败！")
 	}
+
 	resp.Code = 0
 	resp.Name = ui.Name
 	resp.Avatar = ui.Avatar

@@ -1,3 +1,16 @@
 syntax = "proto3";
 
 package template;
+
+service FileService {
+  rpc GetCmdtyPicsByOrder (CmdtyPicsReq) returns (CmdtyPicsResp);
+}
+
+message CmdtyPicsReq {
+  int64 Id = 1;
+}
+
+message CmdtyPicsResp {
+  int64 Code = 1;
+  repeated string pics = 2;
+}

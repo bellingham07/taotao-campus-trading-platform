@@ -1,6 +1,6 @@
 <template>
 <div class="top">
-  <div>淘 淘
+  <div>淘 淘</div>
     <van-search
         v-model="value"
         show-action
@@ -13,7 +13,7 @@
         <div @click="onClickButton">搜索</div>
       </template>
     </van-search>
-  </div>
+
 
 </div>
 </template>

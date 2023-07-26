@@ -13,13 +13,13 @@ import (
 	_ "github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
-var configFile = flag.String("f", "service/file/cmd/api/etc/user-api.yaml", "the config file")
+var configFile = flag.String("f", "service/file/cmd/api/etc/user.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	cc := sysConfig.LoadConsulConf("service/file/cmd/api/etc/user-api.yaml")
+	cc := sysConfig.LoadConsulConf("service/file/cmd/api/etc/user.yaml")
 	sysConfig.LoadTaoTaoRpc(cc, &c)
 
 	server := rest.MustNewServer(c.RestConf)

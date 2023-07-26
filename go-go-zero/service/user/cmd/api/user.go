@@ -12,13 +12,13 @@ import (
 	"go-go-zero/service/user/cmd/api/internal/svc"
 )
 
-var configFile = flag.String("f", "service/user/cmd/api/etc/user-api.yaml", "the config file")
+var configFile = flag.String("f", "service/user/cmd/api/etc/user.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	cc := sysConfig.LoadConsulConf("service/user/cmd/api/etc/user-api.yaml")
+	cc := sysConfig.LoadConsulConf("service/user/cmd/api/etc/user.yaml")
 	sysConfig.LoadTaoTaoApi(cc, &c)
 
 	server := rest.MustNewServer(c.RestConf)

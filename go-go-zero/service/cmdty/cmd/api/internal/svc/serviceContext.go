@@ -5,15 +5,20 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
 	"go-go-zero/service/cmdty/cmd/api/internal/middleware"
+	"go-go-zero/service/user/cmd/rpc/userservice"
 	"go.mongodb.org/mongo-driver/mongo"
 	"xorm.io/xorm"
 )
 
 type ServiceContext struct {
 	Config config.Config
+
+	UserRpc userservice.UserService
+	FileRpc fileservice.FileService
 
 	// mysql
 	Xorm         *xorm.Engine
@@ -52,6 +57,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Json:         jsoniter.ConfigCompatibleWithStandardLibrary,
 		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
 		Redis:        utils.InitRedis(c.Redis),
+		UserRpc:      userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
 		RmqCore: &utils.RabbitmqCore{
 			Conn:    rc,
 			Channel: channel,

@@ -1,44 +1,29 @@
 <template>
   <van-row justify="space-around">
     <van-col class="cmdty-item" span="10">
-      <div>
-        <div @click="toDetail(cs.id)">
-          <van-image
-              width="30vw"
-              height="30vw"
-              fit="cover"
-              :src="'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'"
-          />
-          <div class="font09">ask到付哈四道口附近哈数据库·1</div>
-          <div>
-            <span class="font07 gray">{ dasfasdf }}</span>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <span class="font07 gray">asdasd </span>
-          </div>
-          <div>
-            <span class="price">￥{ cs.price }}</span>
-            <span class="collect gray">{ cs.collect }}</span>
-          </div>
-        </div>
-        <div>头像</div>
-      </div>
 
       <div v-for="cs of cis" :key="cs.id">
-        <van-image
-            width="10rem"
-            height="10rem"
-            fit="cover"
-            :src="cs.cover"
-        />
-        <div class="font09">{{ cs.briefIntro }}</div>
-        <div>
-          <span class="font07 gray">{{ cs.brand }}</span>
-          <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-          <span class="font07 gray">{{ cs.old }}</span>
+        <div @click="toInfoDetail(cs.id)">
+          <van-image
+              width="10rem"
+              height="10rem"
+              fit="cover"
+              :src="cs.cover"
+          />
+          <div class="font09">{{ cs.briefIntro }}</div>
+          <div>
+            <span class="font07 gray">{{ cs.brand }}</span>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <span class="font07 gray">{{ cs.old }}</span>
+          </div>
+          <div>
+            <span class="price">￥{{ cs.price }}</span>
+            <span class="collect gray">{{ cs.collect }}</span>
+          </div>
         </div>
         <div>
-          <span class="price">￥{{ cs.price }}</span>
-          <span class="collect gray">{{ cs.collect }}</span>
+        <div>头像</div>
+        <div>名字</div>
         </div>
       </div>
     </van-col>
@@ -60,10 +45,11 @@ const getCis = async () => {
   const listCisPageResp = await listCisPageReq(1, page);
   if (listCisPageResp.code === 0) {
     cis.value.push(...listCisPageResp.data)
+
   }
   return null
 }
-const toDetail = (id: number) => {
+const toInfoDetail = (id: number) => {
   router.push(`/cmdty/${id}`)
 }
 
@@ -101,3 +87,25 @@ onMounted(() => {
   font-size: 0.5rem;
 }
 </style>
+
+<!--      <div>-->
+<!--        <div @click="toDetail(cs.id)">-->
+<!--          <van-image-->
+<!--              width="30vw"-->
+<!--              height="30vw"-->
+<!--              fit="cover"-->
+<!--              :src="'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'"-->
+<!--          />-->
+<!--          <div class="font09">ask到付哈四道口附近哈数据库·1</div>-->
+<!--          <div>-->
+<!--            <span class="font07 gray">{ dasfasdf }}</span>-->
+<!--            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>-->
+<!--            <span class="font07 gray">asdasd </span>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <span class="price">￥{ cs.price }}</span>-->
+<!--            <span class="collect gray">{ cs.collect }}</span>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div>头像</div>-->
+<!--      </div>-->

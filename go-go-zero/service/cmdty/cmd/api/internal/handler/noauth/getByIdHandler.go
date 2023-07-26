@@ -3,6 +3,7 @@ package noauth
 import (
 	"errors"
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -19,8 +20,10 @@ func GetByIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := noauth.NewGetByIdLogic(r.Context(), svcCtx)
-		resp, err := l.GetById(&req)
+		userId := utils.GetUserIdWithNoAuth(r)
+
+		l := noauth.NewGetByIdTypeLogic(r.Context(), svcCtx)
+		resp, err := l.GetByIdTypeLogic(&req, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
