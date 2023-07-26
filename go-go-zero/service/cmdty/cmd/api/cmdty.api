@@ -7,7 +7,7 @@ syntax = "v1"
 service cmdty-api {
 	@handler listByTypePage
 	get /cache (TypePageReq) returns ()
-	
+
 	@handler getById
 	get /:id (IdReq) returns ()
 }
@@ -20,16 +20,16 @@ service cmdty-api {
 service cmdty-api {
 	@handler listByUidAndOption
 	get / returns ([]InfoLiteResp)
-	
+
 	@handler sellsave
 	post /sellsave (InfoReq) returns ()
-	
+
 	@handler sellpublish
 	post /sellpublish (InfoReq) returns ()
-	
+
 	@handler wantsave
 	post /wantsave (InfoReq) returns ()
-	
+
 	@handler wantpublish
 	post /wantpublish (InfoReq) returns ()
 }
@@ -42,10 +42,10 @@ service cmdty-api {
 service cmdty-api {
 	@handler collect
 	get /:id returns ()
-	
+
 	@handler uncollect
 	delete /:id returns ()
-	
+
 	@handler list
 	get /list returns ([]CollectResp)
 }
@@ -58,7 +58,7 @@ service cmdty-api {
 service cmdty-api {
 	@handler listTag
 	get / returns ()
-	
+
 	@handler removeTag
 	delete / (IdsReq) returns ()
 }
@@ -71,7 +71,7 @@ service cmdty-api {
 service cmdty-api {
 	@handler listHistory
 	get / returns ([]HistoryResp)
-	
+
 	@handler removeHistory
 	delete / (IdsReq) returns ()
 }
@@ -84,10 +84,10 @@ service cmdty-api {
 service cmdty-api {
 	@handler cmt
 	post / (CmtReq) returns ()
-	
+
 	@handler listByInfoId
 	get /:cmdtyId returns ([]CmtResp)
-	
+
 	@handler removeCmt
 	delete /:id returns ()
 }

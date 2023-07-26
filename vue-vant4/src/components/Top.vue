@@ -1,6 +1,20 @@
 <template>
 <div class="top">
-  <div>淘 淘</div>
+  <div>淘 淘
+    <van-search
+        v-model="value"
+        show-action
+        label="地址"
+        placeholder="想要什么呢 😃"
+        @search="onSearch"
+        background="#1989fa"
+    >
+      <template #action>
+        <div @click="onClickButton">搜索</div>
+      </template>
+    </van-search>
+  </div>
+
 </div>
 </template>
 <script setup lang="ts">

@@ -25,17 +25,6 @@ const routes = [
                 component: () => import('../views/main/Atcl.vue')
             },
             {
-                path: 'cmdty/:id',
-                component: () => import('../views/cmdty/Info.vue'),
-                // children: [
-                //     {
-                //         path: 'info',
-                //         name: 'info',
-                //         component: () => import('../views/cmdty/Info.vue')
-                //     }
-                // ]
-            },
-            {
                 path: 'msg',
                 component: () => import('../views/main/Msg.vue')
             },
@@ -47,8 +36,14 @@ const routes = [
     },
     {
         path: '/login',
+        name: 'login',
         component: () => import('../views/Login.vue')
-    }
+    },
+    {
+        path: '/cmdty/:id',
+        name: 'info',
+        component: () => import('../views/cmdty/Info.vue'),
+    },
 ]
 
 const router: Router = createRouter({history: createWebHashHistory(), routes})

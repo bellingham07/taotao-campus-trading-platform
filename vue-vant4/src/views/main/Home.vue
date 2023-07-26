@@ -1,16 +1,5 @@
 <template>
-  <van-search
-      v-model="value"
-      show-action
-      label="地址"
-      placeholder="想要什么呢 😃"
-      @search="onSearch"
-      background="#1989fa"
-  >
-    <template #action>
-      <div @click="onClickButton">搜索</div>
-    </template>
-  </van-search>
+  
 
   <div class="type-btn">
     <van-button plain type="primary" size="mini">

@@ -30,23 +30,17 @@ func ci2CacheLogic(svcCtx *svc.ServiceContext) {
 
 func exec(svcCtx *svc.ServiceContext) func() {
 	return func() {
-		//var wg sync.WaitGroup
-		//wg.Add(2)
-
-		db2Cache := func(ciType int8) {
+		var db2Cache = func(ciType int8) {
 			var cis = queryFromDB(svcCtx.CmdtyInfo, ciType)
 			if cis != nil {
 				send2Cache(svcCtx.Redis, svcCtx.Json, cis, ciType)
 			}
-			//wg.Done()
 		}
 
-		// 这里有问题
 		db2Cache(1)
 		db2Cache(2)
 
-		//wg.Wait()
-		logx.Infof("[CRON SUCCESS] %v 最新商品缓存成功", time.Now().Format("2006-01-02 03:04:05"))
+		logx.Infof("[CRON SUCCESS] %v 最新商品缓存", time.Now().Format("2006-01-02 03:04:05"))
 	}
 }
 
