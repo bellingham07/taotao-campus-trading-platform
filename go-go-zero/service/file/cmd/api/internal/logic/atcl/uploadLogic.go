@@ -75,8 +75,8 @@ func (l *UploadLogic) Upload(req *atypers.AtclPicsReq, userId int64) ([]atypers.
 				Cover: url,
 			}
 			go func() {
+				defer wg.Done()
 				code, _ = l.svcCtx.AtclRpc.UpdateCover(l.ctx, cr)
-				wg.Done()
 			}()
 		}
 		fas = append(fas, fa)

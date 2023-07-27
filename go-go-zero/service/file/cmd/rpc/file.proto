@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package template;
+package file;
+
+option go_package = ".";
 
 service FileService {
   rpc GetCmdtyPicsByOrder (CmdtyPicsReq) returns (CmdtyPicsResp);
@@ -12,5 +14,11 @@ message CmdtyPicsReq {
 
 message CmdtyPicsResp {
   int64 Code = 1;
-  repeated string pics = 2;
+  repeated Pic Pics = 2;
+}
+
+message Pic {
+  int64 Id = 1;
+  int64 Order = 2;
+  string url = 3;
 }

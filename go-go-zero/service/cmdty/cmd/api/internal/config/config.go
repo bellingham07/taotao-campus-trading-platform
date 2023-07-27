@@ -9,6 +9,7 @@ import (
 type Config struct {
 	rest.RestConf
 	UserRpc zrpc.RpcClientConf
+	FileRpc zrpc.RpcClientConf
 
 	Mysql    utils.Mysql
 	Redis    utils.Redis

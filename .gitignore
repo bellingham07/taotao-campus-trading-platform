@@ -21,3 +21,4 @@
 ./**/**.yaml
 
 ./vue-vant4/node_modules/
+/vue-vant4/node_modules/

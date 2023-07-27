@@ -9,6 +9,7 @@ import (
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/config"
 	"go-go-zero/service/cmdty/cmd/api/internal/middleware"
+	"go-go-zero/service/file/cmd/rpc/fileservice"
 	"go-go-zero/service/user/cmd/rpc/userservice"
 	"go.mongodb.org/mongo-driver/mongo"
 	"xorm.io/xorm"
@@ -58,6 +59,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		JwtAuth:      middleware.NewJwtAuthMiddleware().Handle,
 		Redis:        utils.InitRedis(c.Redis),
 		UserRpc:      userservice.NewUserService(zrpc.MustNewClient(c.UserRpc)),
+		FileRpc:      fileservice.NewFileService(zrpc.MustNewClient(c.FileRpc)),
 		RmqCore: &utils.RabbitmqCore{
 			Conn:    rc,
 			Channel: channel,

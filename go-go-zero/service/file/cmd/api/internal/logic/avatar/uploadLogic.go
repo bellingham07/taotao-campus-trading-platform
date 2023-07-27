@@ -45,12 +45,12 @@ func (l *UploadLogic) Upload(header *multipart.FileHeader, userId int64) (*utype
 	wg.Add(1)
 	var code *userservice.CodeResp
 	go func() {
+		defer wg.Done()
 		ar := &userservice.AvatarReq{
 			Id:     userId,
 			Avatar: url,
 		}
 		code, _ = l.svcCtx.UserRpc.UpdateAvatar(l.ctx, ar)
-		wg.Done()
 	}()
 
 	// 2.1 OSS上传成功，就先更新file中的头像

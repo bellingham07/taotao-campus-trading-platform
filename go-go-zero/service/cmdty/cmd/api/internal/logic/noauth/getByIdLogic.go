@@ -6,7 +6,8 @@ import (
 	"go-go-zero/common/utils"
 	"go-go-zero/service/cmdty/cmd/api/internal/logic/history"
 	"go-go-zero/service/cmdty/model"
-	__ "go-go-zero/service/user/cmd/rpc/types"
+	__cmdty "go-go-zero/service/file/cmd/rpc/types"
+	__user "go-go-zero/service/user/cmd/rpc/types"
 	"strconv"
 	"sync"
 	"time"
@@ -39,26 +40,36 @@ func (l *GetByIdTypeLogic) GetByIdTypeLogic(req *types.IdReq, userId int64) (int
 		resp         = make(map[string]interface{})
 		cmdtyInfoKey = utils.CmdtyInfo + IdStr
 		userInfoMap  = make(map[string]interface{})
+		pics         = make([]interface{}, 0)
 	)
 
 	data, ownerId, err := l.getById(cmdtyInfoKey, id)
 
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
-		idReq := &__.IdReq{Id: ownerId}
+		defer wg.Done()
+		idReq := &__user.IdReq{Id: ownerId}
 		resp, err := l.svcCtx.UserRpc.RetrieveNameAndAvatar(l.ctx, idReq)
 		if err != nil || resp.Code == -1 {
 			logx.Errorf("[RPC ERROR] GetByIdTypeLogic 调用rpc获取用户昵称和头像失败 %v\n", err)
-		} else {
-			userInfoMap["id"] = ownerId
-			userInfoMap["avatar"] = resp.Avatar
-			userInfoMap["name"] = resp.Name
+			return
 		}
-		wg.Done()
+		userInfoMap["id"] = ownerId
+		userInfoMap["avatar"] = resp.Avatar
+		userInfoMap["name"] = resp.Name
 	}()
 
 	go func() {
-
+		defer wg.Done()
+		cmdtyPicsReq := &__cmdty.CmdtyPicsReq{Id: id}
+		resp, err := l.svcCtx.FileRpc.GetCmdtyPicsByOrder(l.ctx, cmdtyPicsReq)
+		if err != nil || resp.Code == -1 {
+			logx.Errorf("[RPC ERROR] GetByIdTypeLogic 调用rpc获取用户昵称和头像失败 %v\n", err)
+			return
+		}
+		for _, pic := range resp.Pics {
+			pics = append(pics, pic)
+		}
 	}()
 
 	// 判断当前访问用户是否登录，更新其足迹，并判断是否收藏该商品
@@ -69,6 +80,7 @@ func (l *GetByIdTypeLogic) GetByIdTypeLogic(req *types.IdReq, userId int64) (int
 	resp["cmdtyInfo"] = data
 	wg.Wait()
 	resp["userInfo"] = userInfoMap
+	resp["pics"] = pics
 	return resp, err
 }
 

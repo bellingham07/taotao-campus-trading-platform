@@ -64,7 +64,6 @@ func LoadTaoTaoApi(cc *Consul, ac interface{}) interface{} {
 	data, _, err := kv.Get(cc.Key, nil)
 	logx.Must(err)
 	_ = conf.LoadFromYamlBytes(data.Value, ac)
-	//fmt.Printf("%#v", ac)
 	return ac
 }
 

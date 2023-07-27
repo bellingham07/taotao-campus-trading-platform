@@ -36,12 +36,12 @@ func (l *Cmdty2RedisLogic) Cmdty2Redis() {
 		case <-ticker.C:
 			wg.Add(2)
 			go func() {
+				defer wg.Done()
 				l.SellingCmdty2Redis()
-				wg.Done()
 			}()
 			go func() {
+				defer wg.Done()
 				l.WantCmdty2Redis()
-				wg.Done()
 			}()
 			wg.Wait()
 			ticker.Reset(30 * time.Minute)

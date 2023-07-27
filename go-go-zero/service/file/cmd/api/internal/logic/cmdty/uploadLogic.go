@@ -80,8 +80,8 @@ func (l *UploadLogic) Upload(req *ctypes.CmdtyPicsReq, userId int64) ([]ctypes.P
 				Cover: url,
 			}
 			go func() {
+				defer wg.Done()
 				code, _ = l.svcCtx.CmdtyRpc.UpdateCover(l.ctx, cr)
-				wg.Done()
 			}()
 		}
 		fas = append(fas, fa)
