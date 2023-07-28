@@ -1,6 +1,6 @@
 <template>
-<div class="top">
-  <div>淘 淘</div>
+  <div class="top">
+    <div>淘 淘</div>
     <van-search
         v-model="value"
         show-action
@@ -13,11 +13,23 @@
         <div @click="onClickButton">搜索</div>
       </template>
     </van-search>
+    <div>头像</div>
 
-
-</div>
+  </div>
 </template>
+
 <script setup lang="ts">
+import {LoggedUser} from "../models/user.ts";
+import useStore from "../store";
+
+useStore
+const userStr = localStorage.getItem("user")
+if (userStr != null) {
+  const loggedUser: LoggedUser = JSON.parse(userStr)
+
+
+}
+
 
 </script>
 

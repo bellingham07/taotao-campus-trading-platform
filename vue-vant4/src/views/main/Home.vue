@@ -11,11 +11,14 @@
   </div>
 
   <router-view></router-view>
+
+  <bottom></bottom>
 </template>
 
 <script setup lang="ts">
 
 
+import Bottom from "../../components/Bottom.vue";
 </script>
 
 <style scoped>

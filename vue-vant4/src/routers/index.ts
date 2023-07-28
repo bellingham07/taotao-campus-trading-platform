@@ -21,6 +21,11 @@ const routes = [
                 ]
             },
             {
+                path: '/cmdty/:id',
+                name: 'info',
+                component: () => import('../views/cmdty/Info.vue'),
+            },
+            {
                 path: 'atcl',
                 component: () => import('../views/main/Atcl.vue')
             },
@@ -39,11 +44,7 @@ const routes = [
         name: 'login',
         component: () => import('../views/Login.vue')
     },
-    {
-        path: '/cmdty/:id',
-        name: 'info',
-        component: () => import('../views/cmdty/Info.vue'),
-    },
+
 ]
 
 const router: Router = createRouter({history: createWebHashHistory(), routes})

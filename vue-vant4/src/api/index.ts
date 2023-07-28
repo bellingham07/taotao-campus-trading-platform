@@ -17,6 +17,10 @@ export const cmdtyService = axios.create({
     baseURL: 'http://localhost:10003/cmdty'
 })
 
+export const userService = axios.create({
+    baseURL: 'http://localhost:10007/user'
+})
+
 const respInterceptor = (config: AxiosResponse) => {
     const code = config.data['code'] || 200;
     if (code == 200) {
@@ -29,5 +33,6 @@ const error = (error: AxiosError) => {
     console.log(error)
 }
 
+chatService.interceptors.response.use(respInterceptor, error)
 cmdtyService.interceptors.response.use(respInterceptor, error)
 

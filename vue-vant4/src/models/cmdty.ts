@@ -17,3 +17,12 @@ export interface CmdtyInfo {
     type: number
     like: number
 }
+
+export interface CmdtyPics {
+    id: number;
+    cmdty_id: number;
+    objectname: string;
+    order: number;
+    url: string;
+    user_id: number;
+}

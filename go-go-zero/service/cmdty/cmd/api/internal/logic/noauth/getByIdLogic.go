@@ -73,14 +73,19 @@ func (l *GetByIdTypeLogic) GetByIdTypeLogic(req *types.IdReq, userId int64) (int
 	}()
 
 	// 判断当前访问用户是否登录，更新其足迹，并判断是否收藏该商品
+	resp["isMine"] = 0
 	if userId != 0 {
 		go l.updateHistory(id, userId)
 		resp["isCollected"] = l.isCollected(userId, utils.CmdtyCollect+IdStr)
+		if ownerId == userId {
+			resp["isMine"] = 1
+		}
 	}
+
 	resp["cmdtyInfo"] = data
 	wg.Wait()
 	resp["userInfo"] = userInfoMap
-	resp["pics"] = pics
+	resp["cmdtyPics"] = pics
 	return resp, err
 }
 

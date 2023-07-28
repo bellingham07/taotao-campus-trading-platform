@@ -1,3 +1,9 @@
+export interface LoggedUser {
+    id:number
+    name:string
+    avatar:string
+}
+
 export interface UserInfo {
     id: number;
     avatar: string;
