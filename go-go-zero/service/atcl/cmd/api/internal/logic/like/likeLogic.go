@@ -26,12 +26,11 @@ func NewLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeLogic {
 	}
 }
 
-func (l *LikeLogic) Like(req *types.IdReq) error {
+func (l *LikeLogic) Like(req *types.IdReq, userId int64) error {
 	var (
-		userId    int64 = 408301323265285
-		userIdStr       = "408301323265285"
+		userIdStr = strconv.FormatInt(userId, 10)
+		key       = utils.AtclLike + strconv.FormatInt(req.Id, 10)
 	)
-	key := utils.AtclLike + strconv.FormatInt(req.Id, 10)
 	added := l.svcCtx.Redis.SAdd(l.ctx, key, userIdStr).Val()
 	if added == 0 {
 		return errors.New("不能重复点赞哦😊")
