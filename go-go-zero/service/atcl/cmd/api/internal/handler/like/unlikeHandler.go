@@ -3,6 +3,7 @@ package like
 import (
 	"errors"
 	xhttp "github.com/zeromicro/x/http"
+	"go-go-zero/common/utils"
 	"go-go-zero/service/atcl/cmd/api/internal/types"
 	"net/http"
 
@@ -19,8 +20,10 @@ func UnlikeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New("参数错误！"))
 		}
 
+		userId := utils.GetUserId(r)
+
 		l := like.NewUnlikeLogic(r.Context(), svcCtx)
-		err = l.Unlike(&req)
+		err = l.Unlike(&req, userId)
 		if err != nil {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {

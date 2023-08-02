@@ -31,7 +31,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 func (l *LoginLogic) Login(req *types.LoginReq) (string, error) {
 	var ui = new(model.UserInfo)
-	has, err := l.svcCtx.UserInfo.Cols("id", "name", "username", "password").
+	has, err := l.svcCtx.UserInfo.Cols("username", "password", "name", "id").
 		Where("username = ?", req.Username).Get(ui)
 	if !has || err != nil {
 		return "", errors.New("账号或密码错误！🥲")
