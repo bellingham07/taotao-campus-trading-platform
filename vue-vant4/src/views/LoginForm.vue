@@ -6,20 +6,20 @@
                     height="10rem"
                     fit="cover"
                     position="center"
-                    :src="image.url"
+                    :src="image"
             />
         </div>
         <van-form @submit="onSubmit">
             <van-cell-group inset class="van-hairline--surround">
                 <van-field
-                        v-model="user.username"
+                        v-model="loginForm.username"
                         name="用户名"
                         label="用户名"
                         placeholder="用户名"
                         :rules="[{ required: true, message: '请填写用户名' }]"
                 />
                 <van-field
-                        v-model="user.password"
+                        v-model="loginForm.password"
                         type="password"
                         name="密码"
                         label="密码"
@@ -29,7 +29,7 @@
             </van-cell-group>
             <div style="margin: 16px;">
                 <van-button round block type="primary" native-type="submit">
-                    提交
+                    登录
                 </van-button>
             </div>
         </van-form>
@@ -65,25 +65,19 @@
 
 </template>
 
-<script>
-export default {
-    name: "LoginForm",
-    data() {
-        return {
-            user: {
-                username: '',
-                password: ''
-            },
-            image: {
-                url: require('@/assets/logo-dog.gif')
-            }
-        }
-    },
-    methods: {
-        onSubmit() {
+<script setup>
 
-        }
-    }
+import {reactive, ref} from "vue";
+
+const loginForm = reactive({
+    username: '',
+    password: ''
+})
+
+const image = ref('@/assets/logo-dog.gif')
+
+const loginSubmit = () => {
+
 }
 </script>
 

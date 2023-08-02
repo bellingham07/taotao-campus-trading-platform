@@ -1,5 +1,4 @@
 <template>
-    <top-option></top-option>
     <van-form @failed="onFailed">
         <van-cell-group inset>
             <!-- 通过 pattern 进行正则校验 -->
@@ -24,13 +23,11 @@
         </div>
     </van-form>
 
-  <bottom-menu></bottom-menu>
+
 </template>
 
 <script setup lang="ts">
 
-import TopOption from "../components/Top.vue";
-import BottomMenu from "../components/Bottom.vue";
 </script>
 
 

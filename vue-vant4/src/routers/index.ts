@@ -44,7 +44,11 @@ const routes = [
         name: 'login',
         component: () => import('../views/Login.vue')
     },
-
+    {
+        path: '/login1',
+        name: 'login1',
+        component: () => import('../views/LoginForm.vue')
+    },
 ]
 
 const router: Router = createRouter({history: createWebHashHistory(), routes})
