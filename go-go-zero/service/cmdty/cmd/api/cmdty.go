@@ -34,6 +34,6 @@ func main() {
 	mq.InitRabbitMQ(ctx)
 	go cron.InitCronJob(ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+	fmt.Printf("Starting gateway at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

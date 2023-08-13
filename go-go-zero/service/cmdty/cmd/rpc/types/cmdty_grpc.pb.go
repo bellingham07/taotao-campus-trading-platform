@@ -57,7 +57,7 @@ func (c *cmdtyServiceClient) GetCoverInfoById(ctx context.Context, in *IdReq, op
 	return out, nil
 }
 
-// CmdtyServiceServer is the server API for CmdtyService service.
+// CmdtyServiceServer is the gateway API for CmdtyService service.
 // All implementations must embed UnimplementedCmdtyServiceServer
 // for forward compatibility
 type CmdtyServiceServer interface {

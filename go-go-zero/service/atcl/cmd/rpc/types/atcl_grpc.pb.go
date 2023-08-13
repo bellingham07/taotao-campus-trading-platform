@@ -46,7 +46,7 @@ func (c *atclServiceClient) UpdateCover(ctx context.Context, in *CoverReq, opts 
 	return out, nil
 }
 
-// AtclServiceServer is the server API for AtclService service.
+// AtclServiceServer is the gateway API for AtclService service.
 // All implementations must embed UnimplementedAtclServiceServer
 // for forward compatibility
 type AtclServiceServer interface {

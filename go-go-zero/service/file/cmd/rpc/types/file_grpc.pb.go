@@ -46,7 +46,7 @@ func (c *fileServiceClient) GetCmdtyPicsByOrder(ctx context.Context, in *CmdtyPi
 	return out, nil
 }
 
-// FileServiceServer is the server API for FileService service.
+// FileServiceServer is the gateway API for FileService service.
 // All implementations must embed UnimplementedFileServiceServer
 // for forward compatibility
 type FileServiceServer interface {

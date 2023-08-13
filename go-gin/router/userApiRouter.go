@@ -17,10 +17,10 @@ func (*UserRouter) InitUserApiRouter(g *gin.RouterGroup) {
 	g.GET("/logout", middleware.JWTAuthenticate, userApi.InfoApi.Logout)
 	g.POST("/register", userApi.InfoApi.Register)
 
-	ig := g.Group("/info")
+	ig := g.Group("/info", middleware.JWTAuthenticate)
 	{
-		ig.GET("/:id", middleware.JWTAuthenticate, userApi.InfoApi.GetInfoById)
-		ig.POST("/", middleware.JWTAuthenticate, userApi.InfoApi.UpdateInfo)
+		ig.GET("/:id", userApi.InfoApi.GetInfoById)
+		ig.POST("/", userApi.InfoApi.UpdateInfo)
 	}
 
 	lg := g.Group("/location")

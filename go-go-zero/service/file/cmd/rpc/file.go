@@ -39,6 +39,6 @@ func main() {
 
 	_ = consul.RegisterService(c.ListenOn, c.Consul)
 
-	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	fmt.Printf("Starting rpc gateway at %s...\n", c.ListenOn)
 	s.Start()
 }

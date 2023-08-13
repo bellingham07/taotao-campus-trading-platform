@@ -68,7 +68,7 @@ func (c *userServiceClient) IncrLike(ctx context.Context, in *IdReq, opts ...grp
 	return out, nil
 }
 
-// UserServiceServer is the server API for UserService service.
+// UserServiceServer is the gateway API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
