@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"gateway/server"
 	"math/rand"
 	"net"
 	"strconv"
@@ -8,28 +9,30 @@ import (
 )
 
 type Conf struct {
-	Key       string
-	Host      string `json:",default=0.0.0.0"`
-	Port      int
-	Token     string
-	Frequency int64
+	Key       string `yaml:"Key"`
+	Host      string `yaml:"Host" json:",default=0.0.0.0"`
+	Port      int    `yaml:"Port"`
+	Token     string `yaml:"Token"`
+	Frequency int64  `yaml:"Frequency"`
 }
 
-type ServerInstance interface {
-	GetHost() string                //
-	GetPort() int                   //
-	GetKey() string                 // 返回注册实例的服务名称
-	IsSecure() bool                 // 返回注册实例是否使用 HTTPS
-	GetMetadata() map[string]string // 返回关联注册实例的元数据键值对
-}
+type (
+	ServerInstance interface {
+		GetHost() string                //
+		GetPort() int                   //
+		GetKey() string                 // 返回注册实例的服务名称
+		IsSecure() bool                 // 返回注册实例是否使用 HTTPS
+		GetMetadata() map[string]string // 返回关联注册实例的元数据键值对
+	}
 
-type DefaultServerInstance struct {
-	Host     string
-	Port     int
-	Name     string
-	Secure   bool
-	Metadata map[string]string
-}
+	DefaultServerInstance struct {
+		Host     string
+		Port     int
+		Name     string
+		Secure   bool
+		Metadata map[string]string
+	}
+)
 
 func NewDefaultServiceInstance(name string, host string, port int, secure bool, metadata map[string]string, instanceId string) (*DefaultServerInstance, error) {
 	if len(host) == 0 {
@@ -66,11 +69,16 @@ func (serviceInstance *DefaultServerInstance) GetMetadata() map[string]string {
 	return serviceInstance.Metadata
 }
 
-type ServerRegistry interface {
-	Register(ServerInstance)
-	Deregister()
-	GetInstances()
-}
+type (
+	Routes     map[string]*server.LoadBalance // 对应的负载均衡类
+	Predicates map[string]Routes              // url pattern prefix 匹配
+
+	ServerRegistry interface {
+		Register(ServerInstance, string)
+		Deregister()
+		GetInstances()
+	}
+)
 
 func getLocalIP() (ipv4 string, err error) {
 	addrs, err := net.InterfaceAddrs() // 获取所有网卡

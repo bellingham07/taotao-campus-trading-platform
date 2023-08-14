@@ -10,11 +10,10 @@ type HttpServer struct {
 	RecoverCount int
 }
 
-func NewHttpServer(host string, weight int) *HttpServer {
+func NewHttpServer(addr string, weight int) *HttpServer {
 	return &HttpServer{
-		Addr:    host,
-		Weight:  weight,
-		CWeight: 0,
+		Addr:   addr,
+		Weight: weight,
 	}
 }
 

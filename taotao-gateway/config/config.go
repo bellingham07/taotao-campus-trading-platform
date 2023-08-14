@@ -1,7 +1,6 @@
 package config
 
 import (
-	"gateway/gateway"
 	"gateway/registry"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -9,9 +8,16 @@ import (
 
 var ProxyConfig map[string]string
 
+type GatewayConf struct {
+	Name     string `yaml:"Name"`
+	Host     string `yaml:"Host"`
+	Port     int    `yaml:"Port"`
+	ListenOn string `yaml:"ListenOn"`
+}
+
 type Conf struct {
-	GatewayConf  gateway.Conf
-	RegistryConf registry.Conf
+	GatewayConf  GatewayConf   `yaml:"GatewayConf"`
+	RegistryConf registry.Conf `yaml:"RegistryConf"`
 }
 
 func MustLoad(path string, v any) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gateway/config"
 	"gateway/gateway"
 	"gateway/registry"
@@ -32,10 +33,10 @@ func main() {
 func test() {
 	var conf config.Conf
 	config.MustLoad("config.yaml", &conf)
+	fmt.Println(conf)
+	consulRegistry := registry.NewConsulRegistry(&conf.RegistryConf)
 
-	consulRegistry := registry.NewConsulRegistry(&conf)
-
-	server := gateway.MustNewServer(consulRegistry, conf)
+	server := gateway.MustNewServer(consulRegistry, &conf)
 	server.Start()
 	defer server.Stop()
 }

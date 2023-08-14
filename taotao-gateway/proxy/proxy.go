@@ -2,7 +2,7 @@ package proxy
 
 import (
 	"gateway/config"
-	"gateway/lb"
+	"gateway/server"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -20,7 +20,7 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	_ = lb.NewLoadBalance()
+	_ = server.NewLoadBalance()
 
 	for k, v := range config.ProxyConfig {
 		if matched, _ := regexp.MatchString(k, r.URL.Path); matched {

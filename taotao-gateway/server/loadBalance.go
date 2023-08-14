@@ -1,4 +1,4 @@
-package lb
+package server
 
 import (
 	"hash/crc32"
@@ -15,9 +15,6 @@ var (
 
 func init() {
 	strategy := NewLoadBalance()
-	strategy.AddServer(NewHttpServer("http://localhost:11111", 10))
-	strategy.AddServer(NewHttpServer("http://localhost:22222", 2))
-	strategy.AddServer(NewHttpServer("http://localhost:33333", 3))
 
 	for _, server := range strategy.Servers {
 		weightSum += server.Weight
@@ -37,7 +34,8 @@ func init() {
 
 // LoadBalance 负载均衡类
 type LoadBalance struct {
-	Servers   []*HttpServer // 服务器实例
+	ServerKey string
+	Servers   HttpServers // 服务器实例
 	ServerNum int
 	CurIndex  int // 轮询下标
 }

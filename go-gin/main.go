@@ -1,13 +1,12 @@
 package main
 
 import (
-	"com.xpdj/go-gin/initial"
 	"com.xpdj/go-gin/server"
 )
 
 func main() {
 
-	initial.Initializer()
+	server.Initializer()
 	server.ListenAndServe("12345")
 
 }

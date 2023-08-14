@@ -7,20 +7,16 @@ import (
 	"gateway/registry"
 	"net"
 	"strconv"
+	"strings"
 )
 
-type Conf struct {
-	Name string
-	Host string
-	Port int
-}
-
 type Server struct {
-	Host string
-	Port int
+	Host     string
+	Port     int
+	ListenOn string
 }
 
-func MustNewServer(serverRegistry registry.ServerRegistry, conf config.Conf) *Server {
+func MustNewServer(serverRegistry registry.ServerRegistry, conf *config.Conf) *Server {
 	instance, _ := registry.NewDefaultServiceInstance(
 		conf.RegistryConf.Key,
 		conf.RegistryConf.Host,
@@ -28,14 +24,26 @@ func MustNewServer(serverRegistry registry.ServerRegistry, conf config.Conf) *Se
 		false, nil, "",
 	)
 
-	serverRegistry.Register(instance)
+	listenOn := conf.GatewayConf.ListenOn
+	if listenOn == "" {
+		listenOn = conf.GatewayConf.Host + ":" + strconv.Itoa(conf.GatewayConf.Port)
+	}
+
+	serverRegistry.Register(instance, listenOn)
 	serverRegistry.GetInstances()
 
-	return &Server{}
+	split := strings.Split(listenOn, ":")
+	port, _ := strconv.Atoi(split[1])
+	server := &Server{
+		Host:     split[0],
+		Port:     port,
+		ListenOn: listenOn,
+	}
+	return server
 }
 
 func (s Server) Start() {
-	ls, err := net.Listen("tcp", s.Host+":"+strconv.Itoa(s.Port))
+	ls, err := net.Listen("tcp", s.ListenOn)
 	if err != nil {
 		fmt.Printf("start tcp listener error: %v\n", err.Error())
 		return

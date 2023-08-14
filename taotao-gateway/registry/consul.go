@@ -1,8 +1,6 @@
 package registry
 
 import (
-	"fmt"
-	"gateway/config"
 	"gateway/server"
 	"log"
 	"strconv"
@@ -15,11 +13,13 @@ type ConsulRegistry struct {
 	ListenOn            string
 	client              *api.Client
 	localServerInstance ServerInstance
-	HttpServerMap       map[string]server.HttpServers
 	FetchInterval       int64
+	Routes
+	Predicates
 }
 
-func (c *ConsulRegistry) Register(serverInstance ServerInstance) {
+func (c *ConsulRegistry) Register(serverInstance ServerInstance, listenOn string) {
+	c.ListenOn = listenOn
 	c.localServerInstance = serverInstance
 	schema, tags := "http", make([]string, 0)
 
@@ -45,25 +45,23 @@ func (c *ConsulRegistry) Register(serverInstance ServerInstance) {
 	}
 	registration.Tags = tags
 
-	// 增加consul健康检查回调函数
-	check := &api.AgentServiceCheck{
-		TCP:                            c.ListenOn,
+	// consul健康检查回调函数
+	registration.Check = &api.AgentServiceCheck{
+		TCP:                            c.ListenOn, // 使用 TCP
 		Timeout:                        "10s",
 		Interval:                       "30s",
 		DeregisterCriticalServiceAfter: "20s", // 故障检查失败20s后 consul自动将注册服务删除
 		//HTTP:
 	}
 
-	registration.Check = check
-
 	if serverInstance.IsSecure() {
 		schema = "https"
 	}
-	check.HTTP = schema + "://" + registration.Address + ":" + strconv.Itoa(registration.Port) + "/actuator/health"
-
+	_ = schema + "://" + registration.Address + ":" + strconv.Itoa(registration.Port) + "/actuator/health"
+	//check.HTTP = _ // 指定健康监测为 HTTP
 	// 注册服务到consul
 	if err := c.client.Agent().ServiceRegister(registration); err != nil {
-		log.Fatalf("[FATAL REGISTRY] 网关注册失败 %v", err)
+		log.Fatalf("[FATAL REGISTRY] consul 网关注册失败 %v", err)
 	}
 }
 
@@ -71,66 +69,61 @@ func (c *ConsulRegistry) Deregister() {
 	if c.localServerInstance == nil {
 		return
 	}
-	_ = c.client.Agent().ServiceDeregister(c.localServerInstance.GetID())
+	_ = c.client.Agent().ServiceDeregister(c.localServerInstance.GetKey())
 	c.localServerInstance = nil
 }
 
-func NewConsulRegistry(conf *config.Conf) *ConsulRegistry {
-	if len(conf.RegistryConf.Host) < 3 {
-		log.Fatalf("[FATAL REGISTRY] 网关注册失败 check host\n")
+func NewConsulRegistry(conf *Conf) *ConsulRegistry {
+	if len(conf.Host) < 3 {
+		log.Fatalf("[FATAL REGISTRY] consul 网关注册失败 check host")
 	}
 
-	if conf.RegistryConf.Port <= 0 || conf.RegistryConf.Port > 65535 {
-		log.Fatalf("[FATAL REGISTRY] 网关注册失败 check port, port should between 1 and 65535\n")
+	if conf.Port <= 0 || conf.Port > 65535 {
+		log.Fatalf("[FATAL REGISTRY] consul 网关注册失败 check port, port should between 1 and 65535")
 	}
 
 	apiConfig := api.DefaultConfig()
-	apiConfig.Address = conf.RegistryConf.Host + ":" + strconv.Itoa(conf.RegistryConf.Port)
-	apiConfig.Token = conf.RegistryConf.Token
+	apiConfig.Address = conf.Host + ":" + strconv.Itoa(conf.Port)
+	apiConfig.Token = conf.Token
 	client, err := api.NewClient(apiConfig)
 	if err != nil {
 		log.Fatalf("[FATAL REGISTRY] 网关注册失败 %v", err)
 	}
 
-	listenOn := conf.GatewayConf.Host + strconv.Itoa(conf.GatewayConf.Port)
-	return &ConsulRegistry{client: client, ListenOn: listenOn, FetchInterval: conf.RegistryConf.Frequency}
+	return &ConsulRegistry{client: client, FetchInterval: conf.Frequency}
 }
 
 func (c *ConsulRegistry) GetInstances() {
 	var ticker = time.NewTicker(time.Duration(c.FetchInterval) * time.Second)
-	c.HttpServerMap["cmdty.rpc"] = server.HttpServers{}
+
+	c.Routes["cmdty.rpc"] = &server.LoadBalance{}
 	for {
 		select {
 		case <-ticker.C:
-			for location, _ := range c.HttpServerMap {
-				if err := c.discovery(location); err != nil {
-
-				}
+			for location := range c.Routes {
+				_ = c.discovery(location)
 			}
 		}
 	}
 }
 
 func (c *ConsulRegistry) discovery(serviceName string) error {
-	//catalogService, _, _ := c.client.Catalog().Service(serviceId, "", nil)
-	servers, _, err := c.client.Health().Service(serviceName, "", false, nil)
+	var httpServers server.HttpServers
+	services, _, err := c.client.Health().Service(serviceName, "", false, nil) // c.client.Catalog().Service() 这个是获取所有
 	if err != nil {
 		log.Printf("[ERROR DISCOVERY] 获取 %v 服务失败 %v\n", serviceName, err)
+		return err
 	}
-	fmt.Println(servers)
-	//if len(servers) > 0 {
-	//	result := make([]ServerInstance, len(servers))
-	//	for index, sever := range servers {
-	//		s := DefaultServerInstance{
-	//			ID:       sever.ServiceID,
-	//			Key:     sever.ServiceName,
-	//			Host:     sever.Address,
-	//			Port:     sever.ServicePort,
-	//			Metadata: sever.ServiceMeta,
-	//		}
-	//		result[index] = s
-	//	}
-	//	return nil
-	//}
+	for _, service := range services {
+		addr := service.Service.Address + strconv.Itoa(service.Service.Port)
+		httpServer := server.NewHttpServer(addr, 10)
+		httpServers = append(httpServers, httpServer)
+	}
+
+	c.Routes[serviceName] = &server.LoadBalance{
+		ServerKey: serviceName,
+		Servers:   httpServers,
+		ServerNum: len(httpServers),
+	}
 	return nil
 }
