@@ -17,13 +17,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "service/cmdty/cmd/rpc/etc/user.yaml", "the config file")
+var configFile = flag.String("f", "service/cmdty/cmd/rpc/etc/cmdty.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/rpc/etc/user.yaml")
+	cc := sysConfig.LoadConsulConf("service/cmdty/cmd/rpc/etc/cmdty.yaml")
 	sysConfig.LoadTaoTaoRpc(cc, &c)
 
 	ctx := svc.NewServiceContext(c)

@@ -8,24 +8,22 @@ import (
 )
 
 type Conf struct {
-	ID    string
-	Name  string
-	Host  string `json:",default=0.0.0.0"`
-	Port  int
-	Token string
+	Key       string
+	Host      string `json:",default=0.0.0.0"`
+	Port      int
+	Token     string
+	Frequency int64
 }
 
 type ServerInstance interface {
-	GetID() string                  // 返回注册实例的唯一 ID
 	GetHost() string                //
 	GetPort() int                   //
-	GetName() string                //
+	GetKey() string                 // 返回注册实例的服务名称
 	IsSecure() bool                 // 返回注册实例是否使用 HTTPS
 	GetMetadata() map[string]string // 返回关联注册实例的元数据键值对
 }
 
 type DefaultServerInstance struct {
-	ID       string
 	Host     string
 	Port     int
 	Name     string
@@ -45,11 +43,7 @@ func NewDefaultServiceInstance(name string, host string, port int, secure bool, 
 	if len(instanceId) == 0 {
 		instanceId = strconv.FormatInt(time.Now().Unix(), 10) + "-" + strconv.Itoa(rand.Intn(9000)+1000)
 	}
-	return &DefaultServerInstance{ID: instanceId, Host: host, Port: port, Name: name, Secure: secure, Metadata: metadata}, nil
-}
-
-func (serviceInstance *DefaultServerInstance) GetID() string {
-	return serviceInstance.ID
+	return &DefaultServerInstance{Host: host, Port: port, Name: name, Secure: secure, Metadata: metadata}, nil
 }
 
 func (serviceInstance *DefaultServerInstance) GetHost() string {
@@ -60,7 +54,7 @@ func (serviceInstance *DefaultServerInstance) GetPort() int {
 	return serviceInstance.Port
 }
 
-func (serviceInstance *DefaultServerInstance) GetName() string {
+func (serviceInstance *DefaultServerInstance) GetKey() string {
 	return serviceInstance.Name
 }
 

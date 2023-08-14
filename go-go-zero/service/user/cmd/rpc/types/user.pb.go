@@ -175,7 +175,7 @@ type NameAvatarResp struct {
 	unknownFields protoimpl.UnknownFields
 
 	Code   int64  `protobuf:"varint,1,opt,name=Code,proto3" json:"Code,omitempty"`
-	Name   string `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
+	Name   string `protobuf:"bytes,2,opt,name=Key,proto3" json:"Key,omitempty"`
 	Avatar string `protobuf:"bytes,3,opt,name=Avatar,proto3" json:"Avatar,omitempty"`
 }
 

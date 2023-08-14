@@ -10,10 +10,9 @@ import (
 )
 
 type Conf struct {
-	Name      string
-	Host      string
-	Port      int
-	Frequency int64
+	Name string
+	Host string
+	Port int
 }
 
 type Server struct {
@@ -23,7 +22,7 @@ type Server struct {
 
 func MustNewServer(serverRegistry registry.ServerRegistry, conf config.Conf) *Server {
 	instance, _ := registry.NewDefaultServiceInstance(
-		conf.RegistryConf.Name,
+		conf.RegistryConf.Key,
 		conf.RegistryConf.Host,
 		conf.RegistryConf.Port,
 		false, nil, "",

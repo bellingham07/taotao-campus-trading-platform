@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"gateway/config"
 	"gateway/server"
 	"log"
@@ -22,9 +23,10 @@ func (c *ConsulRegistry) Register(serverInstance ServerInstance) {
 	c.localServerInstance = serverInstance
 	schema, tags := "http", make([]string, 0)
 
+	id := serverInstance.GetKey() + "-" + serverInstance.GetHost() + "-" + strconv.Itoa(serverInstance.GetPort())
 	registration := &api.AgentServiceRegistration{
-		ID:      serverInstance.GetID(),
-		Name:    serverInstance.GetName(),
+		ID:      id,
+		Name:    serverInstance.GetKey(),
 		Address: serverInstance.GetHost(),
 		Port:    serverInstance.GetPort(),
 	}
@@ -91,12 +93,12 @@ func NewConsulRegistry(conf *config.Conf) *ConsulRegistry {
 	}
 
 	listenOn := conf.GatewayConf.Host + strconv.Itoa(conf.GatewayConf.Port)
-	return &ConsulRegistry{client: client, ListenOn: listenOn, FetchInterval: conf.GatewayConf.Frequency}
+	return &ConsulRegistry{client: client, ListenOn: listenOn, FetchInterval: conf.RegistryConf.Frequency}
 }
 
 func (c *ConsulRegistry) GetInstances() {
 	var ticker = time.NewTicker(time.Duration(c.FetchInterval) * time.Second)
-
+	c.HttpServerMap["cmdty.rpc"] = server.HttpServers{}
 	for {
 		select {
 		case <-ticker.C:
@@ -111,20 +113,24 @@ func (c *ConsulRegistry) GetInstances() {
 
 func (c *ConsulRegistry) discovery(serviceName string) error {
 	//catalogService, _, _ := c.client.Catalog().Service(serviceId, "", nil)
-	catalogService, _, _ := c.client.Health().Service(serviceName, "", false, nil)
-	if len(catalogService) > 0 {
-		result := make([]ServerInstance, len(catalogService))
-		for index, sever := range catalogService {
-			s := DefaultServerInstance{
-				ID:       sever.ServiceID,
-				Name:     sever.ServiceName,
-				Host:     sever.Address,
-				Port:     sever.ServicePort,
-				Metadata: sever.ServiceMeta,
-			}
-			result[index] = s
-		}
-		return nil
+	servers, _, err := c.client.Health().Service(serviceName, "", false, nil)
+	if err != nil {
+		log.Printf("[ERROR DISCOVERY] 获取 %v 服务失败 %v\n", serviceName, err)
 	}
+	fmt.Println(servers)
+	//if len(servers) > 0 {
+	//	result := make([]ServerInstance, len(servers))
+	//	for index, sever := range servers {
+	//		s := DefaultServerInstance{
+	//			ID:       sever.ServiceID,
+	//			Key:     sever.ServiceName,
+	//			Host:     sever.Address,
+	//			Port:     sever.ServicePort,
+	//			Metadata: sever.ServiceMeta,
+	//		}
+	//		result[index] = s
+	//	}
+	//	return nil
+	//}
 	return nil
 }
