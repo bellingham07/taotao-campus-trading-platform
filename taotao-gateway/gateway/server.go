@@ -30,7 +30,8 @@ func MustNewServer(serverRegistry registry.ServerRegistry, conf *config.Conf) *S
 	}
 
 	serverRegistry.Register(instance, listenOn)
-	serverRegistry.GetInstances()
+	serverRegistry.SetPredicates(conf.Routes)
+	go serverRegistry.GetInstances()
 
 	split := strings.Split(listenOn, ":")
 	port, _ := strconv.Atoi(split[1])
@@ -43,7 +44,7 @@ func MustNewServer(serverRegistry registry.ServerRegistry, conf *config.Conf) *S
 }
 
 func (s Server) Start() {
-	ls, err := net.Listen("tcp", s.ListenOn)
+	ls, err := net.Listen("tcp", "0.0.0.0:10000")
 	if err != nil {
 		fmt.Printf("start tcp listener error: %v\n", err.Error())
 		return

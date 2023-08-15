@@ -1,7 +1,7 @@
 package registry
 
 import (
-	"gateway/server"
+	"gateway/routes"
 	"math/rand"
 	"net"
 	"strconv"
@@ -69,16 +69,12 @@ func (serviceInstance *DefaultServerInstance) GetMetadata() map[string]string {
 	return serviceInstance.Metadata
 }
 
-type (
-	Routes     map[string]*server.LoadBalance // 对应的负载均衡类
-	Predicates map[string]Routes              // url pattern prefix 匹配
-
-	ServerRegistry interface {
-		Register(ServerInstance, string)
-		Deregister()
-		GetInstances()
-	}
-)
+type ServerRegistry interface {
+	Register(ServerInstance, string)
+	Deregister()
+	SetPredicates([]routes.Route)
+	GetInstances()
+}
 
 func getLocalIP() (ipv4 string, err error) {
 	addrs, err := net.InterfaceAddrs() // 获取所有网卡

@@ -25,7 +25,7 @@ type CmdtyPicsReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Id int64 `protobuf:"varint,1,opt,name=Key,proto3" json:"Key,omitempty"`
 }
 
 func (x *CmdtyPicsReq) Reset() {
@@ -127,7 +127,7 @@ type Pic struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id    int64  `protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Id    int64  `protobuf:"varint,1,opt,name=Key,proto3" json:"Key,omitempty"`
 	Order int64  `protobuf:"varint,2,opt,name=Order,proto3" json:"Order,omitempty"`
 	Url   string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`
 }

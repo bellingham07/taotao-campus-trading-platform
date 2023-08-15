@@ -1,6 +1,8 @@
 package registry
 
 import (
+	"fmt"
+	"gateway/routes"
 	"gateway/server"
 	"log"
 	"strconv"
@@ -14,8 +16,8 @@ type ConsulRegistry struct {
 	client              *api.Client
 	localServerInstance ServerInstance
 	FetchInterval       int64
-	Routes
-	Predicates
+	routes.Routes
+	routes.Predicates
 }
 
 func (c *ConsulRegistry) Register(serverInstance ServerInstance, listenOn string) {
@@ -93,10 +95,21 @@ func NewConsulRegistry(conf *Conf) *ConsulRegistry {
 	return &ConsulRegistry{client: client, FetchInterval: conf.Frequency}
 }
 
+func (c *ConsulRegistry) SetPredicates(rs []routes.Route) {
+
+	c.Routes = make(routes.Routes)
+	for _, route := range rs {
+		lb := &server.LoadBalance{ServerKey: route.Key}
+		c.Routes[route.Key] = lb
+		c.Predicates = make(routes.Predicates)
+		for _, path := range route.Predicates {
+			c.Predicates[path] = lb
+		}
+	}
+}
+
 func (c *ConsulRegistry) GetInstances() {
 	var ticker = time.NewTicker(time.Duration(c.FetchInterval) * time.Second)
-
-	c.Routes["cmdty.rpc"] = &server.LoadBalance{}
 	for {
 		select {
 		case <-ticker.C:
@@ -115,15 +128,19 @@ func (c *ConsulRegistry) discovery(serviceName string) error {
 		return err
 	}
 	for _, service := range services {
-		addr := service.Service.Address + strconv.Itoa(service.Service.Port)
+		addr := service.Service.Address + ":" + strconv.Itoa(service.Service.Port)
 		httpServer := server.NewHttpServer(addr, 10)
 		httpServers = append(httpServers, httpServer)
 	}
 
-	c.Routes[serviceName] = &server.LoadBalance{
-		ServerKey: serviceName,
-		Servers:   httpServers,
-		ServerNum: len(httpServers),
+	if c.Routes["cmdty.rpc"].Servers != nil {
+		fmt.Println(c.Routes["cmdty.rpc"].Servers[0].Addr, len(c.Routes["cmdty.rpc"].Servers))
+		fmt.Println(c.Predicates["/qwee"].Servers[0].Addr)
+
 	}
+	lb := c.Routes[serviceName]
+	lb.Servers = httpServers
+	lb.ServerNum = len(httpServers)
+
 	return nil
 }

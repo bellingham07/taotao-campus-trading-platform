@@ -2,6 +2,7 @@ package config
 
 import (
 	"gateway/registry"
+	"gateway/routes"
 	"gopkg.in/yaml.v3"
 	"os"
 )
@@ -16,8 +17,9 @@ type GatewayConf struct {
 }
 
 type Conf struct {
-	GatewayConf  GatewayConf   `yaml:"GatewayConf"`
-	RegistryConf registry.Conf `yaml:"RegistryConf"`
+	GatewayConf  GatewayConf    `yaml:"GatewayConf"`
+	RegistryConf registry.Conf  `yaml:"RegistryConf"`
+	Routes       []routes.Route `yaml:"Routes"`
 }
 
 func MustLoad(path string, v any) {
