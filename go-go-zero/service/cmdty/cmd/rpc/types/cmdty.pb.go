@@ -25,7 +25,7 @@ type CoverReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id    int64  `protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Id    int64  `protobuf:"varint,1,opt,name=Key,proto3" json:"Key,omitempty"`
 	Cover string `protobuf:"bytes,2,opt,name=Cover,proto3" json:"Cover,omitempty"`
 }
 
@@ -127,7 +127,7 @@ type IdReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Id int64 `protobuf:"varint,1,opt,name=Key,proto3" json:"Key,omitempty"`
 }
 
 func (x *IdReq) Reset() {

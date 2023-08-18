@@ -83,7 +83,7 @@ func (*ArticleContentLogic) GetById(id, userId int64) gin.H {
 		content := articleRepository.ArticleContent.QueryById(id)
 		// 数据无，设置空
 		if content == nil {
-			_ = cache.RedisUtil.HSET(key, map[string]string{"Id": "nil"})
+			_ = cache.RedisUtil.HSET(key, map[string]string{"Key": "nil"})
 			_ = cache.RedisUtil.EXPIRE(key, 30*time.Second)
 			return response.ErrorMsg("没有这篇文章！你不要乱来呀😡")
 		}
